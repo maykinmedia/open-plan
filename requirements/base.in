@@ -17,6 +17,7 @@ maykin-2fa
 maykin-common[axes,mfa,otel]  # other extras: pdf
 mozilla-django-oidc-db
 django-capture-tag
+django-pghistory
 
 # API libraries
 # djangorestframework

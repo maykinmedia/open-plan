@@ -18,6 +18,7 @@ from .viewsets.plan import PlanViewSet
 from .viewsets.plantype import PlanTypeViewSet
 from .viewsets.relatie import RelatieViewSet
 from .viewsets.relatietype import RelatieTypeViewSet
+from .viewsets.version import PlanVersionViewSet
 
 app_name = "plannen"
 
@@ -34,6 +35,7 @@ router.register("relatie", RelatieViewSet)
 router.register("relatietype", RelatieTypeViewSet)
 router.register("instrument", InstrumentViewSet)
 router.register("instrumenttype", InstrumentTypeViewSet)
+router.register("planversie", PlanVersionViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

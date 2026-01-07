@@ -1,9 +1,12 @@
+from django.db import transaction
+
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.doel import Doel
+from openplan.utils.version_mixin import with_plan_version
 
 from ..filtersets.doel import DoelFilter
 from ..serializers.doel import DoelSerializer
@@ -43,3 +46,16 @@ class DoelViewSet(viewsets.ModelViewSet):
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+
+        doel = serializer.instance
+
+        with_plan_version(
+            plan=doel,
+            user=self.request.user,
+            comment="Doel created via API",
+            fn=lambda: None,
+        )

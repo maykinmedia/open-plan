@@ -3,8 +3,10 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from openplan.utils.version_model import VersionedModel
 
-class Plan(models.Model):
+
+class Plan(VersionedModel):
     uuid = models.UUIDField(
         unique=True,
         default=uuid.uuid4,

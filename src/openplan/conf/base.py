@@ -98,6 +98,8 @@ INSTALLED_APPS += [
     "hijack.contrib.admin",
     "maykin_common",
     "capture_tag",
+    "pghistory",
+    "pgtrigger",
     # Project applications.
     "openplan.accounts",
     "openplan.utils",

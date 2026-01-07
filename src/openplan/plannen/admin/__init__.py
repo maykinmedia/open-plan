@@ -10,6 +10,7 @@ from .plan import Plan
 from .plantype import PlanType
 from .relatie import Relatie
 from .relatietype import RelatieType
+from .version import Version
 
 __all__ = [
     "DoelType",
@@ -26,4 +27,5 @@ __all__ = [
     "RelatieType",
     "Subdoel",
     "Contactmoment",
+    "Version",
 ]

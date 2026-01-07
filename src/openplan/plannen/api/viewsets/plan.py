@@ -1,9 +1,12 @@
+from django.db import transaction
+
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.plan import Plan
+from openplan.utils.version_mixin import with_plan_version
 
 from ..filtersets.plan import PlanFilter
 from ..serializers.plan import PlanSerializer
@@ -43,3 +46,28 @@ class PlanViewSet(viewsets.ModelViewSet):
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+
+        plan = serializer.instance
+
+        with_plan_version(
+            plan=plan,
+            user=self.request.user,
+            comment="Plan created via API",
+            fn=lambda: None,
+        )
+
+    @transaction.atomic
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+
+        plan = serializer.save()
+        with_plan_version(
+            plan=plan,
+            user=self.request.user,
+            comment="Plan updated via API",
+            fn=lambda: None,
+        )
