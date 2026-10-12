@@ -7,21 +7,16 @@ from ..models.plan import Plan
 class PlanAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
-        "titel",
-        "overkoepelend_plan",
-        "plantype",
+        "naam",
         "status",
         "startdatum",
     )
 
-    list_filter = (
-        "plantype",
-        "status",
-    )
+    list_filter = ("status",)
 
     search_fields = (
         "uuid",
-        "titel",
+        "naam",
     )
 
     readonly_fields = ("uuid",)
@@ -32,12 +27,12 @@ class PlanAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "titel",
-                    "plantype",
-                    "overkoepelend_plan",
+                    "naam",
+                    "beschrijving",
+                    "reden_wijziging",
+                    "voortgang_toelichting",
                     "status",
                     "fase",
-                    "notitie",
                 ),
             },
         ),
@@ -51,29 +46,13 @@ class PlanAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Beëindiging",
-            {
-                "fields": ("reden_einde",),
-            },
-        ),
-        (
             "URNs",
             {
                 "fields": (
                     "zaak",
-                    "domeinregister",
-                    "medewerker",
+                    "contactmoment",
+                    "eigenaar",
                 ),
             },
         ),
     )
-
-    def get_queryset(self, request):
-        return (
-            super()
-            .get_queryset(request)
-            .select_related(
-                "plantype",
-                "overkoepelend_plan",
-            )
-        )

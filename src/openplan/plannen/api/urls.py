@@ -14,12 +14,8 @@ from .viewsets.doeltype import DoelTypeViewSet
 from .viewsets.instrument import InstrumentViewSet
 from .viewsets.instrumenttype import InstrumentTypeViewSet
 from .viewsets.ontwikkelwens import OntwikkelwensViewSet
-from .viewsets.overkoepelendplan import OverkoepelendPlanViewSet
-from .viewsets.persoon import PersoonViewSet
 from .viewsets.plan import PlanViewSet
-from .viewsets.plantype import PlanTypeViewSet
-from .viewsets.relatie import RelatieViewSet
-from .viewsets.relatietype import RelatieTypeViewSet
+from .viewsets.subject import SubjectViewSet
 
 app_name = "plannen"
 
@@ -27,16 +23,13 @@ router = routers.DefaultRouter()
 
 router.register("contactmoment", ContactmomentViewSet)
 router.register("plan", PlanViewSet)
-router.register("plantype", PlanTypeViewSet)
 router.register("doel", DoelViewSet)
 router.register("doeltype", DoelTypeViewSet)
 router.register("doelcategorie", DoelCategorieViewSet)
-router.register("persoon", PersoonViewSet)
-router.register("relatie", RelatieViewSet)
-router.register("relatietype", RelatieTypeViewSet)
+router.register("subject", SubjectViewSet)
+
 router.register("instrument", InstrumentViewSet)
 router.register("instrumenttype", InstrumentTypeViewSet)
-router.register("overkoepelendplan", OverkoepelendPlanViewSet)
 router.register("ontwikkelwens", OntwikkelwensViewSet)
 
 urlpatterns = [

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import PlanStatus, Resultaat
 
-from .validators import validate_hoofd_doel_not_self, validate_primary_persoon
+from .validators import validate_hoofd_doel_not_self
 
 
 class Doel(models.Model):
@@ -21,10 +21,10 @@ class Doel(models.Model):
         help_text=_("Plannen waaraan dit doel gekoppelt is."),
     )
     persoon = models.ForeignKey(
-        "plannen.Persoon",
+        "plannen.Subject",
         on_delete=models.CASCADE,
         related_name="doelen",
-        help_text=_("Het primaire persoon bij wie dit doel hoort."),
+        help_text=_("Het primaire subject bij wie dit doel hoort."),
     )
     doeltype = models.ForeignKey(
         "plannen.Doeltype",
@@ -92,4 +92,3 @@ class Doel(models.Model):
             return
 
         validate_hoofd_doel_not_self(self)
-        validate_primary_persoon(self.persoon)

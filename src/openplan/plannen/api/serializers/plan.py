@@ -2,14 +2,8 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 
-from openplan.plannen.models.overkoepelendplan import OverkoepelendPlan
 from openplan.plannen.models.plan import Plan
-from openplan.plannen.models.plantype import PlanType
-from openplan.utils.fields import UUIDRelatedField
 from openplan.utils.serializers import URNModelSerializer
-
-from ..serializers.overkoepelendplan import OverkoepelendPlanSerializer
-from .plantype import PlanTypeSerializer
 
 
 class NestedPlanSerializer(serializers.ModelSerializer):
@@ -18,14 +12,15 @@ class NestedPlanSerializer(serializers.ModelSerializer):
         fields = [
             "uuid",
             "status",
-            "titel",
-            "notitie",
+            "naam",
+            "beschrijving",
+            "reden_wijziging",
+            "voortgang_toelichting",
             "startdatum",
             "einddatum",
-            "reden_einde",
             "zaak",
-            "domeinregister",
-            "medewerker",
+            "contactmoment",
+            "eigenaar",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
@@ -33,46 +28,21 @@ class NestedPlanSerializer(serializers.ModelSerializer):
 
 
 class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
-    plantype = PlanTypeSerializer(
-        required=False,
-        read_only=True,
-    )
-    plantype_uuid = UUIDRelatedField(
-        queryset=PlanType.objects.all(),
-        write_only=True,
-        source="plantype",
-        help_text=_("UUID van de gekoppelde plantype."),
-    )
-
-    overkoepelend_plan = OverkoepelendPlanSerializer(
-        required=False,
-        read_only=True,
-    )
-    overkoepelend_plan_uuid = UUIDRelatedField(
-        queryset=OverkoepelendPlan.objects.all(),
-        write_only=True,
-        source="overkoepelend_plan",
-        help_text=_("UUID van het overkoepelend plan."),
-    )
-
     class Meta:
         model = Plan
         fields = [
             "urn",
             "uuid",
             "status",
-            "titel",
-            "notitie",
+            "naam",
+            "beschrijving",
+            "reden_wijziging",
+            "voortgang_toelichting",
             "startdatum",
             "einddatum",
-            "reden_einde",
-            "plantype",
-            "plantype_uuid",
-            "overkoepelend_plan",
-            "overkoepelend_plan_uuid",
             "zaak",
-            "domeinregister",
-            "medewerker",
+            "contactmoment",
+            "eigenaar",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
