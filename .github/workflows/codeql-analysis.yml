@@ -9,6 +9,11 @@ on:
   schedule:
     - cron: '0 23 * * 6'
 
-# jobs:
-#   open-api-workflow-code-analysis:
-#     uses: maykinmedia/open-api-workflows/.github/workflows/code-analysis.yml@v6
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  open-api-workflow-code-analysis:
+    uses: maykinmedia/open-api-workflows/.github/workflows/code-analysis.yml@31eaea25acd18bb681fe0d01b2452c3dd8d299b9 # v7.0.0

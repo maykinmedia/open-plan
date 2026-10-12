@@ -11,7 +11,7 @@ class PlanStatus(models.TextChoices):
 
 
 class SubjectStatus(models.TextChoices):
-    NIEUW = "nieuw", _("Nieuw")
+    ACTIEF = "actief", _("Actief")
     INACTIEF = "inactief", _("Inactief")
 
 

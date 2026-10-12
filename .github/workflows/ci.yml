@@ -11,6 +11,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# least privilege as default, should be overridden per job if necessary
+permissions:
+  contents: read
+
 env:
   IMAGE_NAME: maykinmedia/openplan
   DJANGO_SETTINGS_MODULE: openplan.conf.ci
@@ -25,9 +29,10 @@ jobs:
     name: Determine changed files
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Get changed PY files
         id: changed-py-files
@@ -65,9 +70,11 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Set up backend environment
-        uses: maykinmedia/setup-django-backend@v1.3
+        uses: maykinmedia/setup-django-backend@4a6c5facc65bb1dd510cf06be20871db11a156b3 # v1.4.2
         with:
           python-version: '3.12'
           setup-node: true
@@ -80,7 +87,7 @@ jobs:
           SECRET_KEY: dummy
 
       - name: Publish coverage report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
