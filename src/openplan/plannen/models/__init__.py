@@ -1,7 +1,8 @@
-from .contactmoment import Contactmoment
 from .doel import Doel
 from .doelcategorie import DoelCategorie
 from .doeltype import DoelType
+from .evaluatie import Evaluatie
+from .evaluatietype import EvaluatieType
 from .instrument import Instrument
 from .instrumentcategorie import InstrumentCategorie
 from .instrumenttype import InstrumentType
@@ -14,7 +15,8 @@ from .relatie import Relatie
 from .relatietype import RelatieType
 
 __all__ = [
-    "Contactmoment",
+    "Evaluatie",
+    "EvaluatieType",
     "Doel",
     "DoelCategorie",
     "DoelType",
