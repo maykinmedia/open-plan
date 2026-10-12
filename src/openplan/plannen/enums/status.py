@@ -7,6 +7,18 @@ class Status(models.TextChoices):
     NIET_ACTIEF = "niet_actief", _("Niet actief")
 
 
+class TypeStatus(models.TextChoices):
+    ACTIEF = "actief", _("Actief")
+    NIET_ACTIEF = "niet_actief", _("Niet actief")
+
+
+class DoelStatus(models.TextChoices):
+    GEPLAND = "gepland", _("Gepland")
+    GESTART = "gestart", _("Gestart")
+    BEHAALD = "behaald", _("Behaald")
+    AFGEBROKEN = "afgebroken", _("Afgebroken")
+
+
 class SubjectType(models.TextChoices):
     PERSOON = "persoon", _("Persoon")
     FYSIEK_OBJECT = "fysiek_object", _("Fysiek object")

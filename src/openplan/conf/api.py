@@ -43,4 +43,8 @@ SPECTACULAR_SETTINGS = {
         "name": "EUPL 1.2",
         "url": "https://opensource.org/licenses/EUPL-1.2",
     },
+    "ENUM_NAME_OVERRIDES": {
+        "DoelStatus": "openplan.plannen.enums.status.DoelStatus",
+        "TypeStatus": "openplan.plannen.enums.status.TypeStatus",
+    },
 }

@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from ..models.contactmoment import Contactmoment
+from ..models.evaluatie import Evaluatie
 
 
-@admin.register(Contactmoment)
-class ContactmomentAdmin(admin.ModelAdmin):
+@admin.register(Evaluatie)
+class EvaluatieAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
         "plan",
@@ -17,6 +17,7 @@ class ContactmomentAdmin(admin.ModelAdmin):
     )
     search_fields = ("uuid",)
     readonly_fields = ("uuid",)
+    filter_horizontal = ("posities", "doelen", "subdoelen")
 
     fieldsets = (
         (
@@ -25,24 +26,26 @@ class ContactmomentAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "plan",
+                    "evaluatietype",
+                    "naam",
+                    "omschrijving",
                     "status",
                     "datum",
-                ),
-            },
-        ),
-        (
-            "Beschrijving",
-            {
-                "fields": (
-                    "toelichting_status",
-                    "notitie",
+                    "posities",
+                    "doelen",
+                    "subdoelen",
                 ),
             },
         ),
         (
             "Relatie",
             {
-                "fields": ("persoonsprofiel",),
+                "fields": (
+                    "eigenaar",
+                    "contactmoment",
+                    "zaak",
+                    "verslag",
+                ),
             },
         ),
     )
