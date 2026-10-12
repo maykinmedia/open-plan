@@ -19,3 +19,22 @@ def validate_hoofd_doel_not_self(doel):
                 }
             )
         parent = parent.hoofd_doel
+
+
+def validate_positie_type_not_self(positie_type):
+    if positie_type.doelpositie and positie_type.doelpositie == positie_type:
+        raise ValidationError(
+            {"doelpositie": _("Een positie type kan niet naar zichzelf verwijzen.")}
+        )
+
+    parent = positie_type.doelpositie
+    while parent:
+        if parent == positie_type:
+            raise ValidationError(
+                {
+                    "doelpositie": _(
+                        "Een doelpositie kan geen kind als bovenliggende positie hebben."
+                    )
+                }
+            )
+        parent = parent.doelpositie
