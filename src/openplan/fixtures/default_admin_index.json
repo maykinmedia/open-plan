@@ -36,6 +36,10 @@
             "models": [
                 [
                     "plannen",
+                    "configuratie"
+                ],
+                [
+                    "plannen",
                     "overkoepelendplan"
                 ],
                 [
