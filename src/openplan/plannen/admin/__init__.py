@@ -1,7 +1,9 @@
+from .configuratie import Configuratie
 from .contactmoment import Contactmoment
 from .doel import Doel
 from .doelcategorie import DoelCategorie
 from .doeltype import DoelType
+from .domein import Domein
 from .instrument import Instrument
 from .instrumentcategorie import InstrumentCategorie
 from .instrumenttype import InstrumentType
@@ -12,9 +14,11 @@ from .positietype import PositieType
 from .subject import Subject
 
 __all__ = [
+    "Configuratie",
     "DoelType",
     "DoelCategorie",
     "Doel",
+    "Domein",
     "Instrument",
     "InstrumentCategorie",
     "InstrumentType",

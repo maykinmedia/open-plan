@@ -36,6 +36,14 @@
             "models": [
                 [
                     "plannen",
+                    "configuratie"
+                ],
+                [
+                    "plannen",
+                    "domein"
+                ],
+                [
+                    "plannen",
                     "plan"
                 ],
                 [
