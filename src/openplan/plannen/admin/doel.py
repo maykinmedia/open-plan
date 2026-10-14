@@ -9,21 +9,15 @@ class DoelAdmin(admin.ModelAdmin):
         "uuid",
         "titel",
         "persoon",
-        "doeltype",
         "status",
-        "hoofd_doel",
         "startdatum",
     )
-    list_filter = (
-        "doeltype",
-        "status",
-    )
+    list_filter = ("status",)
     search_fields = (
         "uuid",
         "titel",
     )
     readonly_fields = ("uuid",)
-    filter_horizontal = ("plannen",)
 
     fieldsets = (
         (
@@ -32,10 +26,7 @@ class DoelAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "titel",
-                    "doeltype",
-                    "plannen",
                     "persoon",
-                    "hoofd_doel",
                     "status",
                     "beschrijving",
                 ),
@@ -50,15 +41,11 @@ class DoelAdmin(admin.ModelAdmin):
         (
             "Voortgang",
             {
-                "fields": ("resultaat", "toelichting_resultaat"),
+                "fields": ("resultaat", "voortgang_toelichting"),
             },
         ),
     )
 
+    # TODO: change to subject when possible
     def get_queryset(self, request):
-        return (
-            super()
-            .get_queryset(request)
-            .select_related("persoon", "doeltype", "hoofd_doel")
-            .prefetch_related("plannen")
-        )
+        return super().get_queryset(request).select_related("persoon")
