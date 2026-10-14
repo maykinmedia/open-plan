@@ -112,26 +112,13 @@ API
 * ``instrumenttype_updated``: updated a ``InstrumentType`` via the API. Additional context: ``uuid``.
 * ``instrumenttype_deleted``: deleted a ``InstrumentType`` via the API. Additional context: ``uuid``.
 
-* ``persoon_created``: created a ``Persoon`` via the API. Additional context: ``uuid``.
-* ``persoon_updated``: updated a ``Persoon`` via the API. Additional context: ``uuid``.
-* ``persoon_deleted``: deleted a ``Persoon`` via the API. Additional context: ``uuid``.
+* ``subject_created``: created a ``Subject`` via the API. Additional context: ``uuid``.
+* ``subject_updated``: updated a ``Subject`` via the API. Additional context: ``uuid``.
+* ``subject_deleted``: deleted a ``Subject`` via the API. Additional context: ``uuid``.
 
 * ``plan_created``: created a ``Plan`` via the API. Additional context: ``uuid``.
 * ``plan_updated``: updated a ``Plan`` via the API. Additional context: ``uuid``.
 * ``plan_deleted``: deleted a ``Plan`` via the API. Additional context: ``uuid``.
-
-* ``plantype_created``: created a ``Plantype`` via the API. Additional context: ``uuid``.
-* ``plantype_updated``: updated a ``Plantype`` via the API. Additional context: ``uuid``.
-* ``plantype_deleted``: deleted a ``Plantype`` via the API. Additional context: ``uuid``.
-
-* ``relatie_created``: created a ``Relatie`` via the API. Additional context: ``uuid``.
-* ``relatie_updated``: updated a ``Relatie`` via the API. Additional context: ``uuid``.
-* ``relatie_deleted``: deleted a ``Relatie`` via the API. Additional context: ``uuid``.
-
-* ``relatietype_created``: created a ``Relatietype`` via the API. Additional context: ``uuid``.
-* ``relatietype_updated``: updated a ``Relatietype`` via the API. Additional context: ``uuid``.
-* ``relatietype_deleted``: deleted a ``Relatietype`` via the API. Additional context: ``uuid``.
-
 
 .. _manual_logging_exceptions:
 

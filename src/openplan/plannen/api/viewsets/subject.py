@@ -3,16 +3,15 @@ from django.db import transaction
 import structlog
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.subject import Subject
 
-# from ...metrics import (
-#     personen_create_counter,
-#     personen_delete_counter,
-#     personen_update_counter,
-# )
+from ...metrics import (
+    subjecten_create_counter,
+    subjecten_delete_counter,
+    subjecten_update_counter,
+)
 from ..serializers.subject import SubjectSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -49,7 +48,6 @@ class SubjectViewSet(viewsets.ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     lookup_field = "uuid"
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     @transaction.atomic
@@ -60,7 +58,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
             "subject_created",
             uuid=str(subject.uuid),
         )
-        # personen_create_counter.add(1)
+        subjecten_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -70,7 +68,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
             "subject_updated",
             uuid=str(subject.uuid),
         )
-        # personen_update_counter.add(1)
+        subjecten_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -79,4 +77,4 @@ class SubjectViewSet(viewsets.ModelViewSet):
             "subject_deleted",
             uuid=str(instance.uuid),
         )
-        # personen_delete_counter.add(1)
+        subjecten_delete_counter.add(1)

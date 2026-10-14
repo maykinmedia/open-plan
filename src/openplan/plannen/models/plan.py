@@ -76,4 +76,4 @@ class Plan(models.Model):
         ordering = ("-startdatum",)
 
     def __str__(self):
-        return str(self.plantype)
+        return str(self.naam)
