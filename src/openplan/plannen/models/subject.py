@@ -7,7 +7,7 @@ from vng_api_common.fields import BSNField
 
 from openplan.utils.fields import URNField
 
-from ..enums.status import SubjectStatus
+from ..enums.status import Status
 
 
 class Subject(models.Model):
@@ -25,8 +25,8 @@ class Subject(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=SubjectStatus.choices,
-        default=SubjectStatus.ACTIEF,
+        choices=Status.choices,
+        default=Status.ACTIEF,
         help_text=_("Status van het subject."),
     )
     rolbeschrijving = models.TextField(

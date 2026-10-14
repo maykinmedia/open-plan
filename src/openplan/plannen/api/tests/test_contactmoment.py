@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from openplan.plannen.enums.status import PlanStatus
+from openplan.plannen.enums.status import Status
 from openplan.plannen.metrics import (
     contactmomenten_create_counter,
     contactmomenten_delete_counter,
@@ -123,8 +123,8 @@ class ContactmomentAPITests(APITestCase):
         self.assertEqual(response.data["results"][0]["uuid"], str(cm1.uuid))
 
     def test_filter_by_status(self):
-        cm1 = ContactmomentFactory.create(status=PlanStatus.ACTIEF)
-        ContactmomentFactory.create(status=PlanStatus.AFGEROND)
+        cm1 = ContactmomentFactory.create(status=Status.ACTIEF)
+        ContactmomentFactory.create(status=Status.NIET_ACTIEF)
 
         url = reverse("plannen:contactmoment-list")
         response = self.client.get(url, {"status": "actief"})

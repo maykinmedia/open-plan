@@ -9,11 +9,6 @@ from ...utils.views import SpectacularJSONAPIView, SpectacularYAMLAPIView
 from .schema import custom_settings
 from .viewsets.contactmoment import ContactmomentViewSet
 from .viewsets.doel import DoelViewSet
-from .viewsets.doelcategorie import DoelCategorieViewSet
-from .viewsets.doeltype import DoelTypeViewSet
-from .viewsets.instrument import InstrumentViewSet
-from .viewsets.instrumenttype import InstrumentTypeViewSet
-from .viewsets.ontwikkelwens import OntwikkelwensViewSet
 from .viewsets.plan import PlanViewSet
 from .viewsets.subject import SubjectViewSet
 
@@ -24,13 +19,8 @@ router = routers.DefaultRouter()
 router.register("contactmoment", ContactmomentViewSet)
 router.register("plan", PlanViewSet)
 router.register("doel", DoelViewSet)
-router.register("doeltype", DoelTypeViewSet)
-router.register("doelcategorie", DoelCategorieViewSet)
 router.register("subject", SubjectViewSet)
 
-router.register("instrument", InstrumentViewSet)
-router.register("instrumenttype", InstrumentTypeViewSet)
-router.register("ontwikkelwens", OntwikkelwensViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

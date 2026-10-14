@@ -8,9 +8,8 @@ class PositieAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
         "beschrijving",
-        "eigenaar",
     )
-    search_fields = ("uuid", "eigenaar")
+    search_fields = ("uuid",)
     readonly_fields = ("uuid",)
 
     fieldsets = (
@@ -24,7 +23,6 @@ class PositieAdmin(admin.ModelAdmin):
                     "beschrijving",
                     "reden_wijziging",
                     "voortgang_toelichting",
-                    "eigenaar",
                 ),
             },
         ),

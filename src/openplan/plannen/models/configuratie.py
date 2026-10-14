@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import PlanStatus
+from openplan.plannen.enums.status import Status
 from openplan.utils.fields import URNField
 
 
@@ -29,11 +29,10 @@ class Configuratie(models.Model):
         max_length=1000,
         help_text=_("Omschrijving van de configuratie."),
     )
-    # TODO: update status
     status = models.CharField(
         max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.NIEUW,
+        choices=Status.choices,
+        default=Status.ACTIEF,
         help_text=_("Status van de configuratie."),
     )
     eigenaar = URNField(
