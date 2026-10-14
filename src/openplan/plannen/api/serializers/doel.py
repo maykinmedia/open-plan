@@ -1,18 +1,16 @@
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 
 from openplan.plannen.models.doel import Doel
 from openplan.plannen.models.doeltype import DoelType
-from openplan.plannen.models.persoon import Persoon
 from openplan.plannen.models.plan import Plan
-from openplan.plannen.models.validators import validate_primary_persoon
+from openplan.plannen.models.subject import Subject
 from openplan.utils.fields import UUIDRelatedField
 
 from .doeltype import NestedDoelTypeSerializer
-from .persoon import PersoonSerializer
 from .plan import NestedPlanSerializer
+from .subject import SubjectSerializer
 
 
 class NestedDoelSerializer(serializers.ModelSerializer):
@@ -49,7 +47,7 @@ class DoelSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True,
     )
-    persoon = PersoonSerializer(
+    subject = SubjectSerializer(
         read_only=True,
     )
 
@@ -66,11 +64,11 @@ class DoelSerializer(serializers.ModelSerializer):
         source="plannen",
         help_text=_("UUID van de plannen waaraan dit doel gekoppelt is."),
     )
-    persoon_uuid = UUIDRelatedField(
-        queryset=Persoon.objects.all(),
+    subject_uuid = UUIDRelatedField(
+        queryset=Subject.objects.all(),
         write_only=True,
-        source="persoon",
-        help_text=_("UUID van de gekoppelde persoon."),
+        source="Subject",
+        help_text=_("UUID van de gekoppelde subject."),
     )
     hoofd_doel = UUIDRelatedField(
         queryset=Doel.objects.all(),
@@ -87,8 +85,8 @@ class DoelSerializer(serializers.ModelSerializer):
             "plannen_uuids",
             "doeltype",
             "doeltype_uuid",
-            "persoon",
-            "persoon_uuid",
+            "subject",
+            "subject_uuid",
             "status",
             "titel",
             "beschrijving",
@@ -101,17 +99,3 @@ class DoelSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True},
         }
-
-    def validate(self, attrs):
-        persoon = attrs.get("persoon")
-
-        if persoon is None and self.instance:
-            persoon = self.instance.persoon
-
-        if persoon:
-            try:
-                validate_primary_persoon(persoon)
-            except ValidationError as exc:
-                raise serializers.ValidationError(exc.message_dict)
-
-        return attrs

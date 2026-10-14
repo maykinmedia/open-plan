@@ -101,17 +101,17 @@ Contactmomenten
     Reports the number of contactmomenten deleted via the API.
 
 
-Personen
---------
+Subjecten
+---------
 
-``openplan.persoon.creates``
-    Reports the number of personen created via the API.
+``openplan.subject.creates``
+    Reports the number of subjecten created via the API.
 
-``openplan.persoon.updates``
-    Reports the number of personen updated via the API.
+``openplan.subject.updates``
+    Reports the number of subjecten updated via the API.
 
-``openplan.persoon.deletes``
-    Reports the number of personen deleted via the API.
+``openplan.subject.deletes``
+    Reports the number of subjecten deleted via the API.
 
 
 Doelen
@@ -166,19 +166,6 @@ Plannen
     Reports the number of plannen deleted via the API.
 
 
-Plantypes
----------
-
-``openplan.plantype.creates``
-    Reports the number of plantypes created via the API.
-
-``openplan.plantype.updates``
-    Reports the number of plantypes updated via the API.
-
-``openplan.plantype.deletes``
-    Reports the number of plantypes deleted via the API.
-
-
 Instrumenten
 ------------
 
@@ -203,32 +190,6 @@ Instrumenttypes
 
 ``openplan.instrumenttype.deletes``
     Reports the number of instrumenttypes deleted via the API.
-
-
-Relaties
---------
-
-``openplan.relatie.creates``
-    Reports the number of relaties created via the API.
-
-``openplan.relatie.updates``
-    Reports the number of relaties updated via the API.
-
-``openplan.relatie.deletes``
-    Reports the number of relaties deleted via the API.
-
-
-Relatietypes
-------------
-
-``openplan.relatietype.creates``
-    Reports the number of relatietypes created via the API.
-
-``openplan.relatietype.updates``
-    Reports the number of relatietypes updated via the API.
-
-``openplan.relatietype.deletes``
-    Reports the number of relatietypes deleted via the API.
 
 Query
 -----

@@ -7,14 +7,12 @@ class PlanFilter(FilterSet):
     class Meta:
         model = Plan
         fields = {
-            "plantype__uuid": ["exact"],
-            "overkoepelend_plan__uuid": ["exact"],
             "status": ["exact"],
             "fase": ["exact"],
-            "titel": ["exact", "icontains"],
-            "medewerker": ["exact"],
+            "naam": ["exact", "icontains"],
+            "eigenaar": ["exact"],
             "zaak": ["exact"],
-            "domeinregister": ["exact"],
+            "contactmoment": ["exact"],
             "startdatum": ["exact", "gte", "lte"],
             "einddatum": ["exact", "gte", "lte"],
         }

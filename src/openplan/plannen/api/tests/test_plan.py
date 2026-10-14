@@ -14,11 +14,7 @@ from openplan.plannen.metrics import (
     plannen_delete_counter,
     plannen_update_counter,
 )
-from openplan.plannen.models.factories.overkoepelendplan import (
-    OverkoepelendPlanFactory,
-)
 from openplan.plannen.models.factories.plan import PlanFactory
-from openplan.plannen.models.factories.plantype import PlanTypeFactory
 
 from ...models.plan import Plan
 from .api_testcase import APITestCase
@@ -27,32 +23,22 @@ from .api_testcase import APITestCase
 class PlanAPITests(APITestCase):
     def setUp(self):
         super().setUp()
-        self.plantype1 = PlanTypeFactory.create()
-        self.plantype2 = PlanTypeFactory.create()
-        self.over_plan1 = OverkoepelendPlanFactory.create()
-        self.over_plan2 = OverkoepelendPlanFactory.create()
 
     def test_create_plan(self):
-        plantype = PlanTypeFactory.create()
-        overkoepelend_plan = OverkoepelendPlanFactory.create()
-
         url = reverse("plannen:plan-list")
         data = {
-            "titel": "Test Instrument",
+            "naam": "Test Instrument",
             "startdatum": date.today().isoformat(),
-            "plantypeUuid": str(plantype.uuid),
-            "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
         }
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         plan = Plan.objects.get(uuid=response.data["uuid"])
-        self.assertEqual(plan.plantype.uuid, plantype.uuid)
+        self.assertEqual(str(plan.uuid), response.data["uuid"])
 
     def test_list_plans(self):
-        plantype = PlanTypeFactory.create()
-        PlanFactory.create_batch(3, plantype=plantype)
+        PlanFactory.create_batch(3)
 
         url = reverse("plannen:plan-list")
         response = self.client.get(url)
@@ -63,55 +49,42 @@ class PlanAPITests(APITestCase):
 
         for plan_data in data:
             self.assertIn("uuid", plan_data)
-            self.assertIn("plantype", plan_data)
 
     def test_retrieve_plan(self):
-        plantype = PlanTypeFactory.create()
-        plan = PlanFactory.create(plantype=plantype)
+        plan = PlanFactory.create()
 
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["uuid"], str(plan.uuid))
-        self.assertEqual(response.data["plantype"]["type"], str(plan.plantype))
 
     def test_update_plan(self):
-        plantype = PlanTypeFactory.create()
-        overkoepelend_plan = OverkoepelendPlanFactory.create()
-        plan = PlanFactory.create(
-            plantype=plantype, overkoepelend_plan=overkoepelend_plan
-        )
-        new_plantype = PlanTypeFactory.create()
+        plan = PlanFactory.create()
 
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
         data = {
-            "titel": "Test update instrument",
+            "naam": "Test update instrument",
             "startdatum": date.today().isoformat(),
-            "plantypeUuid": str(new_plantype.uuid),
-            "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
         }
         response = self.client.put(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         plan.refresh_from_db()
-        self.assertEqual(plan.plantype.uuid, new_plantype.uuid)
+        self.assertEqual(plan.naam, "Test update instrument")
 
     def test_partial_update_plan(self):
-        plantype = PlanTypeFactory.create()
-        plan = PlanFactory.create(plantype=plantype)
-        new_plantype = PlanTypeFactory.create()
+        plan = PlanFactory.create()
 
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
-        data = {"plantypeUuid": str(new_plantype.uuid)}
+        data = {"naam": "Test update instrument"}
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         plan.refresh_from_db()
-        self.assertEqual(plan.plantype.uuid, new_plantype.uuid)
+        self.assertEqual(plan.naam, "Test update instrument")
 
     def test_delete_plan(self):
-        plantype = PlanTypeFactory.create()
-        plan = PlanFactory.create(plantype=plantype)
+        plan = PlanFactory.create()
 
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
         response = self.client.delete(url)
@@ -124,30 +97,6 @@ class PlanAPITests(APITestCase):
 
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_filter_plantype_uuid(self):
-        plan1 = PlanFactory.create(plantype=self.plantype1)
-        PlanFactory.create(plantype=self.plantype2)
-
-        url = reverse("plannen:plan-list")
-        response = self.client.get(url, {"plantype__uuid": str(self.plantype1.uuid)})
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
-
-    def test_filter_overkoepelend_plan_uuid(self):
-        plan1 = PlanFactory.create(overkoepelend_plan=self.over_plan1)
-        PlanFactory.create(overkoepelend_plan=self.over_plan2)
-
-        url = reverse("plannen:plan-list")
-        response = self.client.get(
-            url, {"overkoepelend_plan__uuid": str(self.over_plan1.uuid)}
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
 
     def test_filter_status(self):
         plan1 = PlanFactory.create(status=PlanStatus.ACTIEF)
@@ -171,29 +120,29 @@ class PlanAPITests(APITestCase):
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
 
-    def test_filter_titel(self):
-        plan1 = PlanFactory.create(titel="Project Start")
-        PlanFactory.create(titel="Project End")
+    def test_filter_naam(self):
+        plan1 = PlanFactory.create(naam="Project Start")
+        PlanFactory.create(naam="Project End")
 
         url = reverse("plannen:plan-list")
         with self.subTest("exact"):
-            response = self.client.get(url, {"titel": "Project Start"})
+            response = self.client.get(url, {"naam": "Project Start"})
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["count"], 1)
             self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
 
         with self.subTest("icontains"):
-            response = self.client.get(url, {"titel__icontains": "Start"})
+            response = self.client.get(url, {"naam__icontains": "Start"})
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["count"], 1)
             self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
 
-    def test_filter_medewerker(self):
-        plan1 = PlanFactory.create(medewerker="urn:example:zaak:1")
-        PlanFactory.create(medewerker="urn:example:zaak:2")
+    def test_filter_eigenaar(self):
+        plan1 = PlanFactory.create(eigenaar="urn:example:persoon:1")
+        PlanFactory.create(eigenaar="urn:example:persoon:2")
 
         url = reverse("plannen:plan-list")
-        response = self.client.get(url, {"medewerker": "urn:example:zaak:1"})
+        response = self.client.get(url, {"eigenaar": "urn:example:persoon:1"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
@@ -208,12 +157,14 @@ class PlanAPITests(APITestCase):
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
 
-    def test_filter_domeinregister(self):
-        plan1 = PlanFactory.create(domeinregister="urn:example:domein:1")
-        PlanFactory.create(domeinregister="urn:example:domein:2")
+    def test_filter_contactmoment(self):
+        plan1 = PlanFactory.create(contactmoment="urn:example:contactmoment:1")
+        PlanFactory.create(contactmoment="urn:example:contactmoment:2")
 
         url = reverse("plannen:plan-list")
-        response = self.client.get(url, {"domeinregister": "urn:example:domein:1"})
+        response = self.client.get(
+            url, {"contactmoment": "urn:example:contactmoment:1"}
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
@@ -267,8 +218,7 @@ class PlanAPITests(APITestCase):
             self.assertEqual(response.data["count"], 1)
 
     def test_plan_urn(self):
-        plantype = PlanTypeFactory.create()
-        plan = PlanFactory.create(plantype=plantype)
+        plan = PlanFactory.create()
 
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
         response = self.client.get(url)
@@ -281,13 +231,11 @@ class PlanAPITests(APITestCase):
     def test_invalid_create_urn_fields_plan(self):
         self.assertFalse(Plan.objects.exists())
 
-        plantype = PlanTypeFactory.create()
         data = {
-            "titel": "Test Plan",
-            "plantype": str(plantype.uuid),
+            "naam": "Test Plan",
             "zaak": "invalid",
-            "domeinregister": "urn:maykinmaykinmaykinmaykinmaykinmaykinmaykinmaykinmaykin:1",
-            "medewerker": "test:maykin:organisatie:medewerker:1234567892",
+            "contactmoment": "urn:maykinmaykinmaykinmaykinmaykinmaykinmaykinmaykinmaykin:1",
+            "eigenaar": "test:maykin:organisatie:medewerker:1234567892",
         }
 
         url = reverse("plannen:plan-list")
@@ -304,17 +252,17 @@ class PlanAPITests(APITestCase):
             },
         )
         self.assertEqual(
-            get_validation_errors(response, "domeinregister"),
+            get_validation_errors(response, "contactmoment"),
             {
-                "name": "domeinregister",
+                "name": "contactmoment",
                 "code": "invalid_urn",
                 "reason": "Enter a valid URN. Correct format: 'urn:<namespace>:<resource>' (e.g., urn:isbn:9780143127796).",
             },
         )
         self.assertEqual(
-            get_validation_errors(response, "medewerker"),
+            get_validation_errors(response, "eigenaar"),
             {
-                "name": "medewerker",
+                "name": "eigenaar",
                 "code": "invalid_urn",
                 "reason": "Enter a valid URN. Correct format: 'urn:<namespace>:<resource>' (e.g., urn:isbn:9780143127796).",
             },
@@ -323,14 +271,10 @@ class PlanAPITests(APITestCase):
 
     @patch.object(plannen_create_counter, "add", wraps=plannen_create_counter.add)
     def test_create_plan_increments_metric(self, mock_add: MagicMock):
-        plantype = PlanTypeFactory.create()
-        overkoepelend_plan = OverkoepelendPlanFactory.create()
         url = reverse("plannen:plan-list")
         data = {
-            "titel": "Test Instrument",
+            "naam": "Test Instrument",
             "startdatum": date.today().isoformat(),
-            "plantypeUuid": str(plantype.uuid),
-            "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 201)
@@ -338,19 +282,16 @@ class PlanAPITests(APITestCase):
 
     @patch.object(plannen_update_counter, "add", wraps=plannen_update_counter.add)
     def test_update_plan_increments_metric(self, mock_add: MagicMock):
-        plantype = PlanTypeFactory.create()
-        plan = PlanFactory.create(plantype=plantype)
-        new_plantype = PlanTypeFactory.create()
+        plan = PlanFactory.create()
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
-        data = {"plantypeUuid": str(new_plantype.uuid)}
+        data = {"naam": "Updated Plan"}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         mock_add.assert_called_once_with(1)
 
     @patch.object(plannen_delete_counter, "add", wraps=plannen_delete_counter.add)
     def test_delete_plan_increments_metric(self, mock_add: MagicMock):
-        plantype = PlanTypeFactory.create()
-        plan = PlanFactory.create(plantype=plantype)
+        plan = PlanFactory.create()
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
         response = self.client.delete(url)
         self.assertIn(response.status_code, (200, 204))

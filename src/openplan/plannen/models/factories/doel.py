@@ -8,14 +8,14 @@ from openplan.plannen.enums.status import PlanStatus
 
 from ..doel import Doel
 from .doeltype import DoelTypeFactory
-from .persoon import PersoonFactory
 from .plan import PlanFactory
+from .subject import SubjectFactory
 
 
 class DoelFactory(factory.django.DjangoModelFactory):
     uuid = factory.LazyFunction(uuid.uuid4)
     doeltype = factory.SubFactory(DoelTypeFactory)
-    persoon = factory.SubFactory(PersoonFactory)
+    persoon = factory.SubFactory(SubjectFactory)
     status = PlanStatus.ACTIEF
     titel = factory.Faker("sentence", nb_words=4)
     beschrijving = factory.Faker("paragraph", nb_sentences=3)

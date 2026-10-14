@@ -98,19 +98,19 @@ instrumenttypen_delete_counter = meter.create_counter(
     unit="1",
 )
 
-personen_create_counter = meter.create_counter(
-    "openplan.persoon.creates",
-    description="Amount of personen created (via the API).",
+subjecten_create_counter = meter.create_counter(
+    "openplan.subject.creates",
+    description="Amount of subjecten created (via the API).",
     unit="1",
 )
-personen_update_counter = meter.create_counter(
-    "openplan.persoon.updates",
-    description="Amount of personen updated (via the API).",
+subjecten_update_counter = meter.create_counter(
+    "openplan.subject.updates",
+    description="Amount of subjecten updated (via the API).",
     unit="1",
 )
-personen_delete_counter = meter.create_counter(
-    "openplan.persoon.deletes",
-    description="Amount of personen deleted (via the API).",
+subjecten_delete_counter = meter.create_counter(
+    "openplan.subject.deletes",
+    description="Amount of subjecten deleted (via the API).",
     unit="1",
 )
 
@@ -127,53 +127,5 @@ plannen_update_counter = meter.create_counter(
 plannen_delete_counter = meter.create_counter(
     "openplan.plan.deletes",
     description="Amount of plannen deleted (via the API).",
-    unit="1",
-)
-
-plantypen_create_counter = meter.create_counter(
-    "openplan.plantype.creates",
-    description="Amount of plantypen created (via the API).",
-    unit="1",
-)
-plantypen_update_counter = meter.create_counter(
-    "openplan.plantype.updates",
-    description="Amount of plantypen updated (via the API).",
-    unit="1",
-)
-plantypen_delete_counter = meter.create_counter(
-    "openplan.plantype.deletes",
-    description="Amount of plantypen deleted (via the API).",
-    unit="1",
-)
-
-relaties_create_counter = meter.create_counter(
-    "openplan.relatie.creates",
-    description="Amount of relaties created (via the API).",
-    unit="1",
-)
-relaties_update_counter = meter.create_counter(
-    "openplan.relatie.updates",
-    description="Amount of relaties updated (via the API).",
-    unit="1",
-)
-relaties_delete_counter = meter.create_counter(
-    "openplan.relatie.deletes",
-    description="Amount of relaties deleted (via the API).",
-    unit="1",
-)
-
-relatietypen_create_counter = meter.create_counter(
-    "openplan.relatietype.creates",
-    description="Amount of relatietypen created (via the API).",
-    unit="1",
-)
-relatietypen_update_counter = meter.create_counter(
-    "openplan.relatietype.updates",
-    description="Amount of relatietypen updated (via the API).",
-    unit="1",
-)
-relatietypen_delete_counter = meter.create_counter(
-    "openplan.relatietype.deletes",
-    description="Amount of relatietypen deleted (via the API).",
     unit="1",
 )
