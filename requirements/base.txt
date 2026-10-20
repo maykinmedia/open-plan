@@ -264,7 +264,7 @@ maykin-2fa==1.0.2
     #   -r requirements/base.in
     #   maykin-common
     #   open-api-framework
-maykin-common==0.11.0
+maykin-common==0.22.0
     # via -r requirements/base.in
 mozilla-django-oidc==4.0.1
     # via mozilla-django-oidc-db
@@ -282,7 +282,12 @@ opentelemetry-api==1.39.0
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-instrumentation
+    #   opentelemetry-instrumentation-celery
+    #   opentelemetry-instrumentation-dbapi
     #   opentelemetry-instrumentation-django
+    #   opentelemetry-instrumentation-psycopg
+    #   opentelemetry-instrumentation-redis
+    #   opentelemetry-instrumentation-requests
     #   opentelemetry-instrumentation-wsgi
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
@@ -298,9 +303,24 @@ opentelemetry-exporter-otlp-proto-http==1.39.0
     # via opentelemetry-exporter-otlp
 opentelemetry-instrumentation==0.60b0
     # via
+    #   opentelemetry-instrumentation-celery
+    #   opentelemetry-instrumentation-dbapi
     #   opentelemetry-instrumentation-django
+    #   opentelemetry-instrumentation-psycopg
+    #   opentelemetry-instrumentation-redis
+    #   opentelemetry-instrumentation-requests
     #   opentelemetry-instrumentation-wsgi
+opentelemetry-instrumentation-celery==0.60b0
+    # via maykin-common
+opentelemetry-instrumentation-dbapi==0.60b0
+    # via opentelemetry-instrumentation-psycopg
 opentelemetry-instrumentation-django==0.60b0
+    # via maykin-common
+opentelemetry-instrumentation-psycopg==0.60b0
+    # via maykin-common
+opentelemetry-instrumentation-redis==0.60b0
+    # via maykin-common
+opentelemetry-instrumentation-requests==0.60b0
     # via maykin-common
 opentelemetry-instrumentation-wsgi==0.60b0
     # via opentelemetry-instrumentation-django
@@ -320,12 +340,17 @@ opentelemetry-sdk==1.39.0
 opentelemetry-semantic-conventions==0.60b0
     # via
     #   opentelemetry-instrumentation
+    #   opentelemetry-instrumentation-celery
+    #   opentelemetry-instrumentation-dbapi
     #   opentelemetry-instrumentation-django
+    #   opentelemetry-instrumentation-redis
+    #   opentelemetry-instrumentation-requests
     #   opentelemetry-instrumentation-wsgi
     #   opentelemetry-sdk
 opentelemetry-util-http==0.60b0
     # via
     #   opentelemetry-instrumentation-django
+    #   opentelemetry-instrumentation-requests
     #   opentelemetry-instrumentation-wsgi
 orderedmultidict==1.0.2
     # via furl
@@ -384,6 +409,7 @@ python-dateutil==2.9.0.post0
 python-decouple==3.8
     # via
     #   -r requirements/base.in
+    #   maykin-common
     #   open-api-framework
 python-dotenv==1.2.1
     # via
@@ -513,6 +539,8 @@ wrapt==1.17.3
     # via
     #   elastic-apm
     #   opentelemetry-instrumentation
+    #   opentelemetry-instrumentation-dbapi
+    #   opentelemetry-instrumentation-redis
 zgw-consumers==1.1.1
     # via
     #   commonground-api-common
