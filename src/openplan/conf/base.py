@@ -135,7 +135,9 @@ REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "openplan.utils.schema.AutoSchema"
 REST_FRAMEWORK["DEFAULT_PAGINATION_CLASS"] = (
     "vng_api_common.pagination.DynamicPageSizePagination"
 )
-REST_FRAMEWORK["EXCEPTION_HANDLER"] = "vng_api_common.views.exception_handler"
+REST_FRAMEWORK["EXCEPTION_HANDLER"] = (
+    "vng_api_common.exception_handling.exception_handler"
+)
 REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = (
     "rest_framework.authentication.TokenAuthentication",
 )
