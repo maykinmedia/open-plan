@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..enums.doel import DoelTypeEnum
+from ..enums.status import PlanStatus
 
 
 class DoelType(models.Model):
@@ -13,20 +13,30 @@ class DoelType(models.Model):
         default=uuid.uuid4,
         help_text=_("Unieke resource identifier (UUID4)."),
     )
-    doel_type = models.CharField(
-        max_length=50,
-        choices=DoelTypeEnum.choices,
-        help_text=_("Het type doel."),
+    naam = models.CharField(
+        max_length=255,
+        help_text=_("Naam van het positietype."),
     )
-    categorieen = models.ManyToManyField(
-        "plannen.DoelCategorie",
-        related_name="doeltypes",
-        help_text=_("Categorieën waaraan dit doeltype gekoppeld is."),
+    omschrijving = models.TextField(
+        blank=True,
+        max_length=1000,
+        help_text=_("Omschrijving van het positietype."),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=PlanStatus.choices,
+        default=PlanStatus.NIEUW,
+        help_text=_("Status van het positietype."),
+    )
+    gewenst_resultaat = models.TextField(
+        blank=True,
+        max_length=1000,
+        help_text=_("Startpositie van het positietype."),
     )
 
     class Meta:
-        verbose_name = "Doeltype"
-        verbose_name_plural = "Doeltypen"
+        verbose_name = _("Doeltype")
+        verbose_name_plural = _("Doeltypen")
 
     def __str__(self):
-        return self.doel_type
+        return str(self.naam)

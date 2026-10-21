@@ -7,13 +7,12 @@ from ..models.doeltype import DoelType
 class DoelTypeAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
-        "doel_type",
+        "naam",
+        "status",
     )
-    list_filter = ("doel_type",)
-    search_fields = ("doel_type", "uuid")
-    ordering = ("doel_type",)
+    list_filter = ("status",)
+    search_fields = ("naam", "uuid")
     readonly_fields = ("uuid",)
-    filter_horizontal = ("categorieen",)
 
     fieldsets = (
         (
@@ -21,12 +20,11 @@ class DoelTypeAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "doel_type",
-                    "categorieen",
+                    "naam",
+                    "omschrijving",
+                    "status",
+                    "gewenst_resultaat",
                 ),
             },
         ),
     )
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related("categorieen")
