@@ -22,14 +22,21 @@ class DoelTypeAPITests(APITestCase):
 
     def test_create_doeltype(self):
         url = reverse("plannen:doeltype-list")
+        doeltype_data = DoelTypeFactory.build()
         data = {
-            "doel_type": DoelTypeFactory.build().doel_type,
+            "naam": doeltype_data.naam,
+            "omschrijving": doeltype_data.omschrijving,
+            "status": doeltype_data.status,
+            "gewenst_resultaat": doeltype_data.gewenst_resultaat,
         }
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         doeltype = DoelType.objects.get(uuid=response.data["uuid"])
-        self.assertEqual(doeltype.doel_type, data["doel_type"])
+        self.assertEqual(doeltype.naam, data["naam"])
+        self.assertEqual(doeltype.omschrijving, data["omschrijving"])
+        self.assertEqual(doeltype.status, data["status"])
+        self.assertEqual(doeltype.gewenst_resultaat, data["gewenst_resultaat"])
 
     def test_list_doeltypes(self):
         DoelTypeFactory.create_batch(2)
@@ -42,7 +49,10 @@ class DoelTypeAPITests(APITestCase):
         self.assertEqual(len(data), 2)
         for dt in data:
             self.assertIn("uuid", dt)
-            self.assertIn("doelType", dt)
+            self.assertIn("naam", dt)
+            self.assertIn("omschrijving", dt)
+            self.assertIn("status", dt)
+            self.assertIn("gewenstResultaat", dt)
 
     def test_retrieve_doeltype(self):
         doeltype = DoelTypeFactory.create()
@@ -50,35 +60,44 @@ class DoelTypeAPITests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["uuid"], str(doeltype.uuid))
-        self.assertEqual(response.data["doel_type"], doeltype.doel_type)
+        self.assertEqual(response.data["naam"], doeltype.naam)
+        self.assertEqual(response.data["omschrijving"], doeltype.omschrijving)
+        self.assertEqual(response.data["status"], doeltype.status)
+        self.assertEqual(response.data["gewenst_resultaat"], doeltype.gewenst_resultaat)
 
     def test_update_doeltype(self):
         doeltype = DoelTypeFactory.create()
-        new_type = DoelTypeFactory.build().doel_type
+        new_doeltype = DoelTypeFactory.build()
 
         url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
         data = {
-            "doel_type": new_type,
+            "naam": new_doeltype.naam,
+            "omschrijving": new_doeltype.omschrijving,
+            "status": new_doeltype.status,
+            "gewenst_resultaat": new_doeltype.gewenst_resultaat,
         }
         response = self.client.put(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         doeltype.refresh_from_db()
-        self.assertEqual(doeltype.doel_type, new_type)
+        self.assertEqual(doeltype.naam, new_doeltype.naam)
+        self.assertEqual(doeltype.omschrijving, new_doeltype.omschrijving)
+        self.assertEqual(doeltype.status, new_doeltype.status)
+        self.assertEqual(doeltype.gewenst_resultaat, new_doeltype.gewenst_resultaat)
 
     def test_partial_update_doeltype(self):
         doeltype = DoelTypeFactory.create()
-        new_type = DoelTypeFactory.build().doel_type
+        new_naam = DoelTypeFactory.build().naam
 
         url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
         data = {
-            "doel_type": new_type,
+            "naam": new_naam,
         }
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         doeltype.refresh_from_db()
-        self.assertEqual(doeltype.doel_type, new_type)
+        self.assertEqual(doeltype.naam, new_naam)
 
     def test_delete_doeltype(self):
         doeltype = DoelTypeFactory.create()
@@ -93,26 +112,26 @@ class DoelTypeAPITests(APITestCase):
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_filter_doeltype_by_type(self):
-        doeltype_match = DoelTypeFactory.create(doel_type="hoofddoel")
-        DoelTypeFactory.create(doel_type="werk")
-        DoelTypeFactory.create(doel_type="inkomen")
+    def test_filter_doeltype_by_naam(self):
+        doeltype_match = DoelTypeFactory.create(naam="hoofddoel")
+        DoelTypeFactory.create(naam="werk")
+        DoelTypeFactory.create(naam="inkomen")
 
         url = reverse("plannen:doeltype-list")
-        response = self.client.get(url, {"doelType": "hoofddoel"})
+        response = self.client.get(url, {"naam": "hoofddoel"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()
         self.assertEqual(data["count"], 1)
         self.assertEqual(data["results"][0]["uuid"], str(doeltype_match.uuid))
-        self.assertEqual(data["results"][0]["doelType"], "hoofddoel")
+        self.assertEqual(data["results"][0]["naam"], "hoofddoel")
 
     @patch.object(doeltypen_create_counter, "add", wraps=doeltypen_create_counter.add)
     def test_create_doeltype_increments_metric(self, mock_add: MagicMock):
         url = reverse("plannen:doeltype-list")
         data = {
-            "doel_type": DoelTypeFactory.build().doel_type,
+            "naam": DoelTypeFactory.build().naam,
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 201)
@@ -121,11 +140,11 @@ class DoelTypeAPITests(APITestCase):
     @patch.object(doeltypen_update_counter, "add", wraps=doeltypen_update_counter.add)
     def test_update_doeltype_increments_metric(self, mock_add: MagicMock):
         doeltype = DoelTypeFactory.create()
-        new_type = DoelTypeFactory.build().doel_type
+        new_naam = DoelTypeFactory.build().naam
 
         url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
         data = {
-            "doel_type": new_type,
+            "naam": new_naam,
         }
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)

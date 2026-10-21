@@ -7,12 +7,13 @@ from ..models.doeltype import DoelType
 class DoelTypeAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
-        "doel_type",
+        "naam",
+        "status",
     )
-    list_filter = ("doel_type",)
-    search_fields = ("doel_type", "uuid")
-    ordering = ("doel_type",)
+    list_filter = ("status",)
+    search_fields = ("naam", "uuid")
     readonly_fields = ("uuid",)
+    filter_horizontal = ("configuraties",)
 
     fieldsets = (
         (
@@ -20,7 +21,13 @@ class DoelTypeAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "doel_type",
+                    "naam",
+                    "omschrijving",
+                    "status",
+                    "gewenst_resultaat",
+                    "toelichting_inwoner",
+                    "toelichting_medewerker",
+                    "configuraties",
                 ),
             },
         ),

@@ -49,7 +49,7 @@ class DoelTypeViewSet(viewsets.ModelViewSet):
     queryset = DoelType.objects.all()
     serializer_class = DoelTypeSerializer
     filterset_fields = {
-        "doel_type",
+        "naam",
     }
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
