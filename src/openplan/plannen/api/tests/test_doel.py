@@ -24,7 +24,7 @@ from .api_testcase import APITestCase
 class DoelAPITests(APITestCase):
     def setUp(self):
         super().setUp()
-        self.hoofddoel_type = DoelTypeFactory.create(doel_type="hoofddoel")
+        self.hoofddoel_type = DoelTypeFactory.create(naam="hoofddoel")
         self.positie = PositieFactory.create()
 
         self.data = {
