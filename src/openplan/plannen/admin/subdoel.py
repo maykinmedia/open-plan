@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from ..models.subdoel import SubDoel
+from ..models.subdoel import Subdoel
 
 
-@admin.register(SubDoel)
+@admin.register(Subdoel)
 class SubDoelAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
@@ -27,6 +27,7 @@ class SubDoelAdmin(admin.ModelAdmin):
                     "uuid",
                     "naam",
                     "doel",
+                    "subdoeltype",
                     "status",
                     "omschrijving",
                 ),

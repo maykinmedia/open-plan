@@ -14,6 +14,12 @@ class PositieType(models.Model):
         default=uuid.uuid4,
         help_text=_("Unieke resource identifier (UUID4)."),
     )
+    configuraties = models.ManyToManyField(
+        "plannen.Configuratie",
+        blank=True,
+        related_name="positietypen",
+        help_text=_("Configuraties gekoppeld aan dit positietypen."),
+    )
     naam = models.CharField(
         max_length=255,
         help_text=_("Naam van het positietype."),
