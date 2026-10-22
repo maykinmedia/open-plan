@@ -7,6 +7,8 @@ from .instrumentcategorie import InstrumentCategorie
 from .instrumenttype import InstrumentType
 from .ontwikkelwens import Ontwikkelwens
 from .plan import Plan
+from .positie import Positie
+from .positietype import PositieType
 from .subject import Subject
 
 __all__ = [
@@ -19,5 +21,7 @@ __all__ = [
     "Ontwikkelwens",
     "Subject",
     "Plan",
+    "Positie",
+    "PositieType",
     "Contactmoment",
 ]
