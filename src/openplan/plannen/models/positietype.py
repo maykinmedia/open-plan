@@ -52,7 +52,7 @@ class PositieType(models.Model):
         verbose_name_plural = _("Positietypen")
 
     def __str__(self):
-        return str(self.naam)
+        return self.naam
 
     def clean(self):
         super().clean()
