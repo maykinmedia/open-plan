@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.utils.fields import URNField
 
-from ..enums.status import PlanStatus
+from ..enums.status import Status
 
 
 class Plan(models.Model):
@@ -26,15 +26,9 @@ class Plan(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.NIEUW,
+        choices=Status.choices,
+        default=Status.ACTIEF,
         help_text=_("Status van het plan."),
-    )
-    fase = models.CharField(
-        max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.ACTIEF,
-        help_text=_("Fase van het plan."),
     )
     startdatum = models.DateTimeField(
         help_text=_("Startdatum van het plan."),

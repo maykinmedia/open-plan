@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import PlanStatus
+from openplan.plannen.enums.status import Status
 from openplan.utils.fields import URNField
 
 
@@ -22,8 +22,8 @@ class Contactmoment(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.ACTIEF,
+        choices=Status.choices,
+        default=Status.ACTIEF,
         help_text=_("Status van het contactmoment."),
     )
     toelichting_status = models.TextField(

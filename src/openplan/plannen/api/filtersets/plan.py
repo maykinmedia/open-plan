@@ -8,7 +8,6 @@ class PlanFilter(FilterSet):
         model = Plan
         fields = {
             "status": ["exact"],
-            "fase": ["exact"],
             "naam": ["exact", "icontains"],
             "eigenaar": ["exact"],
             "zaak": ["exact"],

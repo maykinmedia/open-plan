@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.utils.fields import URNField
+from ..enums.status import RedenWijziging, Status
 
 
 class Positie(models.Model):
@@ -30,20 +30,22 @@ class Positie(models.Model):
         max_length=1000,
         help_text=_("Beschrijving van de postitie."),
     )
-    # TODO: categorie stamtabel nog te definieren
-    reden_wijziging = models.TextField(
-        blank=True,
-        max_length=1000,
-        help_text=_("Reden waarom de postitie is gewijzigd."),
+    reden_wijziging = models.CharField(
+        max_length=30,
+        choices=RedenWijziging.choices,
+        default=RedenWijziging.REGISTREREN,
+        help_text=_("Reden waarom het gewijzigd is."),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.ACTIEF,
+        help_text=_("Status van het doel."),
     )
     voortgang_toelichting = models.TextField(
         blank=True,
         max_length=1000,
         help_text=_("Voortgangstoelichting van de postitie."),
-    )
-    eigenaar = URNField(
-        help_text=_("URN naar de eigenaar in het HR-systeem."),
-        blank=True,
     )
 
     class Meta:
