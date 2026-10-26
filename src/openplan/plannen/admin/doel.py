@@ -27,6 +27,7 @@ class DoelAdmin(admin.ModelAdmin):
                     "uuid",
                     "naam",
                     "positie",
+                    "doeltype",
                     "status",
                     "omschrijving",
                 ),

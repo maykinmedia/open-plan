@@ -9,6 +9,7 @@ from rest_framework.test import APIClient
 
 from openplan.plannen.enums.status import Resultaat, Status
 from openplan.plannen.models.factories.doel import DoelFactory
+from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 from openplan.plannen.models.factories.positie import PositieFactory
 
 from ...metrics import (
@@ -23,9 +24,11 @@ from .api_testcase import APITestCase
 class DoelAPITests(APITestCase):
     def setUp(self):
         super().setUp()
+        self.hoofddoel_type = DoelTypeFactory.create(doel_type="hoofddoel")
         self.positie = PositieFactory.create()
 
         self.data = {
+            "doeltypeUuid": str(self.hoofddoel_type.uuid),
             "positieUuid": str(self.positie.uuid),
             "naam": "Test Doel",
             "startdatum": str(date.today()),
@@ -63,9 +66,11 @@ class DoelAPITests(APITestCase):
         self.assertEqual(response.data["uuid"], str(doel.uuid))
 
     def test_update_doel(self):
+        doeltype = self.hoofddoel_type
         doel = DoelFactory.create()
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
         data = {
+            "doeltypeUuid": str(doeltype.uuid),
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
@@ -214,10 +219,12 @@ class DoelAPITests(APITestCase):
 
     @patch.object(doelen_update_counter, "add", wraps=doelen_update_counter.add)
     def test_update_doel_increments_metric(self, mock_add: MagicMock):
+        doeltype = self.hoofddoel_type
         doel = DoelFactory.create(positie=self.positie)
 
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
         data = {
+            "doeltypeUuid": str(doeltype.uuid),
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),

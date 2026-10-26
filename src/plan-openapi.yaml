@@ -72,18 +72,12 @@ paths:
           type: string
           enum:
           - actief
-          - afgebroken
-          - afgerond
-          - nieuw
-          - pauze
+          - niet_actief
         description: |-
           Status van het contactmoment.
 
-          * `nieuw` - Nieuw
           * `actief` - Actief
-          * `afgerond` - Afgerond
-          * `afgebroken` - Afgebroken
-          * `pauze` - Pauze
+          * `niet_actief` - Niet actief
       tags:
       - Contactmoment
       security:
@@ -291,6 +285,16 @@ paths:
           type: string
           format: date-time
         description: Einddatum van het doel.
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het doel.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van het doel.
       - name: page
         required: false
         in: query
@@ -305,17 +309,25 @@ paths:
         schema:
           type: integer
       - in: query
+        name: positie__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
         name: resultaat
         schema:
           type: string
           enum:
+          - actief
           - behaald
-          - gefaald
+          - niet_behaald
         description: |-
           Resultaat van het doel.
 
           * `behaald` - Behaald
-          * `gefaald` - Gefaald
+          * `actief` - Actief
+          * `niet_behaald` - Niet behaald
       - in: query
         name: startdatum
         schema:
@@ -340,18 +352,12 @@ paths:
           type: string
           enum:
           - actief
-          - afgebroken
-          - afgerond
-          - nieuw
-          - pauze
+          - niet_actief
         description: |-
           Status van het doel.
 
-          * `nieuw` - Nieuw
           * `actief` - Actief
-          * `afgerond` - Afgerond
-          * `afgebroken` - Afgebroken
-          * `pauze` - Pauze
+          * `niet_actief` - Niet actief
       - in: query
         name: status__in
         schema:
@@ -361,16 +367,6 @@ paths:
         description: Meerdere waarden kunnen gescheiden worden door komma's.
         explode: false
         style: form
-      - in: query
-        name: titel
-        schema:
-          type: string
-        description: Titel van het doel.
-      - in: query
-        name: titel__icontains
-        schema:
-          type: string
-        description: Titel van het doel.
       tags:
       - Doel
       security:
@@ -554,6 +550,220 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
+  /doeltype:
+    get:
+      operationId: doeltype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle doeltypen opvragen.
+      parameters:
+      - in: query
+        name: doelType
+        schema:
+          type: string
+          enum:
+          - hoofddoel
+          - subdoel
+        description: |-
+          Het type doel.
+
+          * `hoofddoel` - Hoofddoel
+          * `subdoel` - Subdoel
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelTypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelTypeList'
+          description: ''
+    post:
+      operationId: doeltype_create
+      description: Voeg een nieuw doeltype toe aan het systeem.
+      summary: Nieuw doeltype aanmaken.
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+  /doeltype/{uuid}:
+    get:
+      operationId: doeltype_retrieve
+      description: Een specifiek doeltype opvragen via UUID.
+      summary: Een specifiek doeltype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    put:
+      operationId: doeltype_update
+      description: Werk alle gegevens van een doeltype bij.
+      summary: Doeltype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    patch:
+      operationId: doeltype_partial_update
+      description: Werk enkele gegevens van een doeltype bij.
+      summary: Doeltype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoelType'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    delete:
+      operationId: doeltype_destroy
+      description: Verwijder een specifiek doeltype.
+      summary: Doeltype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /plan:
     get:
       operationId: plan_list
@@ -588,24 +798,6 @@ paths:
           type: string
           format: date-time
         description: Einddatum van het plan.
-      - in: query
-        name: fase
-        schema:
-          type: string
-          enum:
-          - actief
-          - afgebroken
-          - afgerond
-          - nieuw
-          - pauze
-        description: |-
-          Fase van het plan.
-
-          * `nieuw` - Nieuw
-          * `actief` - Actief
-          * `afgerond` - Afgerond
-          * `afgebroken` - Afgebroken
-          * `pauze` - Pauze
       - in: query
         name: naam
         schema:
@@ -653,18 +845,12 @@ paths:
           type: string
           enum:
           - actief
-          - afgebroken
-          - afgerond
-          - nieuw
-          - pauze
+          - niet_actief
         description: |-
           Status van het plan.
 
-          * `nieuw` - Nieuw
           * `actief` - Actief
-          * `afgerond` - Afgerond
-          * `afgebroken` - Afgebroken
-          * `pauze` - Pauze
+          * `niet_actief` - Niet actief
       - in: query
         name: zaak
         schema:
@@ -1074,11 +1260,8 @@ components:
           description: |-
             Status van het contactmoment.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
+            * `niet_actief` - Niet actief
         datum:
           type: string
           format: date-time
@@ -1113,25 +1296,35 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
+        positieUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de positie.
+        doeltype:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoelType'
+          readOnly: true
+        doeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde doeltype.
         status:
           allOf:
           - $ref: '#/components/schemas/StatusEnum'
           description: |-
             Status van het doel.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
-        titel:
+            * `niet_actief` - Niet actief
+        naam:
           type: string
-          description: Titel van het doel.
+          description: Naam van het doel.
           maxLength: 255
-        beschrijving:
+        omschrijving:
           type: string
-          description: Beschrijving van het doel.
-          maxLength: 1000
+          description: omschrijving van het doel.
         startdatum:
           type: string
           format: date-time
@@ -1146,21 +1339,80 @@ components:
             Resultaat van het doel.
 
             * `behaald` - Behaald
-            * `gefaald` - Gefaald
+            * `actief` - Actief
+            * `niet_behaald` - Niet behaald
           oneOf:
           - $ref: '#/components/schemas/ResultaatEnum'
           - $ref: '#/components/schemas/BlankEnum'
         redenWijziging:
-          type: string
-          description: Reden waarom het gewijzigd is.
-          maxLength: 255
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom het gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
         voortgangToelichting:
           type: string
           description: Toelichting bij de voortgang van het doel.
           maxLength: 1000
       required:
+      - doeltype
+      - doeltypeUuid
+      - naam
+      - positieUuid
       - startdatum
-      - titel
+      - uuid
+    DoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        doelType:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeEnum'
+          description: |-
+            Het type doel.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
+      required:
+      - doelType
+      - uuid
+    DoelTypeEnum:
+      enum:
+      - hoofddoel
+      - subdoel
+      type: string
+      description: |-
+        * `hoofddoel` - Hoofddoel
+        * `subdoel` - Subdoel
+    NestedDoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        doelType:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeEnum'
+          description: |-
+            Het type doel.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
+      required:
+      - doelType
       - uuid
     NestedPlan:
       type: object
@@ -1176,11 +1428,8 @@ components:
           description: |-
             Status van het plan.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
+            * `niet_actief` - Niet actief
         naam:
           type: string
           description: Naam van het plan.
@@ -1274,6 +1523,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Doel'
+    PaginatedDoelTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelType'
     PaginatedPlanList:
       type: object
       required:
@@ -1334,11 +1606,8 @@ components:
           description: |-
             Status van het contactmoment.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
+            * `niet_actief` - Niet actief
         datum:
           type: string
           format: date-time
@@ -1368,25 +1637,35 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
+        positieUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de positie.
+        doeltype:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoelType'
+          readOnly: true
+        doeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde doeltype.
         status:
           allOf:
           - $ref: '#/components/schemas/StatusEnum'
           description: |-
             Status van het doel.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
-        titel:
+            * `niet_actief` - Niet actief
+        naam:
           type: string
-          description: Titel van het doel.
+          description: Naam van het doel.
           maxLength: 255
-        beschrijving:
+        omschrijving:
           type: string
-          description: Beschrijving van het doel.
-          maxLength: 1000
+          description: omschrijving van het doel.
         startdatum:
           type: string
           format: date-time
@@ -1401,18 +1680,44 @@ components:
             Resultaat van het doel.
 
             * `behaald` - Behaald
-            * `gefaald` - Gefaald
+            * `actief` - Actief
+            * `niet_behaald` - Niet behaald
           oneOf:
           - $ref: '#/components/schemas/ResultaatEnum'
           - $ref: '#/components/schemas/BlankEnum'
         redenWijziging:
-          type: string
-          description: Reden waarom het gewijzigd is.
-          maxLength: 255
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom het gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
         voortgangToelichting:
           type: string
           description: Toelichting bij de voortgang van het doel.
           maxLength: 1000
+    PatchedDoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        doelType:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeEnum'
+          description: |-
+            Het type doel.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
     PatchedPlan:
       type: object
       properties:
@@ -1432,11 +1737,8 @@ components:
           description: |-
             Status van het plan.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
+            * `niet_actief` - Niet actief
         naam:
           type: string
           description: Naam van het plan.
@@ -1498,11 +1800,8 @@ components:
           description: |-
             Status van het subject.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
+            * `niet_actief` - Niet actief
         rolbeschrijving:
           type: string
           description: Rolbeschrijving van het subject.
@@ -1543,11 +1842,8 @@ components:
           description: |-
             Status van het plan.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
+            * `niet_actief` - Niet actief
         naam:
           type: string
           description: Naam van het plan.
@@ -1596,28 +1892,42 @@ components:
       - startdatum
       - urn
       - uuid
+    RedenWijzigingEnum:
+      enum:
+      - registreren
+      - wijzigen
+      - corrigeren
+      - herzien
+      - ongedaan_maken
+      - vernietigen
+      - overbrengen_depot
+      type: string
+      description: |-
+        * `registreren` - Registreren
+        * `wijzigen` - Wijzigen
+        * `corrigeren` - Corrigeren
+        * `herzien` - Herzien
+        * `ongedaan_maken` - Ongedaan maken
+        * `vernietigen` - Vernietigen
+        * `overbrengen_depot` - Overbrengen depot
     ResultaatEnum:
       enum:
       - behaald
-      - gefaald
+      - actief
+      - niet_behaald
       type: string
       description: |-
         * `behaald` - Behaald
-        * `gefaald` - Gefaald
+        * `actief` - Actief
+        * `niet_behaald` - Niet behaald
     StatusEnum:
       enum:
-      - nieuw
       - actief
-      - afgerond
-      - afgebroken
-      - pauze
+      - niet_actief
       type: string
       description: |-
-        * `nieuw` - Nieuw
         * `actief` - Actief
-        * `afgerond` - Afgerond
-        * `afgebroken` - Afgebroken
-        * `pauze` - Pauze
+        * `niet_actief` - Niet actief
     Subject:
       type: object
       properties:
@@ -1636,11 +1946,8 @@ components:
           description: |-
             Status van het subject.
 
-            * `nieuw` - Nieuw
             * `actief` - Actief
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-            * `pauze` - Pauze
+            * `niet_actief` - Niet actief
         rolbeschrijving:
           type: string
           description: Rolbeschrijving van het subject.

@@ -1,6 +1,7 @@
 from .configuratie import Configuratie
 from .contactmoment import Contactmoment
 from .doel import Doel
+from .doeltype import DoelType
 from .domein import Domein
 from .plan import Plan
 from .positie import Positie
@@ -11,6 +12,7 @@ __all__ = [
     "Configuratie",
     "Contactmoment",
     "Doel",
+    "DoelType",
     "Domein",
     "Plan",
     "Positie",

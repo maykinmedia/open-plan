@@ -19,12 +19,12 @@ class Doel(models.Model):
         related_name="doelen",
         help_text=_("De positie waartoe dit doel behoort."),
     )
-    # doeltype = models.ForeignKey(
-    #     "plannen.Doeltype",
-    #     on_delete=models.PROTECT,
-    #     related_name="doelen",
-    #     help_text=_("Type van het doel"),
-    # )
+    doeltype = models.ForeignKey(
+        "plannen.Doeltype",
+        on_delete=models.PROTECT,
+        related_name="doelen",
+        help_text=_("Type van het doel"),
+    )
     naam = models.CharField(
         max_length=255,
         help_text=_("Naam van het doel."),
