@@ -7,23 +7,17 @@ from ..models.doel import Doel
 class DoelAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
-        "titel",
-        "persoon",
-        "doeltype",
+        "naam",
+        "positie",
         "status",
-        "hoofd_doel",
         "startdatum",
     )
-    list_filter = (
-        "doeltype",
-        "status",
-    )
+    list_filter = ("status",)
     search_fields = (
         "uuid",
-        "titel",
+        "naam",
     )
     readonly_fields = ("uuid",)
-    filter_horizontal = ("plannen",)
 
     fieldsets = (
         (
@@ -31,13 +25,11 @@ class DoelAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "titel",
+                    "naam",
+                    "positie",
                     "doeltype",
-                    "plannen",
-                    "persoon",
-                    "hoofd_doel",
                     "status",
-                    "beschrijving",
+                    "omschrijving",
                 ),
             },
         ),
@@ -50,15 +42,10 @@ class DoelAdmin(admin.ModelAdmin):
         (
             "Voortgang",
             {
-                "fields": ("resultaat", "toelichting_resultaat"),
+                "fields": ("resultaat", "voortgang_toelichting"),
             },
         ),
     )
 
     def get_queryset(self, request):
-        return (
-            super()
-            .get_queryset(request)
-            .select_related("persoon", "doeltype", "hoofd_doel")
-            .prefetch_related("plannen")
-        )
+        return super().get_queryset(request).select_related("positie")

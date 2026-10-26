@@ -18,11 +18,6 @@ class DoelType(models.Model):
         choices=DoelTypeEnum.choices,
         help_text=_("Het type doel."),
     )
-    categorieen = models.ManyToManyField(
-        "plannen.DoelCategorie",
-        related_name="doeltypes",
-        help_text=_("Categorieën waaraan dit doeltype gekoppeld is."),
-    )
 
     class Meta:
         verbose_name = "Doeltype"

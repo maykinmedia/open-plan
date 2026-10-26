@@ -3,9 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import PlanStatus, Resultaat
-
-from .validators import validate_hoofd_doel_not_self
+from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
 
 class Doel(models.Model):
@@ -15,16 +13,11 @@ class Doel(models.Model):
         default=uuid.uuid4,
         help_text=_("Unieke resource identifier (UUID4)."),
     )
-    plannen = models.ManyToManyField(
-        "plannen.Plan",
-        related_name="doelen",
-        help_text=_("Plannen waaraan dit doel gekoppelt is."),
-    )
-    persoon = models.ForeignKey(
-        "plannen.Subject",
+    positie = models.ForeignKey(
+        "plannen.Positie",
         on_delete=models.CASCADE,
         related_name="doelen",
-        help_text=_("Het primaire subject bij wie dit doel hoort."),
+        help_text=_("De positie waartoe dit doel behoort."),
     )
     doeltype = models.ForeignKey(
         "plannen.Doeltype",
@@ -32,20 +25,19 @@ class Doel(models.Model):
         related_name="doelen",
         help_text=_("Type van het doel"),
     )
+    naam = models.CharField(
+        max_length=255,
+        help_text=_("Naam van het doel."),
+    )
+    omschrijving = models.TextField(
+        blank=True,
+        help_text=_("omschrijving van het doel."),
+    )
     status = models.CharField(
         max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.ACTIEF,
+        choices=Status.choices,
+        default=Status.ACTIEF,
         help_text=_("Status van het doel."),
-    )
-    titel = models.CharField(
-        max_length=255,
-        help_text=_("Titel van het doel."),
-    )
-    beschrijving = models.TextField(
-        blank=True,
-        max_length=1000,
-        help_text=_("Beschrijving van het doel."),
     )
     startdatum = models.DateTimeField(
         help_text=_("Startdatum van het doel."),
@@ -62,19 +54,16 @@ class Doel(models.Model):
         blank=True,
         help_text=_("Resultaat van het doel."),
     )
-    toelichting_resultaat = models.TextField(
+    reden_wijziging = models.CharField(
+        max_length=30,
+        choices=RedenWijziging.choices,
+        default=RedenWijziging.REGISTREREN,
+        help_text=_("Reden waarom het gewijzigd is."),
+    )
+    voortgang_toelichting = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Toelichting bij het resultaat van het doel."),
-    )
-
-    hoofd_doel = models.ForeignKey(
-        "self",
-        null=True,
-        blank=True,
-        on_delete=models.PROTECT,
-        related_name="subdoelen",
-        help_text=_("Optionele koppeling naar een bovenliggend doel."),
+        help_text=_("Toelichting bij de voortgang van het doel."),
     )
 
     class Meta:
@@ -83,12 +72,4 @@ class Doel(models.Model):
         ordering = ("-startdatum",)
 
     def __str__(self):
-        return self.titel
-
-    def clean(self):
-        super().clean()
-
-        if not self.persoon:
-            return
-
-        validate_hoofd_doel_not_self(self)
+        return self.naam

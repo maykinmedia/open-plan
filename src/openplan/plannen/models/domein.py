@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import PlanStatus
+from openplan.plannen.enums.status import Status
 
 
 class Domein(models.Model):
@@ -22,11 +22,10 @@ class Domein(models.Model):
         max_length=1000,
         help_text=_("Beschrijving van het domein."),
     )
-    # TODO: update status
     status = models.CharField(
         max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.NIEUW,
+        choices=Status.choices,
+        default=Status.ACTIEF,
         help_text=_("Status van het domein."),
     )
 

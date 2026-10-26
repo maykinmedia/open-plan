@@ -13,7 +13,6 @@ class DoelTypeAdmin(admin.ModelAdmin):
     search_fields = ("doel_type", "uuid")
     ordering = ("doel_type",)
     readonly_fields = ("uuid",)
-    filter_horizontal = ("categorieen",)
 
     fieldsets = (
         (
@@ -22,11 +21,7 @@ class DoelTypeAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "doel_type",
-                    "categorieen",
                 ),
             },
         ),
     )
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related("categorieen")

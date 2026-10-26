@@ -10,7 +10,6 @@ from openplan.plannen.metrics import (
     doeltypen_delete_counter,
     doeltypen_update_counter,
 )
-from openplan.plannen.models.factories.doelcategorie import DoelCategorieFactory
 from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 
 from ...models.doeltype import DoelType
@@ -20,13 +19,11 @@ from .api_testcase import APITestCase
 class DoelTypeAPITests(APITestCase):
     def setUp(self):
         super().setUp()
-        self.categorie = DoelCategorieFactory.create()
 
     def test_create_doeltype(self):
         url = reverse("plannen:doeltype-list")
         data = {
             "doel_type": DoelTypeFactory.build().doel_type,
-            "categorieen_uuids": [str(self.categorie.uuid)],
         }
         response = self.client.post(url, data, format="json")
 
@@ -60,7 +57,9 @@ class DoelTypeAPITests(APITestCase):
         new_type = DoelTypeFactory.build().doel_type
 
         url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
-        data = {"doel_type": new_type, "categorieen_uuids": [str(self.categorie.uuid)]}
+        data = {
+            "doel_type": new_type,
+        }
         response = self.client.put(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -74,7 +73,6 @@ class DoelTypeAPITests(APITestCase):
         url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
         data = {
             "doel_type": new_type,
-            "categorieen_uuids": [str(self.categorie.uuid)],
         }
         response = self.client.patch(url, data, format="json")
 
@@ -115,7 +113,6 @@ class DoelTypeAPITests(APITestCase):
         url = reverse("plannen:doeltype-list")
         data = {
             "doel_type": DoelTypeFactory.build().doel_type,
-            "categorieen_uuids": [str(self.categorie.uuid)],
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 201)
@@ -127,7 +124,9 @@ class DoelTypeAPITests(APITestCase):
         new_type = DoelTypeFactory.build().doel_type
 
         url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
-        data = {"doel_type": new_type, "categorieen_uuids": [str(self.categorie.uuid)]}
+        data = {
+            "doel_type": new_type,
+        }
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         mock_add.assert_called_once_with(1)

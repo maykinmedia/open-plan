@@ -2,19 +2,22 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class PlanStatus(models.TextChoices):
-    NIEUW = "nieuw", _("Nieuw")
+class Status(models.TextChoices):
     ACTIEF = "actief", _("Actief")
-    AFGEROND = "afgerond", _("Afgerond")
-    AFGEBROKEN = "afgebroken", _("Afgebroken")
-    PAUZE = "pauze", _("Pauze")
-
-
-class SubjectStatus(models.TextChoices):
-    ACTIEF = "actief", _("Actief")
-    INACTIEF = "inactief", _("Inactief")
+    NIET_ACTIEF = "niet_actief", _("Niet actief")
 
 
 class Resultaat(models.TextChoices):
     BEHAALD = "behaald", _("Behaald")
-    GEFAALD = "gefaald", _("Gefaald")
+    ACTIEF = "actief", _("Actief")
+    NIET_BEHAALD = "niet_behaald", _("Niet behaald")
+
+
+class RedenWijziging(models.TextChoices):
+    REGISTREREN = "registreren", _("Registreren")
+    WIJZIGEN = "wijzigen", _("Wijzigen")
+    CORRIGEREN = "corrigeren", _("Corrigeren")
+    HERZIEN = "herzien", _("Herzien")
+    ONGEDAANMAKEN = "ongedaan_maken", _("Ongedaan maken")
+    VERNIETIGEN = "vernietigen", _("Vernietigen")
+    OVERBRENGEDEPOT = "overbrengen_depot", _("Overbrengen depot")

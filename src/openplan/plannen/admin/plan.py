@@ -32,7 +32,6 @@ class PlanAdmin(admin.ModelAdmin):
                     "reden_wijziging",
                     "voortgang_toelichting",
                     "status",
-                    "fase",
                 ),
             },
         ),
