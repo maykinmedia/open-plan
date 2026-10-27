@@ -1,0 +1,11 @@
+# 2.1 ruleset got changed without a version increase
+# vacuum supports the extends syntax and can fetch external rulesets, but the original
+# URL (https://static.developer.overheid.nl/adr/2.1/ruleset.yaml) returns the linter as
+# a file download, which vacuum doesn't support currently
+extends: https://raw.githubusercontent.com/Logius-standaarden/API-Design-Rules/refs/tags/v2.1.0/linter/spectral.yml
+rules:
+  paths-open-api-json-resource-exists: warn
+  # Workaround for https://github.com/open-zaak/open-zaak/issues/2390
+  # until a new version of spectral-rulesets is released
+  # See also: https://github.com/stoplightio/spectral/issues/2959#issuecomment-4526418689
+  duplicated-entry-in-enum: off
