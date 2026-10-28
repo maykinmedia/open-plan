@@ -12,6 +12,7 @@ from openplan.plannen.models.factories.plan import PlanFactory
 # )
 from openplan.plannen.models.factories.subject import SubjectFactory
 
+from ...enums.status import SubjectType
 from ...models.subject import Subject
 from .api_testcase import APITestCase
 
@@ -22,6 +23,7 @@ class SubjectAPITests(APITestCase):
         url = reverse("plannen:subject-list")
         data = {
             "plan": str(plan.uuid),
+            "subjecttype": SubjectType.PERSOON,
             "profiel": "urn:example:persoon:12345",
             "klant": "urn:example:klant:67890",
             "bsn": "963773215",
@@ -64,6 +66,7 @@ class SubjectAPITests(APITestCase):
         plan = PlanFactory.create()
         new_data = {
             "plan": str(plan.uuid),
+            "subjecttype": SubjectType.PERSOON,
             "profiel": "urn:example:persoon:12345",
             "klant": "urn:example:klant:67890",
             "bsn": "111222333",

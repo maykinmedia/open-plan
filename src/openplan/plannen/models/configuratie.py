@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import Status
-from openplan.utils.fields import URNField
 
 
 class Configuratie(models.Model):
@@ -35,14 +34,10 @@ class Configuratie(models.Model):
         default=Status.ACTIEF,
         help_text=_("Status van de configuratie."),
     )
-    eigenaar = URNField(
-        help_text=_("URN naar de eigenaar van de configuratie."),
-        blank=True,
-    )
 
     class Meta:
         verbose_name = _("Configuratie")
         verbose_name_plural = _("Configuraties")
 
     def __str__(self):
-        return str(self.naam)
+        return self.naam

@@ -28,6 +28,8 @@ class PositieTypeAdmin(admin.ModelAdmin):
                     "status",
                     "startpositie",
                     "eindpositie",
+                    "toelichting_inwoner",
+                    "toelichting_medewerker",
                     "doelpositie",
                 ),
             },
