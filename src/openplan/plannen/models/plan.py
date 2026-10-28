@@ -19,10 +19,10 @@ class Plan(models.Model):
         max_length=255,
         help_text=_("Naam van het plan."),
     )
-    beschrijving = models.TextField(
+    omschrijving = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Beschrijving van het plan."),
+        help_text=_("Omschrijving van het plan."),
     )
     status = models.CharField(
         max_length=20,
@@ -44,10 +44,16 @@ class Plan(models.Model):
         max_length=1000,
         help_text=_("Reden waarom het plan is gewijzigd."),
     )
-    voortgang_toelichting = models.TextField(
+    toelichting_reden = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Toelichting op de voortgang van het plan."),
+        help_text=_("Toelichting reden wijziging van het plan."),
+    )
+    tsaverwijzing = URNField(
+        help_text=_(
+            "URN-verwijzing naar het dossier van de ZAAK in een taak specifieke applicatie (TSA)."
+        ),
+        blank=True,
     )
     # TODO:
     # Multiple uri's???
@@ -70,4 +76,4 @@ class Plan(models.Model):
         ordering = ("-startdatum",)
 
     def __str__(self):
-        return str(self.naam)
+        return self.naam

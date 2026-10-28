@@ -5,7 +5,7 @@ from ..models.subject import Subject
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ("uuid", "status")
+    list_display = ("uuid", "status", "type")
     search_fields = ("uuid",)
     readonly_fields = ("uuid",)
 
@@ -16,6 +16,7 @@ class SubjectAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "plan",
+                    "type",
                     "status",
                     "rolbeschrijving",
                 ),

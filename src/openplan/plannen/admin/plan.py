@@ -28,9 +28,9 @@ class PlanAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "naam",
-                    "beschrijving",
+                    "omschrijving",
                     "reden_wijziging",
-                    "voortgang_toelichting",
+                    "toelichting_reden",
                     "status",
                 ),
             },

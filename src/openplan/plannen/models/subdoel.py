@@ -16,7 +16,7 @@ class SubDoel(models.Model):
     doel = models.ForeignKey(
         "plannen.Doel",
         on_delete=models.CASCADE,
-        related_name="doelen",
+        related_name="subdoelen",
         help_text=_("Het doel waartoe dit subdoel behoort."),
     )
     naam = models.CharField(
@@ -55,10 +55,10 @@ class SubDoel(models.Model):
         default=RedenWijziging.REGISTREREN,
         help_text=_("Reden waarom het gewijzigd is."),
     )
-    voortgang_toelichting = models.TextField(
+    toelichting_reden = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Toelichting bij de voortgang van het subdoel."),
+        help_text=_("Toelichting reden wijziging van het subdoel."),
     )
 
     class Meta:

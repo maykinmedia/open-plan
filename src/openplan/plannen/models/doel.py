@@ -60,10 +60,10 @@ class Doel(models.Model):
         default=RedenWijziging.REGISTREREN,
         help_text=_("Reden waarom het gewijzigd is."),
     )
-    voortgang_toelichting = models.TextField(
+    toelichting_reden = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Toelichting bij de voortgang van het doel."),
+        help_text=_("Toelichting reden wijziging van het doel."),
     )
 
     class Meta:
