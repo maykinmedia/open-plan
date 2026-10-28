@@ -364,7 +364,7 @@ packaging==25.0
     #   sphinx
 phonenumberslite==8.13.55
     # via django-two-factor-auth
-pillow==12.3.0
+pillow==13.0.0
     # via -r requirements/base.in
 polib==1.2.0
     # via django-rosetta
