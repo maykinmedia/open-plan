@@ -20,7 +20,7 @@ class Domein(models.Model):
     omschrijving = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Beschrijving van het domein."),
+        help_text=_("Omschrijving van het domein."),
     )
     status = models.CharField(
         max_length=20,
@@ -34,4 +34,4 @@ class Domein(models.Model):
         verbose_name_plural = _("Domeinen")
 
     def __str__(self):
-        return str(self.naam)
+        return self.naam

@@ -1357,9 +1357,9 @@ components:
             * `ongedaan_maken` - Ongedaan maken
             * `vernietigen` - Vernietigen
             * `overbrengen_depot` - Overbrengen depot
-        voortgangToelichting:
+        toelichtingReden:
           type: string
-          description: Toelichting bij de voortgang van het doel.
+          description: Toelichting reden wijziging van het doel.
           maxLength: 1000
       required:
       - doeltype
@@ -1434,17 +1434,17 @@ components:
           type: string
           description: Naam van het plan.
           maxLength: 255
-        beschrijving:
+        omschrijving:
           type: string
-          description: Beschrijving van het plan.
+          description: Omschrijving van het plan.
           maxLength: 1000
         redenWijziging:
           type: string
           description: Reden waarom het plan is gewijzigd.
           maxLength: 1000
-        voortgangToelichting:
+        toelichtingReden:
           type: string
-          description: Toelichting op de voortgang van het plan.
+          description: Toelichting reden wijziging van het plan.
           maxLength: 1000
         startdatum:
           type: string
@@ -1698,9 +1698,9 @@ components:
             * `ongedaan_maken` - Ongedaan maken
             * `vernietigen` - Vernietigen
             * `overbrengen_depot` - Overbrengen depot
-        voortgangToelichting:
+        toelichtingReden:
           type: string
-          description: Toelichting bij de voortgang van het doel.
+          description: Toelichting reden wijziging van het doel.
           maxLength: 1000
     PatchedDoelType:
       type: object
@@ -1743,17 +1743,17 @@ components:
           type: string
           description: Naam van het plan.
           maxLength: 255
-        beschrijving:
+        omschrijving:
           type: string
-          description: Beschrijving van het plan.
+          description: Omschrijving van het plan.
           maxLength: 1000
         redenWijziging:
           type: string
           description: Reden waarom het plan is gewijzigd.
           maxLength: 1000
-        voortgangToelichting:
+        toelichtingReden:
           type: string
-          description: Toelichting op de voortgang van het plan.
+          description: Toelichting reden wijziging van het plan.
           maxLength: 1000
         startdatum:
           type: string
@@ -1848,17 +1848,17 @@ components:
           type: string
           description: Naam van het plan.
           maxLength: 255
-        beschrijving:
+        omschrijving:
           type: string
-          description: Beschrijving van het plan.
+          description: Omschrijving van het plan.
           maxLength: 1000
         redenWijziging:
           type: string
           description: Reden waarom het plan is gewijzigd.
           maxLength: 1000
-        voortgangToelichting:
+        toelichtingReden:
           type: string
-          description: Toelichting op de voortgang van het plan.
+          description: Toelichting reden wijziging van het plan.
           maxLength: 1000
         startdatum:
           type: string

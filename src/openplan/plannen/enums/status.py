@@ -7,6 +7,11 @@ class Status(models.TextChoices):
     NIET_ACTIEF = "niet_actief", _("Niet actief")
 
 
+class Type(models.TextChoices):
+    PERSOON = "persoon", _("Persoon")
+    FYSIEK_OBJECT = "fysiek_object", _("Fysiek object")
+
+
 class Resultaat(models.TextChoices):
     BEHAALD = "behaald", _("Behaald")
     ACTIEF = "actief", _("Actief")

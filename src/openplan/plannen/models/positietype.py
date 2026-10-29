@@ -39,6 +39,14 @@ class PositieType(models.Model):
         max_length=1000,
         help_text=_("Eindpositie van het positietype."),
     )
+    toelichting_inwoner = models.TextField(
+        blank=True,
+        help_text=_("Toelichting inwoner van het positietype."),
+    )
+    toelichting_medewerker = models.TextField(
+        blank=True,
+        help_text=_("Toelichting medewerker van het positietype."),
+    )
     doelpositie = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,

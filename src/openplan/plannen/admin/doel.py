@@ -42,7 +42,7 @@ class DoelAdmin(admin.ModelAdmin):
         (
             "Voortgang",
             {
-                "fields": ("resultaat", "voortgang_toelichting"),
+                "fields": ("resultaat", "reden_wijziging", "toelichting_reden"),
             },
         ),
     )
