@@ -3,7 +3,6 @@ from django.db import transaction
 import structlog
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.doeltype import DoelType
@@ -52,7 +51,6 @@ class DoelTypeViewSet(viewsets.ModelViewSet):
         "doel_type",
     }
     lookup_field = "uuid"
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     @transaction.atomic
