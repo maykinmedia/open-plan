@@ -1506,6 +1506,464 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
+  /positie:
+    get:
+      operationId: positie_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle posities opvragen.
+      parameters:
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van de positie.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van de positie.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Omschrijving van de postitie.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: positietype__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: subject__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      tags:
+      - Positie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPositieList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPositieList'
+          description: ''
+    post:
+      operationId: positie_create
+      description: Voeg een nieuwe positie toe aan het systeem.
+      summary: Nieuwe positie aanmaken.
+      tags:
+      - Positie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Positie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+          description: ''
+  /positie/{uuid}:
+    get:
+      operationId: positie_retrieve
+      description: Een specifieke positie opvragen via UUID.
+      summary: Een specifieke positie opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+          description: ''
+    put:
+      operationId: positie_update
+      description: Werk alle gegevens van een positie bij.
+      summary: Positie volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Positie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+          description: ''
+    patch:
+      operationId: positie_partial_update
+      description: Werk enkele gegevens van een positie bij.
+      summary: Positie gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPositie'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positie'
+          description: ''
+    delete:
+      operationId: positie_destroy
+      description: Verwijder een specifieke positie.
+      summary: Positie verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positie
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /positietype:
+    get:
+      operationId: positietype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle positietypes opvragen.
+      parameters:
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het positietype.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van het positietype.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Omschrijving van het positietype.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - niet_actief
+        description: |-
+          Status van het positietype.
+
+          * `actief` - Actief
+          * `niet_actief` - Niet actief
+      tags:
+      - Positietype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPositietypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPositietypeList'
+          description: ''
+    post:
+      operationId: positietype_create
+      description: Voeg een nieuwe positietype toe aan het systeem.
+      summary: Nieuwe positietype aanmaken.
+      tags:
+      - Positietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Positietype'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+          description: ''
+  /positietype/{uuid}:
+    get:
+      operationId: positietype_retrieve
+      description: Een specifieke positie opvragen via UUID.
+      summary: Een specifieke positietype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positietype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+          description: ''
+    put:
+      operationId: positietype_update
+      description: Werk alle gegevens van een positietype bij.
+      summary: Positietype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Positietype'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+          description: ''
+    patch:
+      operationId: positietype_partial_update
+      description: Werk enkele gegevens van een positietype bij.
+      summary: Positietype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPositietype'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Positietype'
+          description: ''
+    delete:
+      operationId: positietype_destroy
+      description: Verwijder een specifieke positietype.
+      summary: Positietype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Positietype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /subject:
     get:
       operationId: subject_list
@@ -2024,6 +2482,33 @@ components:
       - plan
       - planUuid
       - uuid
+    NestedConfiguratie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van de configuratie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de configuratie.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van de configuratie.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+      required:
+      - naam
+      - uuid
     NestedDoel:
       type: object
       properties:
@@ -2212,6 +2697,79 @@ components:
       - gewijzigdOp
       - naam
       - uuid
+    NestedPositietype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het positietype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het positietype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het positietype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        startpositie:
+          type: string
+          description: Startpositie van het positietype.
+          maxLength: 1000
+        eindpositie:
+          type: string
+          description: Eindpositie van het positietype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het positietype.
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het positietype.
+        doelpositie:
+          type: string
+          format: uuid
+          description: Doelpositie van het positietype.
+          nullable: true
+      required:
+      - naam
+      - uuid
+    NestedSubject:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        profiel:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar het profiel.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        klant:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: 'URN naar de Klant '
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        bsn:
+          type: string
+          description: 'BSN voor BRP-koppeling '
+          maxLength: 9
+          minLength: 9
+      required:
+      - uuid
     PaginatedConfiguratieList:
       type: object
       required:
@@ -2350,6 +2908,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Plan'
+    PaginatedPositieList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Positie'
+    PaginatedPositietypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Positietype'
     PaginatedSubjectList:
       type: object
       required:
@@ -2739,6 +3343,117 @@ components:
           description: URN naar de eigenaar in het HR-systeem.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
+    PatchedPositie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        subject:
+          allOf:
+          - $ref: '#/components/schemas/NestedSubject'
+          readOnly: true
+        subjectUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het subject.
+        positietype:
+          allOf:
+          - $ref: '#/components/schemas/NestedPositietype'
+          readOnly: true
+        positietypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde positietype.
+        algoritme:
+          type: string
+          description: Algoritme van de positie.
+          pattern: ^[0-9]+$
+          maxLength: 20
+        naam:
+          type: string
+          description: Naam van de positie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de postitie.
+          maxLength: 1000
+        redenWijziging:
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom de positie gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van de positie.
+          maxLength: 1000
+    PatchedPositietype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        configuraties:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedConfiguratie'
+          readOnly: true
+        configuratieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        naam:
+          type: string
+          description: Naam van het positietype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het positietype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het positietype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        startpositie:
+          type: string
+          description: Startpositie van het positietype.
+          maxLength: 1000
+        eindpositie:
+          type: string
+          description: Eindpositie van het positietype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het positietype.
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het positietype.
+        doelpositie:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van het bovenliggende doeltype (optioneel).
     PatchedSubject:
       type: object
       properties:
@@ -2894,6 +3609,129 @@ components:
         * `pauze` - Pauze
         * `afgerond` - Afgerond
         * `afgebroken` - Afgebroken
+    Positie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        subject:
+          allOf:
+          - $ref: '#/components/schemas/NestedSubject'
+          readOnly: true
+        subjectUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het subject.
+        positietype:
+          allOf:
+          - $ref: '#/components/schemas/NestedPositietype'
+          readOnly: true
+        positietypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde positietype.
+        algoritme:
+          type: string
+          description: Algoritme van de positie.
+          pattern: ^[0-9]+$
+          maxLength: 20
+        naam:
+          type: string
+          description: Naam van de positie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de postitie.
+          maxLength: 1000
+        redenWijziging:
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom de positie gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van de positie.
+          maxLength: 1000
+      required:
+      - naam
+      - positietype
+      - positietypeUuid
+      - subject
+      - subjectUuid
+      - uuid
+    Positietype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        configuraties:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedConfiguratie'
+          readOnly: true
+        configuratieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        naam:
+          type: string
+          description: Naam van het positietype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het positietype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het positietype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        startpositie:
+          type: string
+          description: Startpositie van het positietype.
+          maxLength: 1000
+        eindpositie:
+          type: string
+          description: Eindpositie van het positietype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het positietype.
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het positietype.
+        doelpositie:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van het bovenliggende doeltype (optioneel).
+      required:
+      - configuratieUuids
+      - configuraties
+      - naam
+      - uuid
     RedenWijzigingEnum:
       enum:
       - registreren

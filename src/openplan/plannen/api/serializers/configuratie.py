@@ -9,6 +9,20 @@ from openplan.utils.fields import UUIDRelatedField
 from .domein import DomeinSerializer
 
 
+class NestedConfiguratieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Configuratie
+        fields = [
+            "uuid",
+            "naam",
+            "omschrijving",
+            "status",
+        ]
+        extra_kwargs = {
+            "uuid": {"read_only": True},
+        }
+
+
 class ConfiguratieSerializer(serializers.ModelSerializer):
     domein = DomeinSerializer(
         read_only=True,
