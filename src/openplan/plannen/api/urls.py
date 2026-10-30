@@ -7,9 +7,11 @@ from vng_api_common import routers
 
 from ...utils.views import SpectacularJSONAPIView, SpectacularYAMLAPIView
 from .schema import custom_settings
+from .viewsets.configuratie import ConfiguratieViewSet
 from .viewsets.contactmoment import ContactmomentViewSet
 from .viewsets.doel import DoelViewSet
 from .viewsets.doeltype import DoelTypeViewSet
+from .viewsets.domein import DomeinViewSet
 from .viewsets.plan import PlanViewSet
 from .viewsets.subject import SubjectViewSet
 
@@ -22,7 +24,8 @@ router.register("plan", PlanViewSet)
 router.register("doel", DoelViewSet)
 router.register("doeltype", DoelTypeViewSet)
 router.register("subject", SubjectViewSet)
-
+router.register("domein", DomeinViewSet)
+router.register("configuratie", ConfiguratieViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
