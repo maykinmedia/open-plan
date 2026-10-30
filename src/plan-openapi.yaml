@@ -13,6 +13,241 @@ info:
     name: EUPL 1.2
     url: https://opensource.org/licenses/EUPL-1.2
 paths:
+  /configuratie:
+    get:
+      operationId: configuratie_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle configuraties opvragen.
+      parameters:
+      - in: query
+        name: domein__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van de configuratie.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van de configuratie.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Omschrijving van de configuratie.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - niet_actief
+        description: |-
+          Status van de configuratie.
+
+          * `actief` - Actief
+          * `niet_actief` - Niet actief
+      tags:
+      - Configuratie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConfiguratieList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConfiguratieList'
+          description: ''
+    post:
+      operationId: configuratie_create
+      description: Voeg een nieuwe configuratie toe aan het systeem.
+      summary: Nieuwe configuratie aanmaken.
+      tags:
+      - Configuratie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Configuratie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+          description: ''
+  /configuratie/{uuid}:
+    get:
+      operationId: configuratie_retrieve
+      description: Een specifieke configuratie opvragen via UUID.
+      summary: Een specifieke configuratie opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Configuratie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+          description: ''
+    put:
+      operationId: configuratie_update
+      description: Werk alle gegevens van een configuratie bij.
+      summary: Configuratie volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Configuratie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Configuratie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+          description: ''
+    patch:
+      operationId: configuratie_partial_update
+      description: Werk enkele gegevens van een configuratie bij.
+      summary: Configuratie gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Configuratie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConfiguratie'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Configuratie'
+          description: ''
+    delete:
+      operationId: configuratie_destroy
+      description: Verwijder een specifieke configuratie.
+      summary: Configuratie verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Configuratie
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /contactmoment:
     get:
       operationId: contactmoment_list
@@ -764,6 +999,235 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
+  /domein:
+    get:
+      operationId: domein_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle domeinen opvragen.
+      parameters:
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het domein.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van het domein.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Beschrijving van het domein.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - niet_actief
+        description: |-
+          Status van het domein.
+
+          * `actief` - Actief
+          * `niet_actief` - Niet actief
+      tags:
+      - Domein
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDomeinList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDomeinList'
+          description: ''
+    post:
+      operationId: domein_create
+      description: Voeg een nieuw domein toe aan het systeem.
+      summary: Nieuw domein aanmaken.
+      tags:
+      - Domein
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Domein'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+          description: ''
+  /domein/{uuid}:
+    get:
+      operationId: domein_retrieve
+      description: Een specifiek domein opvragen via UUID.
+      summary: Een specifiek domein opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Domein
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+          description: ''
+    put:
+      operationId: domein_update
+      description: Werk alle gegevens van een domein bij.
+      summary: Domein volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Domein
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Domein'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+          description: ''
+    patch:
+      operationId: domein_partial_update
+      description: Werk enkele gegevens van een domein bij.
+      summary: Domein gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Domein
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDomein'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Domein'
+          description: ''
+    delete:
+      operationId: domein_destroy
+      description: Verwijder een specifiek domein.
+      summary: Domein verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Domein
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /plan:
     get:
       operationId: plan_list
@@ -1246,6 +1710,44 @@ components:
     BlankEnum:
       enum:
       - ''
+    Configuratie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        domein:
+          allOf:
+          - $ref: '#/components/schemas/Domein'
+          readOnly: true
+        domeinUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het gekoppelde domein.
+        naam:
+          type: string
+          description: Naam van de configuratie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de configuratie.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van de configuratie.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+      required:
+      - domein
+      - domeinUuid
+      - naam
+      - uuid
     Contactmoment:
       type: object
       properties:
@@ -1395,6 +1897,33 @@ components:
       description: |-
         * `hoofddoel` - Hoofddoel
         * `subdoel` - Subdoel
+    Domein:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het domein.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Beschrijving van het domein.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het domein.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+      required:
+      - naam
+      - uuid
     NestedDoelType:
       type: object
       properties:
@@ -1477,6 +2006,29 @@ components:
       - naam
       - startdatum
       - uuid
+    PaginatedConfiguratieList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Configuratie'
     PaginatedContactmomentList:
       type: object
       required:
@@ -1546,6 +2098,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DoelType'
+    PaginatedDomeinList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Domein'
     PaginatedPlanList:
       type: object
       required:
@@ -1592,6 +2167,39 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Subject'
+    PatchedConfiguratie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        domein:
+          allOf:
+          - $ref: '#/components/schemas/Domein'
+          readOnly: true
+        domeinUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het gekoppelde domein.
+        naam:
+          type: string
+          description: Naam van de configuratie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de configuratie.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van de configuratie.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
     PatchedContactmoment:
       type: object
       properties:
@@ -1718,6 +2326,30 @@ components:
 
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel
+    PatchedDomein:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het domein.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Beschrijving van het domein.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het domein.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
     PatchedPlan:
       type: object
       properties:

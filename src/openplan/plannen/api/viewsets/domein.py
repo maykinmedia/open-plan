@@ -21,7 +21,7 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
     retrieve=extend_schema(
         summary="Een specifiek domein opvragen.",
-        description="Een specifieke configuratie opvragen via UUID.",
+        description="Een specifiek domein opvragen via UUID.",
     ),
     create=extend_schema(
         summary="Nieuw domein aanmaken.",
