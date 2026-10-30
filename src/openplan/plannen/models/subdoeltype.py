@@ -21,6 +21,7 @@ class SubdoelType(models.Model):
     )
     naam = models.CharField(
         max_length=255,
+        unique=True,
         help_text=_("Naam van het subdoeltype."),
     )
     omschrijving = models.TextField(
@@ -36,14 +37,17 @@ class SubdoelType(models.Model):
     )
     gewenst_resultaat = models.TextField(
         blank=True,
+        max_length=1000,
         help_text=_("Gewenst resultaat van het subdoeltype."),
     )
     toelichting_inwoner = models.TextField(
         blank=True,
+        max_length=1000,
         help_text=_("Toelichting inwoner van het subdoeltype."),
     )
     toelichting_medewerker = models.TextField(
         blank=True,
+        max_length=1000,
         help_text=_("Toelichting medewerker van het subdoeltype."),
     )
 

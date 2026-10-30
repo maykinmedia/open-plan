@@ -20,7 +20,7 @@ class Subdoel(models.Model):
         help_text=_("Het doel waartoe dit subdoel behoort."),
     )
     subdoeltype = models.ForeignKey(
-        "plannen.Doeltype",
+        "plannen.Subdoeltype",
         on_delete=models.PROTECT,
         related_name="subdoelen",
         help_text=_("Type van het subdoel"),
