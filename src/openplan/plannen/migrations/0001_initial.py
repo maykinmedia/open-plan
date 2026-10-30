@@ -140,7 +140,7 @@ class Migration(migrations.Migration):
             name='PositieType',
             fields=[
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unieke resource identifier (UUID4).', primary_key=True, serialize=False)),
-                ('naam', models.CharField(help_text='Naam van het positietype.', max_length=255)),
+                ('naam', models.CharField(help_text='Naam van het positietype.', max_length=255, unique=True)),
                 ('omschrijving', models.TextField(blank=True, help_text='Omschrijving van het positietype.', max_length=1000)),
                 ('status', models.CharField(choices=[('actief', 'Actief'), ('niet_actief', 'Niet actief')], default='actief', help_text='Status van het positietype.', max_length=20)),
                 ('startpositie', models.TextField(blank=True, help_text='Startpositie van het positietype.', max_length=1000)),
@@ -160,6 +160,23 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(help_text='Het type van de positie.', on_delete=django.db.models.deletion.PROTECT, related_name='postities', to='plannen.positietype'),
         ),
         migrations.CreateModel(
+            name='SubdoelType',
+            fields=[
+                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unieke resource identifier (UUID4).', primary_key=True, serialize=False)),
+                ('naam', models.CharField(help_text='Naam van het subdoeltype.', max_length=255, unique=True)),
+                ('omschrijving', models.TextField(blank=True, help_text='Omschrijving van het subdoeltype.', max_length=1000)),
+                ('status', models.CharField(choices=[('actief', 'Actief'), ('niet_actief', 'Niet actief')], default='actief', help_text='Status van het subdoeltype.', max_length=20)),
+                ('gewenst_resultaat', models.TextField(blank=True, help_text='Gewenst resultaat van het subdoeltype.', max_length=1000)),
+                ('toelichting_inwoner', models.TextField(blank=True, help_text='Toelichting inwoner van het subdoeltype.', max_length=1000)),
+                ('toelichting_medewerker', models.TextField(blank=True, help_text='Toelichting medewerker van het subdoeltype.', max_length=1000)),
+                ('configuraties', models.ManyToManyField(blank=True, help_text='Configuraties gekoppeld aan dit subdoeltype.', related_name='subdoeltypen', to='plannen.configuratie')),
+            ],
+            options={
+                'verbose_name': 'Subdoeltype',
+                'verbose_name_plural': 'Subdoeltypen',
+            },
+        ),
+        migrations.CreateModel(
             name='Subdoel',
             fields=[
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unieke resource identifier (UUID4).', primary_key=True, serialize=False)),
@@ -177,23 +194,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Subdoel',
                 'verbose_name_plural': 'Subdoelen',
                 'ordering': ('-startdatum',),
-            },
-        ),
-        migrations.CreateModel(
-            name='SubdoelType',
-            fields=[
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unieke resource identifier (UUID4).', primary_key=True, serialize=False)),
-                ('naam', models.CharField(help_text='Naam van het subdoeltype.', max_length=255)),
-                ('omschrijving', models.TextField(blank=True, help_text='Omschrijving van het subdoeltype.', max_length=1000)),
-                ('status', models.CharField(choices=[('actief', 'Actief'), ('niet_actief', 'Niet actief')], default='actief', help_text='Status van het subdoeltype.', max_length=20)),
-                ('gewenst_resultaat', models.TextField(blank=True, help_text='Gewenst resultaat van het subdoeltype.')),
-                ('toelichting_inwoner', models.TextField(blank=True, help_text='Toelichting inwoner van het subdoeltype.')),
-                ('toelichting_medewerker', models.TextField(blank=True, help_text='Toelichting medewerker van het subdoeltype.')),
-                ('configuraties', models.ManyToManyField(blank=True, help_text='Configuraties gekoppeld aan dit subdoeltype.', related_name='subdoeltypen', to='plannen.configuratie')),
-            ],
-            options={
-                'verbose_name': 'Subdoeltype',
-                'verbose_name_plural': 'Subdoeltypen',
             },
         ),
         migrations.CreateModel(
