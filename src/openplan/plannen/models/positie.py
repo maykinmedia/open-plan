@@ -1,5 +1,6 @@
 import uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -19,11 +20,18 @@ class Positie(models.Model):
         related_name="posities",
         help_text=_("Het subject waartoe de positie behoort."),
     )
-    positie_type = models.ForeignKey(
+    positietype = models.ForeignKey(
         "plannen.PositieType",
         on_delete=models.PROTECT,
-        related_name="postities",
+        related_name="posities",
         help_text=_("Het type van de positie."),
+    )
+    domein = models.ForeignKey(
+        "plannen.Domein",
+        on_delete=models.PROTECT,
+        related_name="+",
+        editable=False,
+        help_text=_("Het domein van de positie."),
     )
     beschrijving = models.TextField(
         blank=True,
@@ -52,5 +60,43 @@ class Positie(models.Model):
         verbose_name = _("Positie")
         verbose_name_plural = _("Posities")
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=["subject", "domein"],
+                name="max_een_positie_per_subject_per_domein",
+            )
+        ]
+
     def __str__(self):
         return str(self.uuid)
+
+    def _controleer_domein(self):
+        domein_id = self.positietype.configuratie.domein_id
+        if self._state.adding:
+            self.domein_id = domein_id
+        elif domein_id != self.domein_id:
+            raise ValidationError(
+                {
+                    "positietype": _(
+                        "Het positietype hoort bij een ander domein dan deze positie."
+                    )
+                }
+            )
+
+    def clean(self):
+        super().clean()
+        if self.positietype_id:
+            self._controleer_domein()
+            if (
+                self._state.adding
+                and Positie.objects.filter(
+                    subject_id=self.subject_id, domein_id=self.domein_id
+                ).exists()
+            ):
+                raise ValidationError(
+                    _("Dit subject heeft al een positie in dit domein.")
+                )
+
+    def save(self, *args, **kwargs):
+        self._controleer_domein()
+        super().save(*args, **kwargs)
