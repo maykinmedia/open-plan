@@ -557,17 +557,10 @@ paths:
       summary: Alle doeltypen opvragen.
       parameters:
       - in: query
-        name: doelType
+        name: naam
         schema:
           type: string
-          enum:
-          - hoofddoel
-          - subdoel
-        description: |-
-          Het type doel.
-
-          * `hoofddoel` - Hoofddoel
-          * `subdoel` - Subdoel
+        description: Naam van het doeltype.
       - name: page
         required: false
         in: query
@@ -1376,25 +1369,29 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
-        doelType:
+        naam:
+          type: string
+          description: Naam van het doeltype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het doeltype.
+          maxLength: 1000
+        status:
           allOf:
-          - $ref: '#/components/schemas/DoelTypeEnum'
+          - $ref: '#/components/schemas/StatusEnum'
           description: |-
-            Het type doel.
+            Status van het doeltype.
 
-            * `hoofddoel` - Hoofddoel
-            * `subdoel` - Subdoel
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het doeltype.
+          maxLength: 1000
       required:
-      - doelType
+      - naam
       - uuid
-    DoelTypeEnum:
-      enum:
-      - hoofddoel
-      - subdoel
-      type: string
-      description: |-
-        * `hoofddoel` - Hoofddoel
-        * `subdoel` - Subdoel
     NestedDoelType:
       type: object
       properties:
@@ -1403,16 +1400,12 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
-        doelType:
-          allOf:
-          - $ref: '#/components/schemas/DoelTypeEnum'
-          description: |-
-            Het type doel.
-
-            * `hoofddoel` - Hoofddoel
-            * `subdoel` - Subdoel
+        naam:
+          type: string
+          description: Naam van het doeltype.
+          maxLength: 255
       required:
-      - doelType
+      - naam
       - uuid
     NestedPlan:
       type: object
@@ -1710,14 +1703,26 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
-        doelType:
+        naam:
+          type: string
+          description: Naam van het doeltype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het doeltype.
+          maxLength: 1000
+        status:
           allOf:
-          - $ref: '#/components/schemas/DoelTypeEnum'
+          - $ref: '#/components/schemas/StatusEnum'
           description: |-
-            Het type doel.
+            Status van het doeltype.
 
-            * `hoofddoel` - Hoofddoel
-            * `subdoel` - Subdoel
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het doeltype.
+          maxLength: 1000
     PatchedPlan:
       type: object
       properties:

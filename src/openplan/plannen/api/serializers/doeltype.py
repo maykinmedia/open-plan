@@ -6,7 +6,7 @@ from openplan.plannen.models.doeltype import DoelType
 class NestedDoelTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoelType
-        fields = ["uuid", "doel_type"]
+        fields = ["uuid", "naam"]
 
         extra_kwargs = {
             "uuid": {"read_only": True},
@@ -18,7 +18,10 @@ class DoelTypeSerializer(serializers.ModelSerializer):
         model = DoelType
         fields = [
             "uuid",
-            "doel_type",
+            "naam",
+            "omschrijving",
+            "status",
+            "gewenst_resultaat",
         ]
 
         extra_kwargs = {

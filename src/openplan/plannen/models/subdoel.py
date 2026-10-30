@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
 
-class SubDoel(models.Model):
+class Subdoel(models.Model):
     uuid = models.UUIDField(
         primary_key=True,
         editable=False,
@@ -18,6 +18,12 @@ class SubDoel(models.Model):
         on_delete=models.CASCADE,
         related_name="doelen",
         help_text=_("Het doel waartoe dit subdoel behoort."),
+    )
+    subdoeltype = models.ForeignKey(
+        "plannen.Subdoeltype",
+        on_delete=models.PROTECT,
+        related_name="subdoelen",
+        help_text=_("Type van het subdoel"),
     )
     naam = models.CharField(
         max_length=255,

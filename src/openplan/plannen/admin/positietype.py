@@ -10,12 +10,10 @@ class PositieTypeAdmin(admin.ModelAdmin):
         "naam",
         "status",
     )
-
     list_filter = ("status",)
-
     search_fields = ("uuid", "naam")
-
     readonly_fields = ("uuid",)
+    filter_horizontal = ("configuraties",)
 
     fieldsets = (
         (
@@ -29,6 +27,7 @@ class PositieTypeAdmin(admin.ModelAdmin):
                     "startpositie",
                     "eindpositie",
                     "doelpositie",
+                    "configuraties",
                 ),
             },
         ),
