@@ -11,6 +11,7 @@ from .viewsets.contactmoment import ContactmomentViewSet
 from .viewsets.doel import DoelViewSet
 from .viewsets.doeltype import DoelTypeViewSet
 from .viewsets.plan import PlanViewSet
+from .viewsets.positie import PositieViewSet
 from .viewsets.subject import SubjectViewSet
 
 app_name = "plannen"
@@ -22,7 +23,8 @@ router.register("plan", PlanViewSet)
 router.register("doel", DoelViewSet)
 router.register("doeltype", DoelTypeViewSet)
 router.register("subject", SubjectViewSet)
-
+router.register("positie", PositieViewSet)
+router.register("positietype", PositieViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
