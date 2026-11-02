@@ -1910,14 +1910,6 @@ components:
       required:
       - naam
       - uuid
-    DoelTypeEnum:
-      enum:
-      - hoofddoel
-      - subdoel
-      type: string
-      description: |-
-        * `hoofddoel` - Hoofddoel
-        * `subdoel` - Subdoel
     Domein:
       type: object
       properties:
@@ -2379,8 +2371,12 @@ components:
           description: |-
             Status van het doeltype.
 
-            * `hoofddoel` - Hoofddoel
-            * `subdoel` - Subdoel
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het doeltype.
+          maxLength: 1000
     PatchedDomein:
       type: object
       properties:
