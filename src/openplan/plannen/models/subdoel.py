@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
+from .validators import validate_immutable_field
+
 
 class Subdoel(models.Model):
     uuid = models.UUIDField(
@@ -74,3 +76,18 @@ class Subdoel(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def save(self, *args, **kwargs):
+        self._valideer_subdoeltype_ongewijzigd()
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        self._valideer_subdoeltype_ongewijzigd()
+
+    def _valideer_subdoeltype_ongewijzigd(self):
+        validate_immutable_field(
+            self,
+            "subdoeltype",
+            _("Het subdoeltype kan niet gewijzigd worden. Maak een nieuw subdoel aan."),
+        )

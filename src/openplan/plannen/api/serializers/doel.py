@@ -70,3 +70,29 @@ class DoelSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True},
         }
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.instance is not None:
+            fields["doeltype_uuid"].required = False
+        return fields
+
+    def validate(self, attrs):
+        # TODO: also add to subdoel after when api is implemented
+        attrs = super().validate(attrs)
+
+        doeltype = attrs.get("doeltype")
+        if (
+            self.instance is not None
+            and doeltype is not None
+            and doeltype != self.instance.doeltype
+        ):
+            raise serializers.ValidationError(
+                {
+                    "doeltype_uuid": _(
+                        "Het doeltype kan niet gewijzigd worden. "
+                        "Maak een nieuw doel aan."
+                    )
+                }
+            )
+        return attrs
