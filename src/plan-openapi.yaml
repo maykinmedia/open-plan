@@ -1019,7 +1019,7 @@ paths:
         name: omschrijving__icontains
         schema:
           type: string
-        description: Beschrijving van het domein.
+        description: Omschrijving van het domein.
       - name: page
         required: false
         in: query
@@ -1911,7 +1911,7 @@ components:
           maxLength: 255
         omschrijving:
           type: string
-          description: Beschrijving van het domein.
+          description: Omschrijving van het domein.
           maxLength: 1000
         status:
           allOf:
@@ -2340,7 +2340,7 @@ components:
           maxLength: 255
         omschrijving:
           type: string
-          description: Beschrijving van het domein.
+          description: Omschrijving van het domein.
           maxLength: 1000
         status:
           allOf:
