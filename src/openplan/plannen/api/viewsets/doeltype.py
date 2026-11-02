@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.doeltype import DoelType
+from openplan.utils.mixins import ProtectedDestroyMixin
 
 from ...metrics import (
     doeltypen_create_counter,
@@ -44,7 +45,7 @@ logger = structlog.stdlib.get_logger(__name__)
         description="Verwijder een specifiek doeltype.",
     ),
 )
-class DoelTypeViewSet(viewsets.ModelViewSet):
+class DoelTypeViewSet(ProtectedDestroyMixin, viewsets.ModelViewSet):
     queryset = DoelType.objects.all()
     serializer_class = DoelTypeSerializer
     filterset_fields = {

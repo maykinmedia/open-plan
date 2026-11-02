@@ -10,6 +10,7 @@ from openplan.plannen.metrics import (
     doeltypen_delete_counter,
     doeltypen_update_counter,
 )
+from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 
 from ...models.doeltype import DoelType
@@ -105,6 +106,18 @@ class DoelTypeAPITests(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(DoelType.objects.filter(uuid=doeltype.uuid).exists())
+
+    def test_delete_doeltype_in_use_returns_400(self):
+        doel = DoelFactory.create()
+        doeltype = doel.doeltype
+
+        url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
+        response = self.client.delete(url)
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+        self.assertTrue(DoelType.objects.filter(uuid=doeltype.uuid).exists())
 
     def test_authentication_required(self):
         client = APIClient()
