@@ -83,3 +83,9 @@ class DoelSerializer(serializers.ModelSerializer):
             StartBeforeEndValidator("startdatum", "einddatum"),
             StartBeforeEndValidator("beoogde_startdatum", "beoogde_einddatum"),
         ]
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.instance is not None:
+            fields["doeltype_uuid"].required = False
+        return fields
