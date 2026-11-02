@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from openplan.plannen.models import Doel, Subdoel
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 from openplan.plannen.models.factories.subdoel import SubdoelFactory
@@ -46,52 +45,34 @@ class ValidatePositieTypeSelfTests(TestCase):
 
 
 class DoelModelTests(TestCase):
-    def test_changing_doeltype_raises_and_does_not_write(self):
+    def test_full_clean_rejects_doeltype_change(self):
         doel = DoelFactory.create()
-        original_doeltype_id = doel.doeltype_id
-
         doel.doeltype = DoelTypeFactory.create()
 
         with self.assertRaises(ValidationError) as cm:
-            doel.save()
+            doel.clean()
 
         self.assertIn("doeltype", cm.exception.message_dict)
-        self.assertEqual(Doel.objects.get(pk=doel.pk).doeltype_id, original_doeltype_id)
 
-    def test_saving_other_changes_is_allowed(self):
+    def test_full_clean_allows_other_changes(self):
         doel = DoelFactory.create()
-        original_doeltype_id = doel.doeltype_id
-
         doel.naam = "Nieuwe naam"
-        doel.save()
 
-        doel.refresh_from_db()
-        self.assertEqual(doel.naam, "Nieuwe naam")
-        self.assertEqual(doel.doeltype_id, original_doeltype_id)
+        doel.clean()
 
 
 class SubdoelModelTests(TestCase):
-    def test_changing_subdoeltype_raises_and_does_not_write(self):
+    def test_full_clean_rejects_subdoeltype_change(self):
         subdoel = SubdoelFactory.create()
-        original_subdoeltype_id = subdoel.subdoeltype_id
-
         subdoel.subdoeltype = SubdoelTypeFactory.create()
 
         with self.assertRaises(ValidationError) as cm:
-            subdoel.save()
+            subdoel.clean()
 
         self.assertIn("subdoeltype", cm.exception.message_dict)
-        self.assertEqual(
-            Subdoel.objects.get(pk=subdoel.pk).subdoeltype_id, original_subdoeltype_id
-        )
 
-    def test_saving_other_changes_is_allowed(self):
+    def test_full_clean_allows_other_changes(self):
         subdoel = SubdoelFactory.create()
-        original_subdoeltype_id = subdoel.subdoeltype_id
-
         subdoel.naam = "Nieuwe naam"
-        subdoel.save()
 
-        subdoel.refresh_from_db()
-        self.assertEqual(subdoel.naam, "Nieuwe naam")
-        self.assertEqual(subdoel.subdoeltype_id, original_subdoeltype_id)
+        subdoel.clean()

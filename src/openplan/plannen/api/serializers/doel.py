@@ -8,6 +8,7 @@ from openplan.plannen.models.doeltype import DoelType
 from openplan.utils.fields import UUIDRelatedField
 
 from .doeltype import NestedDoelTypeSerializer
+from .validators import IsImmutableValidator
 
 
 class NestedDoelSerializer(serializers.ModelSerializer):
@@ -38,6 +39,7 @@ class DoelSerializer(serializers.ModelSerializer):
         write_only=True,
         source="doeltype",
         help_text=_("UUID van de gekoppelde doeltype."),
+        validators=[IsImmutableValidator()],
     )
     # TODO: update when positie serializer is made
     # positie = PositieSerializer(
@@ -76,23 +78,3 @@ class DoelSerializer(serializers.ModelSerializer):
         if self.instance is not None:
             fields["doeltype_uuid"].required = False
         return fields
-
-    def validate(self, attrs):
-        # TODO: also add to subdoel after when api is implemented
-        attrs = super().validate(attrs)
-
-        doeltype = attrs.get("doeltype")
-        if (
-            self.instance is not None
-            and doeltype is not None
-            and doeltype != self.instance.doeltype
-        ):
-            raise serializers.ValidationError(
-                {
-                    "doeltype_uuid": _(
-                        "Het doeltype kan niet gewijzigd worden. "
-                        "Maak een nieuw doel aan."
-                    )
-                }
-            )
-        return attrs

@@ -77,15 +77,8 @@ class Subdoel(models.Model):
     def __str__(self):
         return self.naam
 
-    def save(self, *args, **kwargs):
-        self._valideer_subdoeltype_ongewijzigd()
-        super().save(*args, **kwargs)
-
     def clean(self):
         super().clean()
-        self._valideer_subdoeltype_ongewijzigd()
-
-    def _valideer_subdoeltype_ongewijzigd(self):
         validate_immutable_field(
             self,
             "subdoeltype",

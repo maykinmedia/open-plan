@@ -76,15 +76,9 @@ class Doel(models.Model):
     def __str__(self):
         return self.naam
 
-    def save(self, *args, **kwargs):
-        self._valideer_doeltype_ongewijzigd()
-        super().save(*args, **kwargs)
-
     def clean(self):
         super().clean()
-        self._valideer_doeltype_ongewijzigd()
 
-    def _valideer_doeltype_ongewijzigd(self):
         validate_immutable_field(
             self,
             "doeltype",
