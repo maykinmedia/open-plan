@@ -7,7 +7,7 @@ from vng_api_common.fields import BSNField
 
 from openplan.utils.fields import URNField
 
-from ..enums.status import Status
+from ..enums.status import Status, SubjectType
 
 
 class Subject(models.Model):
@@ -33,6 +33,10 @@ class Subject(models.Model):
         blank=True,
         max_length=1000,
         help_text=_("Rolbeschrijving van het subject."),
+    )
+    subjecttype = models.CharField(
+        choices=SubjectType.choices,
+        help_text=_("Het type subject"),
     )
     profiel = URNField(
         blank=True,

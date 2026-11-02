@@ -7,7 +7,8 @@ from ..models.positie import Positie
 class PositieAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
-        "beschrijving",
+        "naam",
+        "omschrijving",
     )
     search_fields = ("uuid",)
     readonly_fields = ("uuid",)
@@ -20,9 +21,11 @@ class PositieAdmin(admin.ModelAdmin):
                     "uuid",
                     "subject",
                     "positie_type",
-                    "beschrijving",
+                    "naam",
+                    "omschrijving",
+                    "status",
                     "reden_wijziging",
-                    "voortgang_toelichting",
+                    "toelichting_reden",
                 ),
             },
         ),

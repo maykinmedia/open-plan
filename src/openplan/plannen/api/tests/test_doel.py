@@ -74,7 +74,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
-            "beschrijving": "Beschrijving update test",
+            "omschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")
 
@@ -228,7 +228,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
-            "beschrijving": "Beschrijving update test",
+            "omschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)

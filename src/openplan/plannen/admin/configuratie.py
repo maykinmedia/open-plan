@@ -28,7 +28,6 @@ class ConfiguratieAdmin(admin.ModelAdmin):
                     "naam",
                     "omschrijving",
                     "status",
-                    "eigenaar",
                 ),
             },
         ),

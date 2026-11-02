@@ -10,6 +10,7 @@ class SubjectSerializer(serializers.ModelSerializer):
             "uuid",
             "plan",
             "status",
+            "subjecttype",
             "rolbeschrijving",
             "profiel",
             "klant",

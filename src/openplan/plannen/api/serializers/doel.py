@@ -22,7 +22,7 @@ class NestedDoelSerializer(serializers.ModelSerializer):
             "einddatum",
             "resultaat",
             "reden_wijziging",
-            "voortgang_toelichting",
+            "toelichting_reden",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
@@ -65,7 +65,7 @@ class DoelSerializer(serializers.ModelSerializer):
             "einddatum",
             "resultaat",
             "reden_wijziging",
-            "voortgang_toelichting",
+            "toelichting_reden",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},

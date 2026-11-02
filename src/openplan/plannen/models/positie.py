@@ -25,16 +25,14 @@ class Positie(models.Model):
         related_name="postities",
         help_text=_("Het type van de positie."),
     )
-    beschrijving = models.TextField(
+    naam = models.CharField(
+        max_length=255,
+        help_text=_("Naam van de positie."),
+    )
+    omschrijving = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Beschrijving van de postitie."),
-    )
-    reden_wijziging = models.CharField(
-        max_length=30,
-        choices=RedenWijziging.choices,
-        default=RedenWijziging.REGISTREREN,
-        help_text=_("Reden waarom het gewijzigd is."),
+        help_text=_("Omschrijving van de postitie."),
     )
     status = models.CharField(
         max_length=20,
@@ -42,10 +40,16 @@ class Positie(models.Model):
         default=Status.ACTIEF,
         help_text=_("Status van het doel."),
     )
-    voortgang_toelichting = models.TextField(
+    reden_wijziging = models.CharField(
+        max_length=30,
+        choices=RedenWijziging.choices,
+        default=RedenWijziging.REGISTREREN,
+        help_text=_("Reden waarom het gewijzigd is."),
+    )
+    toelichting_reden = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Voortgangstoelichting van de postitie."),
+        help_text=_("Toelichting reden wijziging van het subdoel."),
     )
 
     class Meta:
