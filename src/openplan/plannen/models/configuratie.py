@@ -21,6 +21,7 @@ class Configuratie(models.Model):
     )
     naam = models.CharField(
         max_length=255,
+        unique=True,
         help_text=_("Naam van de configuratie."),
     )
     omschrijving = models.TextField(
