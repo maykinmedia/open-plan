@@ -39,3 +39,22 @@ def validate_positie_type_not_self(positie_type):
                 }
             )
         parent = parent.doelpositie
+
+
+def validate_immutable_field(instance, field_name, message):
+    """
+    Raise a ValidationError if ``field_name`` on an existing object differs
+    from the value stored in the database.
+    """
+    if instance._state.adding:
+        return
+
+    attname = instance._meta.get_field(field_name).attname
+    huidige_waarde = (
+        type(instance)
+        .objects.filter(pk=instance.pk)
+        .values_list(attname, flat=True)
+        .first()
+    )
+    if huidige_waarde is not None and huidige_waarde != getattr(instance, attname):
+        raise ValidationError({field_name: message})

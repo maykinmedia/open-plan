@@ -24,7 +24,7 @@ from .api_testcase import APITestCase
 class DoelAPITests(APITestCase):
     def setUp(self):
         super().setUp()
-        self.hoofddoel_type = DoelTypeFactory.create(doel_type="hoofddoel")
+        self.hoofddoel_type = DoelTypeFactory.create(naam="hoofddoel")
         self.positie = PositieFactory.create()
 
         self.data = {
@@ -66,11 +66,9 @@ class DoelAPITests(APITestCase):
         self.assertEqual(response.data["uuid"], str(doel.uuid))
 
     def test_update_doel(self):
-        doeltype = self.hoofddoel_type
         doel = DoelFactory.create()
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
         data = {
-            "doeltypeUuid": str(doeltype.uuid),
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
@@ -91,6 +89,29 @@ class DoelAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         doel.refresh_from_db()
+
+    def test_patch_doeltype_returns_400_and_does_not_write(self):
+        doel = DoelFactory.create(naam="Origineel")
+        original_doeltype = doel.doeltype
+
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        data = {
+            "doeltypeUuid": str(DoelTypeFactory.create().uuid),
+            "naam": "Gewijzigd",
+        }
+
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+        invalid_params = response.json()["invalidParams"]
+        self.assertEqual(len(invalid_params), 1)
+        self.assertEqual(invalid_params[0]["name"], "doeltypeUuid")
+
+        doel.refresh_from_db()
+        self.assertEqual(doel.doeltype, original_doeltype)
+        self.assertEqual(doel.naam, "Origineel")
 
     def test_delete_doel(self):
         doel = DoelFactory.create()
@@ -219,12 +240,10 @@ class DoelAPITests(APITestCase):
 
     @patch.object(doelen_update_counter, "add", wraps=doelen_update_counter.add)
     def test_update_doel_increments_metric(self, mock_add: MagicMock):
-        doeltype = self.hoofddoel_type
         doel = DoelFactory.create(positie=self.positie)
 
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
         data = {
-            "doeltypeUuid": str(doeltype.uuid),
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),

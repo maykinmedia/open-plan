@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
+from .validators import validate_immutable_field
+
 
 class Doel(models.Model):
     uuid = models.UUIDField(
@@ -73,3 +75,12 @@ class Doel(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+
+        validate_immutable_field(
+            self,
+            "doeltype",
+            _("Het doeltype kan niet gewijzigd worden. Maak een nieuw doel aan."),
+        )

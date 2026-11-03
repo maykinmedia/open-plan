@@ -72,6 +72,10 @@
                 ],
                 [
                     "plannen",
+                    "subdoeltype"
+                ],
+                [
+                    "plannen",
                     "subject"
                 ]
             ]
