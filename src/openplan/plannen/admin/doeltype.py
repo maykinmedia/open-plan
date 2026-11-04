@@ -21,6 +21,7 @@ class DoelTypeAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "doel_type",
+                    "positietypen",
                 ),
             },
         ),

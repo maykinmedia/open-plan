@@ -1,10 +1,11 @@
 import uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ..enums.status import Status
-from .validators import validate_positie_type_not_self
+from .validators import validate_immutable_field, validate_positie_type_not_self
 
 
 class PositieType(models.Model):
@@ -19,6 +20,12 @@ class PositieType(models.Model):
         blank=True,
         related_name="positietypen",
         help_text=_("Configuraties gekoppeld aan dit positietypen."),
+    )
+    domein = models.ForeignKey(
+        "plannen.Domein",
+        on_delete=models.PROTECT,
+        related_name="positietypen",
+        help_text=_("Het domein waartoe dit positietype behoort."),
     )
     naam = models.CharField(
         max_length=255,
@@ -72,3 +79,25 @@ class PositieType(models.Model):
         super().clean()
 
         validate_positie_type_not_self(self)
+        self._controleer_domein_ongewijzigd()
+
+    def _controleer_domein_ongewijzigd(self):
+        if self._state.adding or not self.posities.exists():
+            return
+        validate_immutable_field(
+            self,
+            "domein",
+            _(
+                "Het domein kan niet gewijzigd worden, dit positietype wordt al gebruikt."
+            ),
+        )
+
+    def controleer_configuraties(self, configuraties, domein):
+        if any(configuratie.domein_id != domein.pk for configuratie in configuraties):
+            raise ValidationError(
+                {
+                    "configuraties": _(
+                        "Alle configuraties moeten bij het domein van dit positietype horen."
+                    )
+                }
+            )

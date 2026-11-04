@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import Status
 
+from .validators import validate_immutable_field
+
 
 class Configuratie(models.Model):
     uuid = models.UUIDField(
@@ -42,3 +44,20 @@ class Configuratie(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+
+        self._controleer_domein_ongewijzigd()
+
+    def _controleer_domein_ongewijzigd(self):
+        if self._state.adding or not self.positietypen.exists():
+            return
+        validate_immutable_field(
+            self,
+            "domein",
+            _(
+                "Het domein kan niet gewijzigd worden, deze configuratie is "
+                "gekoppeld aan positietypen."
+            ),
+        )

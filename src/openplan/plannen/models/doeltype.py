@@ -13,6 +13,12 @@ class DoelType(models.Model):
         default=uuid.uuid4,
         help_text=_("Unieke resource identifier (UUID4)."),
     )
+    positietypen = models.ManyToManyField(
+        "plannen.PositieType",
+        blank=True,
+        related_name="doeltypen",
+        help_text=_("Positietypen waarbij dit doeltype kan horen."),
+    )
     doel_type = models.CharField(
         max_length=50,
         choices=DoelTypeEnum.choices,
