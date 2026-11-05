@@ -13,6 +13,7 @@ class DoelTypeAdmin(admin.ModelAdmin):
     search_fields = ("doel_type", "uuid")
     ordering = ("doel_type",)
     readonly_fields = ("uuid",)
+    filter_horizontal = ("positietypen",)
 
     fieldsets = (
         (
@@ -21,6 +22,7 @@ class DoelTypeAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "doel_type",
+                    "positietypen",
                 ),
             },
         ),

@@ -1,5 +1,6 @@
 import uuid
 
+# from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -68,3 +69,24 @@ class SubDoel(models.Model):
 
     def __str__(self):
         return self.naam
+
+    # TODO: Uncomment when https://github.com/maykinmedia/open-plan/pull/48 is merged,
+    # Also add relation from subdoeltype to doeltype
+    #
+    # def clean(self):
+    #     super().clean()
+
+    #     self._controleer_doeltype()
+
+    # def _controleer_doeltype(self):
+    #     if not self.subdoeltype_id or not self.doel_id:
+    #         return
+    #     if not self.subdoeltype.doeltypen.filter(pk=self.doel.doeltype_id).exists():
+    #         raise ValidationError(
+    #             {
+    #                 "doel": _(
+    #                     "Het subdoeltype van dit subdoel kan niet bij het doeltype "
+    #                     "van dit doel horen."
+    #                 )
+    #             }
+    #         )

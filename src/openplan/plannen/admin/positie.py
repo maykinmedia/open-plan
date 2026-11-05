@@ -20,7 +20,8 @@ class PositieAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "subject",
-                    "positie_type",
+                    "positietype",
+                    "domein",
                     "naam",
                     "omschrijving",
                     "status",
