@@ -1,6 +1,7 @@
 import uuid
 
 import factory
+from factory.helpers import post_generation
 
 from openplan.plannen.enums.doel import DoelTypeEnum
 
@@ -13,3 +14,8 @@ class DoelTypeFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = DoelType
+
+    @post_generation
+    def positietypen(self, create, extracted, **kwargs):
+        if create and extracted:
+            self.positietypen.add(*extracted)

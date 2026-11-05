@@ -1,5 +1,6 @@
 import uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -73,3 +74,23 @@ class Doel(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+
+        self._controleer_positietype()
+
+    def _controleer_positietype(self):
+        if not self.doeltype_id or not self.positie_id:
+            return
+        if not self.doeltype.positietypen.filter(
+            pk=self.positie.positietype_id
+        ).exists():
+            raise ValidationError(
+                {
+                    "positie": _(
+                        "Het doeltype van dit doel kan niet bij het positietype "
+                        "van deze positie horen."
+                    )
+                }
+            )
