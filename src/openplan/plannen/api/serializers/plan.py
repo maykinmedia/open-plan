@@ -5,7 +5,7 @@ from rest_framework import serializers
 from openplan.plannen.models.plan import Plan
 from openplan.utils.serializers import URNModelSerializer
 
-from .validators import DateValidator
+from .validators import StartBeforeEndValidator
 
 
 class NestedPlanSerializer(serializers.ModelSerializer):
@@ -63,5 +63,6 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
         }
 
         validators = [
-            DateValidator(),
+            StartBeforeEndValidator("startdatum", "einddatum"),
+            StartBeforeEndValidator("beoogde_startdatum", "beoogde_einddatum"),
         ]

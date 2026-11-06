@@ -22,8 +22,12 @@ from .api_testcase import APITestCase
 
 
 class PlanAPITests(APITestCase):
-    DATUM_ERROR = (
+    DATUM_ERROR = _(
         "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
+    )
+    BEOOGDE_EINDDATUM_ERROR = _(
+        "De beoogde_einddatum mag niet op een eerdere of dezelfde dag vallen "
+        "als de beoogde_startdatum."
     )
 
     def setUp(self):
@@ -127,7 +131,7 @@ class PlanAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, "einddatum")
-        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
         self.assertFalse(Plan.objects.exists())
 
     def test_create_plan_einddatum_same_as_startdatum(self):
@@ -141,7 +145,7 @@ class PlanAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, "einddatum")
-        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
 
     def test_create_plan_beoogde_einddatum_before_beoogde_startdatum(self):
         url = reverse("plannen:plan-list")
@@ -154,7 +158,7 @@ class PlanAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, "beoogdeEinddatum")
-        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        self.assertEqual(error["reason"], self.BEOOGDE_EINDDATUM_ERROR)
         self.assertFalse(Plan.objects.exists())
 
     def test_partial_update_plan_einddatum_before_existing_startdatum(self):
@@ -165,7 +169,7 @@ class PlanAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, "einddatum")
-        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
         plan.refresh_from_db()
         self.assertIsNone(plan.einddatum)
 
@@ -179,7 +183,7 @@ class PlanAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         error = get_validation_errors(response, "einddatum")
-        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
         plan.refresh_from_db()
         self.assertEqual(plan.startdatum, date(2026, 1, 10))
 

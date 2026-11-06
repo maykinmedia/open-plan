@@ -2,13 +2,19 @@ from datetime import date
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from django.utils.translation import gettext as _
 
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.plan import PlanFactory
 from openplan.plannen.models.factories.subdoel import SubdoelFactory
 from openplan.plannen.models.positietype import PositieType
 from openplan.plannen.models.validators import validate_positie_type_not_self
+
+GELIJKE_DATUM_ERROR = (
+    "2025-01-12 mag niet op een eerdere of dezelfde dag vallen als de 2025-01-12."
+)
+EERDERE_DATUM_ERROR = (
+    "2024-01-12 mag niet op een eerdere of dezelfde dag vallen als de 2025-01-12."
+)
 
 
 class ValidatePositieTypeSelfTests(TestCase):
@@ -53,12 +59,7 @@ class PlanTests(TestCase):
             einddatum=date(2025, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, GELIJKE_DATUM_ERROR):
             plan.clean()
 
     def test_eind_datum_is_not_allowed_to_be_before_start_datum(self):
@@ -67,12 +68,7 @@ class PlanTests(TestCase):
             einddatum=date(2024, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, EERDERE_DATUM_ERROR):
             plan.clean()
 
     def test_eind_datum_is_allowed_to_be_null(self):
@@ -88,12 +84,7 @@ class PlanTests(TestCase):
             beoogde_einddatum=date(2025, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, GELIJKE_DATUM_ERROR):
             plan.clean()
 
     def test_beoogde_eind_datum_is_not_allowed_to_be_before_beoogde_start_datum(self):
@@ -102,12 +93,7 @@ class PlanTests(TestCase):
             beoogde_einddatum=date(2024, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, EERDERE_DATUM_ERROR):
             plan.clean()
 
     def test_beoogde_eind_datum_is_allowed_to_be_null(self):
@@ -125,12 +111,7 @@ class DoelTests(TestCase):
             einddatum=date(2025, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, GELIJKE_DATUM_ERROR):
             doel.clean()
 
     def test_eind_datum_is_not_allowed_to_be_before_start_datum(self):
@@ -139,12 +120,7 @@ class DoelTests(TestCase):
             einddatum=date(2024, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, EERDERE_DATUM_ERROR):
             doel.clean()
 
     def test_eind_datum_is_allowed_to_be_null(self):
@@ -160,12 +136,7 @@ class DoelTests(TestCase):
             beoogde_einddatum=date(2025, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, GELIJKE_DATUM_ERROR):
             doel.clean()
 
     def test_beoogde_eind_datum_is_not_allowed_to_be_before_beoogde_start_datum(self):
@@ -174,12 +145,7 @@ class DoelTests(TestCase):
             beoogde_einddatum=date(2024, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, EERDERE_DATUM_ERROR):
             doel.clean()
 
     def test_beoogde_eind_datum_is_allowed_to_be_null(self):
@@ -197,12 +163,7 @@ class SubDoelTests(TestCase):
             einddatum=date(2025, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, GELIJKE_DATUM_ERROR):
             subdoel.clean()
 
     def test_eind_datum_is_not_allowed_to_be_before_start_datum(self):
@@ -211,12 +172,7 @@ class SubDoelTests(TestCase):
             einddatum=date(2024, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, EERDERE_DATUM_ERROR):
             subdoel.clean()
 
     def test_eind_datum_is_allowed_to_be_null(self):
@@ -232,12 +188,7 @@ class SubDoelTests(TestCase):
             beoogde_einddatum=date(2025, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, GELIJKE_DATUM_ERROR):
             subdoel.clean()
 
     def test_beoogde_eind_datum_is_not_allowed_to_be_before_beoogde_start_datum(self):
@@ -246,12 +197,7 @@ class SubDoelTests(TestCase):
             beoogde_einddatum=date(2024, 1, 12),
         )
 
-        with self.assertRaisesMessage(
-            ValidationError,
-            _(
-                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
-            ),
-        ):
+        with self.assertRaisesMessage(ValidationError, EERDERE_DATUM_ERROR):
             subdoel.clean()
 
     def test_beoogde_eind_datum_is_allowed_to_be_null(self):
