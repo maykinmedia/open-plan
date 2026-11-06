@@ -19,7 +19,7 @@ class PlanAdmin(admin.ModelAdmin):
         "naam",
     )
 
-    readonly_fields = ("uuid",)
+    readonly_fields = ("uuid", "gewijzigd_op")
 
     fieldsets = (
         (
@@ -29,9 +29,10 @@ class PlanAdmin(admin.ModelAdmin):
                     "uuid",
                     "naam",
                     "omschrijving",
-                    "reden_wijziging",
-                    "toelichting_reden",
                     "status",
+                    "zaak",
+                    "contactmoment",
+                    "eigenaar",
                 ),
             },
         ),
@@ -41,16 +42,18 @@ class PlanAdmin(admin.ModelAdmin):
                 "fields": (
                     "startdatum",
                     "einddatum",
+                    "beoogde_startdatum",
+                    "beoogde_einddatum",
+                    "gewijzigd_op",
                 ),
             },
         ),
         (
-            "URNs",
+            "Voortgang",
             {
                 "fields": (
-                    "zaak",
-                    "contactmoment",
-                    "eigenaar",
+                    "reden_wijziging",
+                    "toelichting_reden",
                 ),
             },
         ),

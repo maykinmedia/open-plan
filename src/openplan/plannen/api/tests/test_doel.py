@@ -32,6 +32,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(self.positie.uuid),
             "naam": "Test Doel",
             "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving test",
         }
 
@@ -74,6 +75,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")
@@ -228,6 +230,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")

@@ -29,6 +29,7 @@ class PlanAPITests(APITestCase):
         data = {
             "naam": "Test Instrument",
             "startdatum": date.today().isoformat(),
+            "beoogde_startdatum": date.today().isoformat(),
         }
         response = self.client.post(url, data, format="json")
 
@@ -65,6 +66,7 @@ class PlanAPITests(APITestCase):
         data = {
             "naam": "Test update instrument",
             "startdatum": date.today().isoformat(),
+            "beoogde_startdatum": date.today().isoformat(),
         }
         response = self.client.put(url, data, format="json")
 
@@ -264,6 +266,7 @@ class PlanAPITests(APITestCase):
         data = {
             "naam": "Test Instrument",
             "startdatum": date.today().isoformat(),
+            "beoogde_startdatum": date.today().isoformat(),
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 201)

@@ -19,6 +19,7 @@ class DoelFactory(factory.django.DjangoModelFactory):
     naam = factory.Faker("sentence", nb_words=4)
     omschrijving = factory.Faker("paragraph", nb_sentences=3)
     startdatum = factory.LazyFunction(timezone.now)
+    beoogde_startdatum = factory.LazyFunction(timezone.now)
 
     class Meta:
         model = Doel

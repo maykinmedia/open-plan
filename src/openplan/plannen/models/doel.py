@@ -39,14 +39,27 @@ class Doel(models.Model):
         default=Status.ACTIEF,
         help_text=_("Status van het doel."),
     )
-    startdatum = models.DateTimeField(
+    startdatum = models.DateField(
         help_text=_("Startdatum van het doel."),
         db_index=True,
     )
-    einddatum = models.DateTimeField(
+    einddatum = models.DateField(
         null=True,
         blank=True,
         help_text=_("Einddatum van het doel."),
+    )
+    beoogde_startdatum = models.DateField(
+        help_text=_("Beoogde startdatum van het doel."),
+        db_index=True,
+    )
+    beoogde_einddatum = models.DateField(
+        null=True,
+        blank=True,
+        help_text=_("Beoogde einddatum van het doel."),
+    )
+    gewijzigd_op = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Datum en tijd waarop het doel voor het laatst is gewijzigd."),
     )
     resultaat = models.CharField(
         max_length=20,
