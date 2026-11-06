@@ -39,3 +39,12 @@ def validate_positie_type_not_self(positie_type):
                 }
             )
         parent = parent.doelpositie
+
+
+def validate_dates(start_datum, eind_datum):
+    if start_datum and eind_datum and (start_datum >= eind_datum):
+        raise ValidationError(
+            _(
+                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+            )
+        )

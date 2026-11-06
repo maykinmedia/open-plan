@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from openplan.utils.fields import URNField
 
 from ..enums.status import Status
+from .validators import validate_dates
 
 
 class Plan(models.Model):
@@ -90,3 +91,8 @@ class Plan(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+        validate_dates(self.startdatum, self.einddatum)
+        validate_dates(self.beoogde_startdatum, self.beoogde_einddatum)

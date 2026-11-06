@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
+from .validators import validate_dates
+
 
 class SubDoel(models.Model):
     uuid = models.UUIDField(
@@ -81,3 +83,8 @@ class SubDoel(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+        validate_dates(self.startdatum, self.einddatum)
+        validate_dates(self.beoogde_startdatum, self.beoogde_einddatum)
