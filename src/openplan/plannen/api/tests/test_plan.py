@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -21,8 +22,17 @@ from .api_testcase import APITestCase
 
 
 class PlanAPITests(APITestCase):
+    DATUM_ERROR = (
+        "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
+    )
+
     def setUp(self):
         super().setUp()
+        self.data = {
+            "naam": "Test Plan",
+            "startdatum": date.today().isoformat(),
+            "beoogde_startdatum": date.today().isoformat(),
+        }
 
     def test_create_plan(self):
         url = reverse("plannen:plan-list")
@@ -92,6 +102,101 @@ class PlanAPITests(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Plan.objects.filter(uuid=plan.uuid).exists())
+
+    def test_create_plan_with_valid_einddatums(self):
+        url = reverse("plannen:plan-list")
+        data = {
+            **self.data,
+            "startdatum": "2026-01-10",
+            "einddatum": "2026-01-20",
+            "beoogde_startdatum": "2026-01-10",
+            "beoogde_einddatum": "2026-01-20",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_plan_einddatum_before_startdatum(self):
+        url = reverse("plannen:plan-list")
+        data = {
+            **self.data,
+            "startdatum": "2026-01-10",
+            "einddatum": "2026-01-05",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        self.assertFalse(Plan.objects.exists())
+
+    def test_create_plan_einddatum_same_as_startdatum(self):
+        url = reverse("plannen:plan-list")
+        data = {
+            **self.data,
+            "startdatum": "2026-01-10",
+            "einddatum": "2026-01-10",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+
+    def test_create_plan_beoogde_einddatum_before_beoogde_startdatum(self):
+        url = reverse("plannen:plan-list")
+        data = {
+            **self.data,
+            "beoogde_startdatum": "2026-01-10",
+            "beoogde_einddatum": "2026-01-05",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "beoogdeEinddatum")
+        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        self.assertFalse(Plan.objects.exists())
+
+    def test_partial_update_plan_einddatum_before_existing_startdatum(self):
+        plan = PlanFactory.create(startdatum=date(2026, 1, 10), einddatum=None)
+
+        url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
+        response = self.client.patch(url, {"einddatum": "2026-01-05"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        plan.refresh_from_db()
+        self.assertIsNone(plan.einddatum)
+
+    def test_partial_update_plan_startdatum_after_existing_einddatum(self):
+        plan = PlanFactory.create(
+            startdatum=date(2026, 1, 10), einddatum=date(2026, 1, 20)
+        )
+
+        url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
+        response = self.client.patch(url, {"startdatum": "2026-01-25"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], _(self.DATUM_ERROR))
+        plan.refresh_from_db()
+        self.assertEqual(plan.startdatum, date(2026, 1, 10))
+
+    def test_partial_update_plan_valid_einddatum(self):
+        plan = PlanFactory.create(
+            startdatum=date(2026, 1, 10),
+            einddatum=None,
+            beoogde_startdatum=date(2026, 1, 10),
+            beoogde_einddatum=None,
+        )
+
+        url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
+        response = self.client.patch(url, {"einddatum": "2026-01-20"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        plan.refresh_from_db()
+        self.assertEqual(plan.einddatum, date(2026, 1, 20))
 
     def test_authentication_required(self):
         client = APIClient()

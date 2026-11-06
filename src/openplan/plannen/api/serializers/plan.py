@@ -5,6 +5,8 @@ from rest_framework import serializers
 from openplan.plannen.models.plan import Plan
 from openplan.utils.serializers import URNModelSerializer
 
+from .validators import DateValidator
+
 
 class NestedPlanSerializer(serializers.ModelSerializer):
     class Meta:
@@ -59,3 +61,7 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
             },
             "gewijzigd_op": {"read_only": True},
         }
+
+        validators = [
+            DateValidator(),
+        ]

@@ -8,6 +8,7 @@ from openplan.plannen.models.doeltype import DoelType
 from openplan.utils.fields import UUIDRelatedField
 
 from .doeltype import NestedDoelTypeSerializer
+from .validators import DateValidator
 
 
 class NestedDoelSerializer(serializers.ModelSerializer):
@@ -78,3 +79,6 @@ class DoelSerializer(serializers.ModelSerializer):
             "uuid": {"read_only": True},
             "gewijzigd_op": {"read_only": True},
         }
+        validators = [
+            DateValidator(),
+        ]

@@ -56,7 +56,7 @@ class PlanTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             plan.clean()
@@ -70,7 +70,7 @@ class PlanTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             plan.clean()
@@ -91,7 +91,7 @@ class PlanTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             plan.clean()
@@ -105,7 +105,7 @@ class PlanTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             plan.clean()
@@ -128,7 +128,7 @@ class DoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             doel.clean()
@@ -142,7 +142,7 @@ class DoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             doel.clean()
@@ -163,7 +163,7 @@ class DoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             doel.clean()
@@ -177,7 +177,7 @@ class DoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             doel.clean()
@@ -200,7 +200,7 @@ class SubDoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             subdoel.clean()
@@ -214,7 +214,7 @@ class SubDoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             subdoel.clean()
@@ -235,7 +235,7 @@ class SubDoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             subdoel.clean()
@@ -249,7 +249,7 @@ class SubDoelTests(TestCase):
         with self.assertRaisesMessage(
             ValidationError,
             _(
-                "De eind datum mag niet op een eerdere of dezelfde dag vallen als de start datum."
+                "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
             ),
         ):
             subdoel.clean()
