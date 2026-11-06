@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
+from .validators import validate_dates
+
 
 class Doel(models.Model):
     uuid = models.UUIDField(
@@ -39,14 +41,27 @@ class Doel(models.Model):
         default=Status.ACTIEF,
         help_text=_("Status van het doel."),
     )
-    startdatum = models.DateTimeField(
+    startdatum = models.DateField(
         help_text=_("Startdatum van het doel."),
         db_index=True,
     )
-    einddatum = models.DateTimeField(
+    einddatum = models.DateField(
         null=True,
         blank=True,
         help_text=_("Einddatum van het doel."),
+    )
+    beoogde_startdatum = models.DateField(
+        help_text=_("Beoogde startdatum van het doel."),
+        db_index=True,
+    )
+    beoogde_einddatum = models.DateField(
+        null=True,
+        blank=True,
+        help_text=_("Beoogde einddatum van het doel."),
+    )
+    gewijzigd_op = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Datum en tijd waarop het doel voor het laatst is gewijzigd."),
     )
     resultaat = models.CharField(
         max_length=20,
@@ -73,3 +88,8 @@ class Doel(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+        validate_dates(self.startdatum, self.einddatum)
+        validate_dates(self.beoogde_startdatum, self.beoogde_einddatum)

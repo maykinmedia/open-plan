@@ -38,18 +38,22 @@ class Positie(models.Model):
         max_length=20,
         choices=Status.choices,
         default=Status.ACTIEF,
-        help_text=_("Status van het doel."),
+        help_text=_("Status van de positie."),
+    )
+    gewijzigd_op = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Datum en tijd waarop de positie voor het laatst is gewijzigd."),
     )
     reden_wijziging = models.CharField(
         max_length=30,
         choices=RedenWijziging.choices,
         default=RedenWijziging.REGISTREREN,
-        help_text=_("Reden waarom het gewijzigd is."),
+        help_text=_("Reden waarom de positie gewijzigd is."),
     )
     toelichting_reden = models.TextField(
         blank=True,
         max_length=1000,
-        help_text=_("Toelichting reden wijziging van het subdoel."),
+        help_text=_("Toelichting reden wijziging van de positie."),
     )
 
     class Meta:

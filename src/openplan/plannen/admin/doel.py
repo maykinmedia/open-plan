@@ -17,7 +17,7 @@ class DoelAdmin(admin.ModelAdmin):
         "uuid",
         "naam",
     )
-    readonly_fields = ("uuid",)
+    readonly_fields = ("uuid", "gewijzigd_op")
 
     fieldsets = (
         (
@@ -36,7 +36,13 @@ class DoelAdmin(admin.ModelAdmin):
         (
             "Data",
             {
-                "fields": ("startdatum", "einddatum"),
+                "fields": (
+                    "startdatum",
+                    "einddatum",
+                    "beoogde_startdatum",
+                    "beoogde_einddatum",
+                    "gewijzigd_op",
+                ),
             },
         ),
         (

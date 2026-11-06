@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -39,3 +41,29 @@ def validate_positie_type_not_self(positie_type):
                 }
             )
         parent = parent.doelpositie
+
+
+def validate_dates(start_datum: date | None, eind_datum: date | None) -> None:
+    """
+    Validate that `eind_datum` is after `start_datum`.
+
+    Args:
+        start_datum (date | None): The starting date.
+        eind_datum (date | None): The ending date.
+
+    Returns:
+        None
+
+    Raises:
+        ValidationError: If both dates are provided and `eind_datum` <= `start_datum`.
+
+    """
+    if start_datum and eind_datum and eind_datum <= start_datum:
+        raise ValidationError(
+            _(
+                "{eind_datum} mag niet op een eerdere of dezelfde dag vallen "
+                "als de {start_datum}.".format(
+                    eind_datum=str(eind_datum), start_datum=str(start_datum)
+                )
+            )
+        )

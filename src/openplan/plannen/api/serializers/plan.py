@@ -5,6 +5,8 @@ from rest_framework import serializers
 from openplan.plannen.models.plan import Plan
 from openplan.utils.serializers import URNModelSerializer
 
+from .validators import StartBeforeEndValidator
+
 
 class NestedPlanSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,12 +20,16 @@ class NestedPlanSerializer(serializers.ModelSerializer):
             "toelichting_reden",
             "startdatum",
             "einddatum",
+            "beoogde_startdatum",
+            "beoogde_einddatum",
+            "gewijzigd_op",
             "zaak",
             "contactmoment",
             "eigenaar",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
+            "gewijzigd_op": {"read_only": True},
         }
 
 
@@ -40,6 +46,9 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
             "toelichting_reden",
             "startdatum",
             "einddatum",
+            "beoogde_startdatum",
+            "beoogde_einddatum",
+            "gewijzigd_op",
             "zaak",
             "contactmoment",
             "eigenaar",
@@ -50,4 +59,10 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
                 "lookup_field": "uuid",
                 "help_text": _("De Uniform Resource Name van de plan."),
             },
+            "gewijzigd_op": {"read_only": True},
         }
+
+        validators = [
+            StartBeforeEndValidator("startdatum", "einddatum"),
+            StartBeforeEndValidator("beoogde_startdatum", "beoogde_einddatum"),
+        ]

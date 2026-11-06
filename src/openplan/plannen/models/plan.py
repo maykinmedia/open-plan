@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from openplan.utils.fields import URNField
 
 from ..enums.status import Status
+from .validators import validate_dates
 
 
 class Plan(models.Model):
@@ -30,14 +31,27 @@ class Plan(models.Model):
         default=Status.ACTIEF,
         help_text=_("Status van het plan."),
     )
-    startdatum = models.DateTimeField(
+    startdatum = models.DateField(
         help_text=_("Startdatum van het plan."),
         db_index=True,
     )
-    einddatum = models.DateTimeField(
+    einddatum = models.DateField(
         null=True,
         blank=True,
         help_text=_("Einddatum van het plan."),
+    )
+    beoogde_startdatum = models.DateField(
+        help_text=_("Beoogde startdatum van het plan."),
+        db_index=True,
+    )
+    beoogde_einddatum = models.DateField(
+        null=True,
+        blank=True,
+        help_text=_("Beoogde einddatum van het plan."),
+    )
+    gewijzigd_op = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Datum en tijd waarop het plan voor het laatst is gewijzigd."),
     )
     reden_wijziging = models.TextField(
         blank=True,
@@ -77,3 +91,8 @@ class Plan(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+        validate_dates(self.startdatum, self.einddatum)
+        validate_dates(self.beoogde_startdatum, self.beoogde_einddatum)

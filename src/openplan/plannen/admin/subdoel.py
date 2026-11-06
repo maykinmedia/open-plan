@@ -17,7 +17,7 @@ class SubDoelAdmin(admin.ModelAdmin):
         "uuid",
         "naam",
     )
-    readonly_fields = ("uuid",)
+    readonly_fields = ("uuid", "gewijzigd_op")
 
     fieldsets = (
         (
@@ -35,13 +35,23 @@ class SubDoelAdmin(admin.ModelAdmin):
         (
             "Data",
             {
-                "fields": ("startdatum", "einddatum"),
+                "fields": (
+                    "startdatum",
+                    "einddatum",
+                    "beoogde_startdatum",
+                    "beoogde_einddatum",
+                    "gewijzigd_op",
+                ),
             },
         ),
         (
             "Voortgang",
             {
-                "fields": ("resultaat", "reden_wijziging", "toelichting_reden"),
+                "fields": (
+                    "resultaat",
+                    "reden_wijziging",
+                    "toelichting_reden",
+                ),
             },
         ),
     )

@@ -3,9 +3,11 @@ from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
 from rest_framework.test import APIClient
+from vng_api_common.tests import get_validation_errors
 
 from openplan.plannen.enums.status import Resultaat, Status
 from openplan.plannen.models.factories.doel import DoelFactory
@@ -22,6 +24,14 @@ from .api_testcase import APITestCase
 
 
 class DoelAPITests(APITestCase):
+    DATUM_ERROR = _(
+        "De einddatum mag niet op een eerdere of dezelfde dag vallen als de startdatum."
+    )
+    BEOOGDE_EINDDATUM_ERROR = _(
+        "De beoogde_einddatum mag niet op een eerdere of dezelfde dag vallen "
+        "als de beoogde_startdatum."
+    )
+
     def setUp(self):
         super().setUp()
         self.hoofddoel_type = DoelTypeFactory.create(doel_type="hoofddoel")
@@ -32,6 +42,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(self.positie.uuid),
             "naam": "Test Doel",
             "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving test",
         }
 
@@ -74,6 +85,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")
@@ -99,6 +111,96 @@ class DoelAPITests(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Doel.objects.filter(uuid=doel.uuid).exists())
+
+    def test_create_doel_with_valid_einddatums(self):
+        url = reverse("plannen:doel-list")
+        data = {
+            **self.data,
+            "startdatum": "2026-01-10",
+            "einddatum": "2026-01-20",
+            "beoogde_startdatum": "2026-01-10",
+            "beoogde_einddatum": "2026-01-20",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_doel_einddatum_before_startdatum(self):
+        url = reverse("plannen:doel-list")
+        data = {
+            **self.data,
+            "startdatum": "2026-01-10",
+            "einddatum": "2026-01-05",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
+        self.assertFalse(Doel.objects.exists())
+
+    def test_create_doel_einddatum_same_as_startdatum(self):
+        url = reverse("plannen:doel-list")
+        data = {
+            **self.data,
+            "startdatum": "2026-01-10",
+            "einddatum": "2026-01-10",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
+
+    def test_create_doel_beoogde_einddatum_before_beoogde_startdatum(self):
+        url = reverse("plannen:doel-list")
+        data = {
+            **self.data,
+            "beoogde_startdatum": "2026-01-10",
+            "beoogde_einddatum": "2026-01-05",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "beoogdeEinddatum")
+        self.assertEqual(error["reason"], self.BEOOGDE_EINDDATUM_ERROR)
+        self.assertFalse(Doel.objects.exists())
+
+    def test_partial_update_einddatum_before_existing_startdatum(self):
+        doel = DoelFactory.create(startdatum=date(2026, 1, 10), einddatum=None)
+
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        response = self.client.patch(url, {"einddatum": "2026-01-05"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
+        doel.refresh_from_db()
+        self.assertIsNone(doel.einddatum)
+
+    def test_partial_update_startdatum_after_existing_einddatum(self):
+        doel = DoelFactory.create(
+            startdatum=date(2026, 1, 10), einddatum=date(2026, 1, 20)
+        )
+
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        response = self.client.patch(url, {"startdatum": "2026-01-25"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "einddatum")
+        self.assertEqual(error["reason"], self.DATUM_ERROR)
+        doel.refresh_from_db()
+        self.assertEqual(doel.startdatum, date(2026, 1, 10))
+
+    def test_partial_update_valid_einddatum(self):
+        doel = DoelFactory.create(startdatum=date(2026, 1, 10), einddatum=None)
+
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        response = self.client.patch(url, {"einddatum": "2026-01-20"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        doel.refresh_from_db()
+        self.assertEqual(doel.einddatum, date(2026, 1, 20))
 
     def test_authentication_required(self):
         client = APIClient()
@@ -228,6 +330,7 @@ class DoelAPITests(APITestCase):
             "positieUuid": str(doel.positie.uuid),
             "naam": "Test update Doel",
             "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")

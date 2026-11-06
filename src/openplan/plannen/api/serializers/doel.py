@@ -8,6 +8,7 @@ from openplan.plannen.models.doeltype import DoelType
 from openplan.utils.fields import UUIDRelatedField
 
 from .doeltype import NestedDoelTypeSerializer
+from .validators import StartBeforeEndValidator
 
 
 class NestedDoelSerializer(serializers.ModelSerializer):
@@ -20,12 +21,16 @@ class NestedDoelSerializer(serializers.ModelSerializer):
             "omschrijving",
             "startdatum",
             "einddatum",
+            "beoogde_startdatum",
+            "beoogde_einddatum",
+            "gewijzigd_op",
             "resultaat",
             "reden_wijziging",
             "toelichting_reden",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
+            "gewijzigd_op": {"read_only": True},
         }
 
 
@@ -63,10 +68,18 @@ class DoelSerializer(serializers.ModelSerializer):
             "omschrijving",
             "startdatum",
             "einddatum",
+            "beoogde_startdatum",
+            "beoogde_einddatum",
+            "gewijzigd_op",
             "resultaat",
             "reden_wijziging",
             "toelichting_reden",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
+            "gewijzigd_op": {"read_only": True},
         }
+        validators = [
+            StartBeforeEndValidator("startdatum", "einddatum"),
+            StartBeforeEndValidator("beoogde_startdatum", "beoogde_einddatum"),
+        ]

@@ -506,19 +506,19 @@ paths:
         name: einddatum
         schema:
           type: string
-          format: date-time
+          format: date
         description: Einddatum van het doel.
       - in: query
         name: einddatum__gte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Einddatum van het doel.
       - in: query
         name: einddatum__lte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Einddatum van het doel.
       - in: query
         name: naam
@@ -567,19 +567,19 @@ paths:
         name: startdatum
         schema:
           type: string
-          format: date-time
+          format: date
         description: Startdatum van het doel.
       - in: query
         name: startdatum__gte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Startdatum van het doel.
       - in: query
         name: startdatum__lte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Startdatum van het doel.
       - in: query
         name: status
@@ -1248,19 +1248,19 @@ paths:
         name: einddatum
         schema:
           type: string
-          format: date-time
+          format: date
         description: Einddatum van het plan.
       - in: query
         name: einddatum__gte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Einddatum van het plan.
       - in: query
         name: einddatum__lte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Einddatum van het plan.
       - in: query
         name: naam
@@ -1289,19 +1289,19 @@ paths:
         name: startdatum
         schema:
           type: string
-          format: date-time
+          format: date
         description: Startdatum van het plan.
       - in: query
         name: startdatum__gte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Startdatum van het plan.
       - in: query
         name: startdatum__lte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Startdatum van het plan.
       - in: query
         name: status
@@ -1829,13 +1829,27 @@ components:
           description: omschrijving van het doel.
         startdatum:
           type: string
-          format: date-time
+          format: date
           description: Startdatum van het doel.
         einddatum:
           type: string
-          format: date-time
+          format: date
           nullable: true
           description: Einddatum van het doel.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          description: Beoogde startdatum van het doel.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het doel.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het doel voor het laatst is gewijzigd.
         resultaat:
           description: |-
             Resultaat van het doel.
@@ -1864,8 +1878,10 @@ components:
           description: Toelichting reden wijziging van het doel.
           maxLength: 1000
       required:
+      - beoogdeStartdatum
       - doeltype
       - doeltypeUuid
+      - gewijzigdOp
       - naam
       - positieUuid
       - startdatum
@@ -1977,13 +1993,27 @@ components:
           maxLength: 1000
         startdatum:
           type: string
-          format: date-time
+          format: date
           description: Startdatum van het plan.
         einddatum:
           type: string
-          format: date-time
+          format: date
           nullable: true
           description: Einddatum van het plan.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          description: Beoogde startdatum van het plan.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het plan.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het plan voor het laatst is gewijzigd.
         zaak:
           type: string
           example: urn:namespace:component:resource:uuid
@@ -2003,6 +2033,8 @@ components:
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
       required:
+      - beoogdeStartdatum
+      - gewijzigdOp
       - naam
       - startdatum
       - uuid
@@ -2276,13 +2308,27 @@ components:
           description: omschrijving van het doel.
         startdatum:
           type: string
-          format: date-time
+          format: date
           description: Startdatum van het doel.
         einddatum:
           type: string
-          format: date-time
+          format: date
           nullable: true
           description: Einddatum van het doel.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          description: Beoogde startdatum van het doel.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het doel.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het doel voor het laatst is gewijzigd.
         resultaat:
           description: |-
             Resultaat van het doel.
@@ -2389,13 +2435,27 @@ components:
           maxLength: 1000
         startdatum:
           type: string
-          format: date-time
+          format: date
           description: Startdatum van het plan.
         einddatum:
           type: string
-          format: date-time
+          format: date
           nullable: true
           description: Einddatum van het plan.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          description: Beoogde startdatum van het plan.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het plan.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het plan voor het laatst is gewijzigd.
         zaak:
           type: string
           example: urn:namespace:component:resource:uuid
@@ -2502,13 +2562,27 @@ components:
           maxLength: 1000
         startdatum:
           type: string
-          format: date-time
+          format: date
           description: Startdatum van het plan.
         einddatum:
           type: string
-          format: date-time
+          format: date
           nullable: true
           description: Einddatum van het plan.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          description: Beoogde startdatum van het plan.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het plan.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het plan voor het laatst is gewijzigd.
         zaak:
           type: string
           example: urn:namespace:component:resource:uuid
@@ -2528,6 +2602,8 @@ components:
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
       required:
+      - beoogdeStartdatum
+      - gewijzigdOp
       - naam
       - startdatum
       - urn

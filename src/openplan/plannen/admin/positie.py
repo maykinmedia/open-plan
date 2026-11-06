@@ -11,7 +11,7 @@ class PositieAdmin(admin.ModelAdmin):
         "omschrijving",
     )
     search_fields = ("uuid",)
-    readonly_fields = ("uuid",)
+    readonly_fields = ("uuid", "gewijzigd_op")
 
     fieldsets = (
         (
@@ -24,6 +24,7 @@ class PositieAdmin(admin.ModelAdmin):
                     "naam",
                     "omschrijving",
                     "status",
+                    "gewijzigd_op",
                     "reden_wijziging",
                     "toelichting_reden",
                 ),
