@@ -6,6 +6,10 @@ from django.utils.deconstruct import deconstructible
 from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
 
+UUID_REGEX = (
+    "([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})"
+)
+
 
 def validate_charfield_entry(value, allow_apostrophe=False):
     """
