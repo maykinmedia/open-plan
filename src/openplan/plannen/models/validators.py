@@ -4,6 +4,17 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
+import structlog
+from jsonschema import (
+    Draft202012Validator,
+    ValidationError as JSONValidationError,
+    draft202012_format_checker,
+)
+
+from openplan.utils.typing import JSONObject
+
+logger = structlog.stdlib.get_logger(__name__)
+
 from ..enums.status import SubjectType
 
 
@@ -129,6 +140,35 @@ def validate_subject_velden(
 
     if errors:
         raise ValidationError(errors)
+
+
+def validate_jsonschema(
+    instance: JSONObject, schema: JSONObject, label: str = "instance"
+) -> None:
+    """
+    Validator for JSONField with appropriate JSON schema.
+
+    Args:
+        instance (JSONObject): The JSON object to validate.
+        schema (JSONObject): The JSON Schema to validate against.
+        label (str): A label representing the root key of the instance (used in error paths).
+
+    Raises:
+        ValueError: Raises a dictionary mapping the error path to the validation message.
+    """
+    try:
+        validator = Draft202012Validator(
+            schema, format_checker=draft202012_format_checker
+        )
+        validator.validate(instance)
+    except JSONValidationError as json_error:
+        logger.exception("validate_jsonschema failed: JSON not valid")
+        path_list = [str(err) for err in getattr(json_error, "absolute_path", [])]
+        if label not in path_list:
+            path_list.insert(0, label)
+        path = ".".join(path_list)
+
+        raise ValidationError({path: json_error.message})
 
 
 nummer_validatie = RegexValidator(
