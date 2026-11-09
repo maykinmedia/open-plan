@@ -1,11 +1,13 @@
 import uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import Doelstatus, RedenWijziging
 
-from .validators import validate_dates, validate_immutable_field
+from ..schemas import PRODUCTEN_SCHEMA
+from .validators import validate_dates, validate_immutable_field, validate_jsonschema
 
 
 class Subdoel(models.Model):
@@ -94,6 +96,14 @@ class Subdoel(models.Model):
         max_length=1000,
         help_text=_("Toelichting reden wijziging van het subdoel."),
     )
+    producten = models.JSONField(
+        _("producten"),
+        default=list,
+        blank=True,
+        help_text=_(
+            "Lijst met URN's naar producten die als instrumenten worden ingezet."
+        ),
+    )
 
     class Meta:
         verbose_name = _("Subdoel")
@@ -102,6 +112,18 @@ class Subdoel(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean_producten(self):
+        if not self.producten:
+            return
+        try:
+            validate_jsonschema(
+                instance=self.producten,
+                label="producten",
+                schema=PRODUCTEN_SCHEMA,
+            )
+        except ValidationError as error:
+            raise ValidationError({"producten": str(error)})
 
     def clean(self):
         super().clean()
@@ -113,3 +135,4 @@ class Subdoel(models.Model):
             "subdoeltype",
             _("Het subdoeltype kan niet gewijzigd worden. Maak een nieuw subdoel aan."),
         )
+        self.clean_producten()

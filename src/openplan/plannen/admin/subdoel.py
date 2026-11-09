@@ -33,6 +33,7 @@ class SubDoelAdmin(admin.ModelAdmin):
                     "notitie_intern",
                     "notitie_extern",
                     "voortgang",
+                    "producten",
                 ),
             },
         ),
