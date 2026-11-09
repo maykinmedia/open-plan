@@ -9,10 +9,11 @@ from maykin_2fa.test import disable_admin_mfa
 from openplan.accounts.tests.factories import UserFactory
 
 from ..models.factories.doel import DoelFactory
-from ..models.subdoel import SubDoel
+from ..models.factories.subdoeltype import SubdoelTypeFactory
+from ..models.subdoel import Subdoel
 
-URN_1 = "urn:nld:gemeenteutrecht:product:uuid:2f463a72-83fd-48bc-a3cf-901755c1644c"
-URN_2 = "urn:nld:gemeenteutrecht:product:uuid:8a1b2c3d-1234-4abc-9def-0123456789ab"
+URN_1 = "urn:nld:gemeente:product:uuid:2f463a72-83fd-48bc-a3cf-901755c1644c"
+URN_2 = "urn:nld:gemeente:product:uuid:8a1b2c3d-1234-4abc-9def-0123456789ab"
 
 
 @disable_admin_mfa()
@@ -24,6 +25,7 @@ class SubDoelAdminTests(WebTest):
         super().setUpTestData()
         cls.user = UserFactory.create(superuser=True)
         cls.doel = DoelFactory.create()
+        cls.subdoeltype = SubdoelTypeFactory.create()
 
     def setUp(self) -> None:
         super().setUp()
@@ -32,12 +34,14 @@ class SubDoelAdminTests(WebTest):
     def _fill_required_fields(self, form):
         form["naam"] = "Test subdoel"
         form["doel"] = self.doel.pk
+        form["subdoeltype"] = self.subdoeltype.pk
         form["startdatum"] = timezone.now().date()
         form["beoogde_startdatum"] = timezone.now().date()
 
     def _create_subdoel(self, producten):
-        return SubDoel.objects.create(
+        return Subdoel.objects.create(
             doel=self.doel,
+            subdoeltype=self.subdoeltype,
             naam="Bestaand subdoel",
             startdatum=timezone.now().date(),
             beoogde_startdatum=timezone.now().date(),
@@ -49,8 +53,13 @@ class SubDoelAdminTests(WebTest):
             "ul", {"class": "errorlist", "id": "id_producten_error"}
         )
 
+    def _producten_meldingen(self, response):
+        errors = self._producten_errors(response)
+        self.assertEqual(len(errors), 1)
+        return [li.get_text(strip=True) for li in errors[0].find_all("li")]
+
     def test_create_subdoel_with_one_product(self):
-        self.assertEqual(SubDoel.objects.count(), 0)
+        self.assertEqual(Subdoel.objects.count(), 0)
         response = self.app.get(self.url)
         form = response.forms.get("subdoel_form")
         self._fill_required_fields(form)
@@ -59,8 +68,8 @@ class SubDoelAdminTests(WebTest):
         response = form.submit()
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(SubDoel.objects.count(), 1)
-        self.assertEqual(SubDoel.objects.get().producten, [{"urn": URN_1}])
+        self.assertEqual(Subdoel.objects.count(), 1)
+        self.assertEqual(Subdoel.objects.get().producten, [{"urn": URN_1}])
 
     def test_create_subdoel_with_multiple_products(self):
         response = self.app.get(self.url)
@@ -72,7 +81,7 @@ class SubDoelAdminTests(WebTest):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            SubDoel.objects.get().producten,
+            Subdoel.objects.get().producten,
             [{"urn": URN_1}, {"urn": URN_2}],
         )
 
@@ -85,7 +94,7 @@ class SubDoelAdminTests(WebTest):
         response = form.submit()
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(SubDoel.objects.get().producten, [])
+        self.assertEqual(Subdoel.objects.get().producten, [])
 
     def test_create_subdoel_invalid_urn(self):
         response = self.app.get(self.url)
@@ -96,12 +105,32 @@ class SubDoelAdminTests(WebTest):
         response = form.submit()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(SubDoel.objects.count(), 0)
+        self.assertEqual(Subdoel.objects.count(), 0)
+        self.assertEqual(
+            self._producten_meldingen(response),
+            [
+                "producten.1.urn: 'geen-geldige-urn' is geen geldige URN.",
+                "producten.1.urn: 'geen-geldige-urn' moet eindigen op een UUID.",
+            ],
+        )
 
-        errors = self._producten_errors(response)
-        self.assertEqual(len(errors), 1)
-        self.assertIn("geen-geldige-urn", errors[0].get_text(strip=True))
-        self.assertIn("does not match", errors[0].get_text(strip=True))
+    def test_create_subdoel_urn_without_uuid(self):
+        response = self.app.get(self.url)
+        form = response.forms.get("subdoel_form")
+        self._fill_required_fields(form)
+
+        form["producten"] = json.dumps([{"urn": "urn:nld:gemeente:product:12345"}])
+        response = form.submit()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Subdoel.objects.count(), 0)
+        self.assertEqual(
+            self._producten_meldingen(response),
+            [
+                "producten.0.urn: 'urn:nld:gemeente:product:12345' "
+                "moet eindigen op een UUID.",
+            ],
+        )
 
     def test_create_subdoel_invalid_property(self):
         response = self.app.get(self.url)
@@ -112,7 +141,7 @@ class SubDoelAdminTests(WebTest):
         response = form.submit()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(SubDoel.objects.count(), 0)
+        self.assertEqual(Subdoel.objects.count(), 0)
 
         errors = self._producten_errors(response)
         self.assertEqual(len(errors), 1)
@@ -130,7 +159,7 @@ class SubDoelAdminTests(WebTest):
         response = form.submit()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(SubDoel.objects.count(), 0)
+        self.assertEqual(Subdoel.objects.count(), 0)
 
         errors = self._producten_errors(response)
         self.assertEqual(len(errors), 1)
@@ -145,7 +174,7 @@ class SubDoelAdminTests(WebTest):
         response = form.submit()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(SubDoel.objects.count(), 0)
+        self.assertEqual(Subdoel.objects.count(), 0)
         self.assertEqual(len(self._producten_errors(response)), 1)
 
     def test_change_subdoel_remove_product(self):

@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.encoding import smart_str
 from django.utils.translation import gettext_lazy as _
@@ -7,7 +8,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from .validators import URNValidator
+from .validators import UUID_REGEX, URNValidator
 
 
 class URNField(models.CharField):
@@ -19,7 +20,13 @@ class URNField(models.CharField):
     against a basic URN pattern: `urn:<namespace>:<resource>`.
     """
 
-    default_validators = [URNValidator()]
+    default_validators = [
+        URNValidator(),
+        RegexValidator(
+            f":uuid:{UUID_REGEX}$",
+            _("Urn moet eindigen met `:uuid:<uuid>`."),
+        ),
+    ]
     description = _("URN")
 
     def __init__(self, *args, **kwargs):

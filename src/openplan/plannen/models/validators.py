@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 import structlog
 from jsonschema import (
     Draft202012Validator,
-    ValidationError as JSONValidationError,
     draft202012_format_checker,
 )
 
@@ -106,27 +105,29 @@ def validate_jsonschema(
     """
     Validator for JSONField with appropriate JSON schema.
 
-    Args:
-        instance (JSONObject): The JSON object to validate.
-        schema (JSONObject): The JSON Schema to validate against.
-        label (str): A label representing the root key of the instance (used in error paths).
+    A subschema can define a custom ``errorMessage``; it replaces the default
+    jsonschema message. ``{value}`` in the message is replaced by the invalid value.
 
     Raises:
-        ValueError: Raises a dictionary mapping the error path to the validation message.
+        ValidationError: All validation messages under the key ``label``.
     """
-    try:
-        validator = Draft202012Validator(
-            schema, format_checker=draft202012_format_checker
-        )
-        validator.validate(instance)
-    except JSONValidationError as json_error:
-        logger.exception("validate_jsonschema failed: JSON not valid")
-        path_list = [str(err) for err in getattr(json_error, "absolute_path", [])]
-        if label not in path_list:
-            path_list.insert(0, label)
-        path = ".".join(path_list)
+    validator = Draft202012Validator(schema, format_checker=draft202012_format_checker)
+    errors = list(validator.iter_errors(instance))
+    if not errors:
+        return
 
-        raise ValidationError({path: json_error.message})
+    logger.info("validate_jsonschema failed for %s: %d error(s)", label, len(errors))
+
+    messages = []
+    for error in errors:
+        custom = (
+            error.schema.get("errorMessage") if isinstance(error.schema, dict) else None
+        )
+        message = custom.format(value=error.instance) if custom else error.message
+        path = ".".join([label, *(str(part) for part in error.absolute_path)])
+        messages.append(f"{path}: {message}")
+
+    raise ValidationError({label: messages})
 
 
 nummer_validatie = RegexValidator(

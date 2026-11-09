@@ -1,6 +1,5 @@
 import uuid
 
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -100,9 +99,7 @@ class Subdoel(models.Model):
         _("producten"),
         default=list,
         blank=True,
-        help_text=_(
-            "Lijst met URN's naar producten die als instrumenten worden ingezet."
-        ),
+        help_text=_("Lijst met URN's naar producten."),
     )
 
     class Meta:
@@ -112,18 +109,6 @@ class Subdoel(models.Model):
 
     def __str__(self):
         return self.naam
-
-    def clean_producten(self):
-        if not self.producten:
-            return
-        try:
-            validate_jsonschema(
-                instance=self.producten,
-                label="producten",
-                schema=PRODUCTEN_SCHEMA,
-            )
-        except ValidationError as error:
-            raise ValidationError({"producten": str(error)})
 
     def clean(self):
         super().clean()
@@ -135,4 +120,8 @@ class Subdoel(models.Model):
             "subdoeltype",
             _("Het subdoeltype kan niet gewijzigd worden. Maak een nieuw subdoel aan."),
         )
-        self.clean_producten()
+        validate_jsonschema(
+            instance=self.producten,
+            label="producten",
+            schema=PRODUCTEN_SCHEMA,
+        )
