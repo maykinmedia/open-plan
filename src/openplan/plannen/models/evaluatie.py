@@ -86,4 +86,4 @@ class Evaluatie(models.Model):
         ordering = ("-datum",)
 
     def __str__(self):
-        return str(self.uuid)
+        return self.naam

@@ -10,9 +10,9 @@ from openplan.plannen.api.filtersets.evaluatie import EvaluatieFilter
 from openplan.plannen.models.evaluatie import Evaluatie
 
 from ...metrics import (
-    contactmomenten_create_counter,
-    contactmomenten_delete_counter,
-    contactmomenten_update_counter,
+    evaluatie_create_counter,
+    evaluatie_delete_counter,
+    evaluatie_update_counter,
 )
 from ..serializers.evaluatie import EvaluatieSerializer
 
@@ -62,7 +62,7 @@ class EvaluatieViewSet(viewsets.ModelViewSet):
             "evaluatie_created",
             uuid=str(evaluatie.uuid),
         )
-        contactmomenten_create_counter.add(1)
+        evaluatie_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -72,7 +72,7 @@ class EvaluatieViewSet(viewsets.ModelViewSet):
             "evaluatie_updated",
             uuid=str(evaluatie.uuid),
         )
-        contactmomenten_update_counter.add(1)
+        evaluatie_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -81,4 +81,4 @@ class EvaluatieViewSet(viewsets.ModelViewSet):
             "evaluatie_deleted",
             uuid=str(instance.uuid),
         )
-        contactmomenten_delete_counter.add(1)
+        evaluatie_delete_counter.add(1)

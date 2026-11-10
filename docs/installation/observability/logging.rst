@@ -88,9 +88,9 @@ context variables, these events will also have the **request bound metadata** de
 API
 ~~~
 
-* ``contactmoment_created``: created a ``Contactmoment`` via the API. Additional context: ``uuid``.
-* ``contactmoment_updated``: updated a ``Contactmoment`` via the API. Additional context: ``uuid``.
-* ``contactmoment_deleted``: deleted a ``Contactmoment`` via the API. Additional context: ``uuid``.
+* ``evaluatie_created``: created a ``Evaluatie`` via the API. Additional context: ``uuid``.
+* ``evaluatie_updated``: updated a ``Evaluatie`` via the API. Additional context: ``uuid``.
+* ``evaluatie_deleted``: deleted a ``Evaluatie`` via the API. Additional context: ``uuid``.
 
 * ``doel_created``: created a ``Doel`` via the API. Additional context: ``uuid``.
 * ``doel_updated``: updated a ``Doel`` via the API. Additional context: ``uuid``.

@@ -2,19 +2,19 @@ from opentelemetry import metrics
 
 meter = metrics.get_meter("openplan.plannen")
 
-contactmomenten_create_counter = meter.create_counter(
-    "openplan.contactmoment.creates",
-    description="Amount of contactmomenten created (via the API).",
+evaluatie_create_counter = meter.create_counter(
+    "openplan.evaluatie.creates",
+    description="Amount of evaluaties created (via the API).",
     unit="1",
 )
-contactmomenten_update_counter = meter.create_counter(
-    "openplan.contactmoment.updates",
-    description="Amount of contactmomenten updated (via the API).",
+evaluatie_update_counter = meter.create_counter(
+    "openplan.evaluatie.updates",
+    description="Amount of evaluaties updated (via the API).",
     unit="1",
 )
-contactmomenten_delete_counter = meter.create_counter(
-    "openplan.contactmoment.deletes",
-    description="Amount of contactmomenten deleted (via the API).",
+evaluatie_delete_counter = meter.create_counter(
+    "openplan.evaluatie.deletes",
+    description="Amount of evaluaties deleted (via the API).",
     unit="1",
 )
 

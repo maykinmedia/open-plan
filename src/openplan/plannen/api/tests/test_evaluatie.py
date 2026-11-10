@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import MagicMock, patch
 
 from django.db.models import ProtectedError
 from django.urls import reverse
@@ -9,6 +10,11 @@ from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
 from openplan.plannen.enums.status import DoelStatus
+from openplan.plannen.metrics import (
+    evaluatie_create_counter,
+    evaluatie_delete_counter,
+    evaluatie_update_counter,
+)
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.evaluatie import (
     EvaluatieFactory,
@@ -188,6 +194,49 @@ class EvaluatieAPITests(APITestCase):
             response = self.client.get(url, {"datum__gte": "2025-04-07T00:00:00Z"})
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data["count"], 1)
+
+    @patch.object(evaluatie_create_counter, "add", wraps=evaluatie_create_counter.add)
+    def test_create_evaluatie_increments_metric(self, mock_add: MagicMock):
+        evaluatietype = EvaluatieTypeFactory.create()
+        url = reverse("plannen:evaluatie-list")
+        data = {
+            "plan_uuid": str(self.plan.uuid),
+            "evaluatietype_uuid": str(evaluatietype.uuid),
+            "naam": "Evaluatie metric",
+            "datum": timezone.now().isoformat(),
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(evaluatie_update_counter, "add", wraps=evaluatie_update_counter.add)
+    def test_update_evaluatie_increments_metric(self, mock_add: MagicMock):
+        evaluatie = EvaluatieFactory.create()
+        evaluatietype = EvaluatieTypeFactory.create()
+        url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
+        data = {
+            "plan_uuid": str(self.other_plan.uuid),
+            "evaluatietype_uuid": str(evaluatietype.uuid),
+            "naam": "Bijgewerkte evaluatie metric",
+            "datum": timezone.now().isoformat(),
+        }
+
+        response = self.client.put(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(evaluatie_delete_counter, "add", wraps=evaluatie_delete_counter.add)
+    def test_delete_evaluatie_increments_metric(self, mock_add: MagicMock):
+        evaluatie = EvaluatieFactory.create()
+        url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
+
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        mock_add.assert_called_once_with(1)
 
 
 class EvaluatieRelatiesAPITests(APITestCase):
