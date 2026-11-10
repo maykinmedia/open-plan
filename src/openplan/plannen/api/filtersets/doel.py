@@ -12,5 +12,4 @@ class DoelFilter(FilterSet):
             "naam": ["exact", "icontains"],
             "startdatum": ["exact", "gte", "lte"],
             "einddatum": ["exact", "gte", "lte"],
-            "resultaat": ["exact"],
         }

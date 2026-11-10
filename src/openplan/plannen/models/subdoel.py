@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
+from openplan.plannen.enums.status import Doelstatus, RedenWijziging
 
 from .validators import validate_dates, validate_immutable_field
 
@@ -38,8 +38,8 @@ class Subdoel(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIEF,
+        choices=Doelstatus.choices,
+        default=Doelstatus.GEPLAND,
         help_text=_("Status van het subdoel."),
     )
     startdatum = models.DateField(
@@ -64,11 +64,23 @@ class Subdoel(models.Model):
         auto_now=True,
         help_text=_("Datum en tijd waarop het subdoel voor het laatst is gewijzigd."),
     )
-    resultaat = models.CharField(
-        max_length=20,
-        choices=Resultaat.choices,
+    notitie_intern = models.TextField(
         blank=True,
-        help_text=_("Resultaat van het subdoel."),
+        max_length=1000,
+        help_text=_("Notitie intern."),
+    )
+    notitie_extern = models.TextField(
+        blank=True,
+        max_length=1000,
+        help_text=_("Notitie extern."),
+    )
+    voortgang = models.ForeignKey(
+        "plannen.Voortgang",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="subdoelen",
+        help_text=_("Voortgang van het subdoel."),
     )
     reden_wijziging = models.CharField(
         max_length=30,

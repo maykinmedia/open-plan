@@ -2,21 +2,23 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-# TODO: Remove this status
-class Status(models.TextChoices):
+class Typestatus(models.TextChoices):
     ACTIEF = "actief", _("Actief")
     NIET_ACTIEF = "niet_actief", _("Niet actief")
 
 
-class TypeStatus(models.TextChoices):
-    ACTIEF = "actief", _("Actief")
-    NIET_ACTIEF = "niet_actief", _("Niet actief")
-
-
-class DoelStatus(models.TextChoices):
+class Doelstatus(models.TextChoices):
     GEPLAND = "gepland", _("Gepland")
     GESTART = "gestart", _("Gestart")
     BEHAALD = "behaald", _("Behaald")
+    AFGEBROKEN = "afgebroken", _("Afgebroken")
+
+
+class Planstatus(models.TextChoices):
+    CONCEPT = "concept", _("Concept")
+    VASTGESTELD = "vastgesteld", _("Vastgesteld")
+    PAUZE = "pauze", _("Pauze")
+    AFGEROND = "afgerond", _("Afgerond")
     AFGEBROKEN = "afgebroken", _("Afgebroken")
 
 

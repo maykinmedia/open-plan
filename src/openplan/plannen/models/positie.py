@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..enums.status import RedenWijziging, Status
+from ..enums.status import RedenWijziging
 
 
 class Positie(models.Model):
@@ -25,6 +25,11 @@ class Positie(models.Model):
         related_name="postities",
         help_text=_("Het type van de positie."),
     )
+    algoritme = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text=_("Algoritme van de positie."),
+    )
     naam = models.CharField(
         max_length=255,
         help_text=_("Naam van de positie."),
@@ -33,12 +38,6 @@ class Positie(models.Model):
         blank=True,
         max_length=1000,
         help_text=_("Omschrijving van de postitie."),
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIEF,
-        help_text=_("Status van de positie."),
     )
     gewijzigd_op = models.DateTimeField(
         auto_now=True,

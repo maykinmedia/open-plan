@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..enums.status import Status
+from ..enums.status import Typestatus
 
 
 class SubdoelType(models.Model):
@@ -31,8 +31,8 @@ class SubdoelType(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIEF,
+        choices=Typestatus.choices,
+        default=Typestatus.ACTIEF,
         help_text=_("Status van het subdoeltype."),
     )
     gewenst_resultaat = models.TextField(

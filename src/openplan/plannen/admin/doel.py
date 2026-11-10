@@ -25,11 +25,14 @@ class DoelAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "naam",
                     "positie",
                     "doeltype",
-                    "status",
+                    "naam",
                     "omschrijving",
+                    "status",
+                    "notitie_intern",
+                    "notitie_extern",
+                    "voortgang",
                 ),
             },
         ),
@@ -48,7 +51,7 @@ class DoelAdmin(admin.ModelAdmin):
         (
             "Voortgang",
             {
-                "fields": ("resultaat", "reden_wijziging", "toelichting_reden"),
+                "fields": ("reden_wijziging", "toelichting_reden"),
             },
         ),
     )

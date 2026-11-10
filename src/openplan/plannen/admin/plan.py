@@ -30,6 +30,7 @@ class PlanAdmin(admin.ModelAdmin):
                     "naam",
                     "omschrijving",
                     "status",
+                    "tsaverwijzing",
                     "zaak",
                     "contactmoment",
                     "eigenaar",

@@ -9,12 +9,11 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = [
             "uuid",
             "plan",
-            "status",
             "subjecttype",
-            "rolbeschrijving",
             "profiel",
             "klant",
             "bsn",
+            "brk",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},

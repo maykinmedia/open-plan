@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
-from openplan.plannen.enums.status import Status
+from openplan.plannen.enums.status import Planstatus
 from openplan.plannen.metrics import (
     plannen_create_counter,
     plannen_delete_counter,
@@ -210,11 +210,11 @@ class PlanAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_filter_status(self):
-        plan1 = PlanFactory.create(status=Status.ACTIEF)
-        PlanFactory.create(status=Status.NIET_ACTIEF)
+        plan1 = PlanFactory.create(status=Planstatus.CONCEPT)
+        PlanFactory.create(status=Planstatus.VASTGESTELD)
 
         url = reverse("plannen:plan-list")
-        response = self.client.get(url, {"status": "actief"})
+        response = self.client.get(url, {"status": "concept"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)

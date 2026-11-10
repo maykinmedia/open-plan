@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
-from openplan.plannen.enums.status import Resultaat, Status
+from openplan.plannen.enums.status import Doelstatus
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 from openplan.plannen.models.factories.positie import PositieFactory
@@ -246,11 +246,11 @@ class DoelAPITests(APITestCase):
         )
 
     def test_filter_status(self):
-        doel1 = DoelFactory(status=Status.ACTIEF)
-        DoelFactory(status=Status.NIET_ACTIEF)
+        doel1 = DoelFactory(status=Doelstatus.GEPLAND)
+        DoelFactory(status=Doelstatus.GESTART)
 
         url = reverse("plannen:doel-list")
-        response = self.client.get(url, {"status": "actief"})
+        response = self.client.get(url, {"status": "gepland"})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)
@@ -264,17 +264,6 @@ class DoelAPITests(APITestCase):
         response = self.client.get(url, {"naam__icontains": "taal"})
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
-
-    def test_filter_resultaat(self):
-        doel1 = DoelFactory(resultaat=Resultaat.BEHAALD)
-        DoelFactory(resultaat=Resultaat.NIET_BEHAALD)
-
-        url = reverse("plannen:doel-list")
-
-        response = self.client.get(url, {"resultaat": "behaald"})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
 
