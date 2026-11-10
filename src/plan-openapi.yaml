@@ -1929,10 +1929,57 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
-        evaluatietype:
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/NestedPlan'
+          readOnly: true
+        planUuid:
           type: string
           format: uuid
-          description: Het type evaluatie.
+          writeOnly: true
+          description: UUID van het plan waarbij deze evaluatie hoort.
+        evaluatietypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het type evaluatie.
+        positieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de posities die bij deze evaluatie horen.
+        doelen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de doelen die bij deze evaluatie horen.
+        subdoelUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de subdoelen die bij deze evaluatie horen.
+        naam:
+          type: string
+          description: Naam van de evaluatie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de evaluatie.
+          maxLength: 1000
         status:
           allOf:
           - $ref: '#/components/schemas/DoelStatus'
@@ -1971,20 +2018,92 @@ components:
           description: URN naar een bijbehorende document in een DRC.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
-        plan:
-          allOf:
-          - $ref: '#/components/schemas/NestedPlan'
-          readOnly: true
-        planUuid:
-          type: string
-          format: uuid
-          writeOnly: true
-          description: UUID van het plan waarbij deze evaluatie hoort.
       required:
       - datum
-      - evaluatietype
+      - doelen
+      - evaluatietypeUuid
+      - naam
       - plan
       - planUuid
+      - uuid
+    NestedDoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        status:
+          allOf:
+          - $ref: '#/components/schemas/TypeStatus'
+          description: |-
+            Status van het doel.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        naam:
+          type: string
+          description: Naam van het doel.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: omschrijving van het doel.
+        startdatum:
+          type: string
+          format: date
+          description: Startdatum van het doel.
+        einddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Einddatum van het doel.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          description: Beoogde startdatum van het doel.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het doel.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het doel voor het laatst is gewijzigd.
+        resultaat:
+          description: |-
+            Resultaat van het doel.
+
+            * `behaald` - Behaald
+            * `actief` - Actief
+            * `niet_behaald` - Niet behaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        redenWijziging:
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom het gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van het doel.
+          maxLength: 1000
+      required:
+      - beoogdeStartdatum
+      - gewijzigdOp
+      - naam
+      - startdatum
       - uuid
     NestedDoelType:
       type: object
@@ -2421,10 +2540,57 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
-        evaluatietype:
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/NestedPlan'
+          readOnly: true
+        planUuid:
           type: string
           format: uuid
-          description: Het type evaluatie.
+          writeOnly: true
+          description: UUID van het plan waarbij deze evaluatie hoort.
+        evaluatietypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het type evaluatie.
+        positieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de posities die bij deze evaluatie horen.
+        doelen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de doelen die bij deze evaluatie horen.
+        subdoelUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de subdoelen die bij deze evaluatie horen.
+        naam:
+          type: string
+          description: Naam van de evaluatie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de evaluatie.
+          maxLength: 1000
         status:
           allOf:
           - $ref: '#/components/schemas/DoelStatus'
@@ -2463,15 +2629,6 @@ components:
           description: URN naar een bijbehorende document in een DRC.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
-        plan:
-          allOf:
-          - $ref: '#/components/schemas/NestedPlan'
-          readOnly: true
-        planUuid:
-          type: string
-          format: uuid
-          writeOnly: true
-          description: UUID van het plan waarbij deze evaluatie hoort.
     PatchedPlan:
       type: object
       properties:
