@@ -15,7 +15,9 @@ class Voortgang(models.Model):
     naam = models.CharField(
         max_length=255,
         unique=True,
-        help_text=_("Naam van de voortgang."),
+        help_text=_(
+            "Naam van de voortgang, bijvoorbeeld: 'Op koers', 'Loopt achter' of 'Aandacht nodig'."
+        ),
     )
     omschrijving = models.TextField(
         blank=True,
