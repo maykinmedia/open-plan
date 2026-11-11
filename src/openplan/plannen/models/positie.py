@@ -19,7 +19,7 @@ class Positie(models.Model):
         related_name="posities",
         help_text=_("Het subject waartoe de positie behoort."),
     )
-    positie_type = models.ForeignKey(
+    positietype = models.ForeignKey(
         "plannen.PositieType",
         on_delete=models.PROTECT,
         related_name="postities",
@@ -61,4 +61,4 @@ class Positie(models.Model):
         verbose_name_plural = _("Posities")
 
     def __str__(self):
-        return str(self.uuid)
+        return self.naam

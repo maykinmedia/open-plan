@@ -20,10 +20,10 @@ class PositieAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "subject",
-                    "positie_type",
+                    "positietype",
                     "naam",
                     "omschrijving",
-                    "status",
+                    "algoritme",
                     "gewijzigd_op",
                     "reden_wijziging",
                     "toelichting_reden",
@@ -31,3 +31,6 @@ class PositieAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("subject", "positietype")
