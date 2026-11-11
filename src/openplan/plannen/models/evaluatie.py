@@ -46,6 +46,7 @@ class Evaluatie(models.Model):
     )
     naam = models.CharField(
         max_length=255,
+        unique=True,
         help_text=_("Naam van de evaluatie."),
     )
     omschrijving = models.TextField(
@@ -59,7 +60,7 @@ class Evaluatie(models.Model):
         default=DoelStatus.GEPLAND,
         help_text=_("Status van de evaluatie."),
     )
-    datum = models.DateTimeField(
+    datum = models.DateField(
         help_text=_("Datum van de evaluatie."),
         db_index=True,
     )

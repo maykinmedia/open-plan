@@ -8,14 +8,12 @@ class EvaluatieAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
         "plan",
+        "naam",
         "status",
         "datum",
     )
-    list_filter = (
-        "plan",
-        "status",
-    )
-    search_fields = ("uuid",)
+    list_filter = ("status",)
+    search_fields = ("uuid", "naam")
     readonly_fields = ("uuid",)
     filter_horizontal = ("posities", "doelen", "subdoelen")
 
@@ -51,4 +49,9 @@ class EvaluatieAdmin(admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("plan")
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("plan", "evaluatietype")
+            .prefetch_related("posities", "doelen", "subdoelen")
+        )

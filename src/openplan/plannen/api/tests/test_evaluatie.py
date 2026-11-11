@@ -1,9 +1,9 @@
 import uuid
+from datetime import date
 from unittest.mock import MagicMock, patch
 
 from django.db.models import ProtectedError
 from django.urls import reverse
-from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -42,7 +42,7 @@ class EvaluatieAPITests(APITestCase):
             "evaluatietype_uuid": str(evaluatietype.uuid),
             "plan_uuid": str(plan.uuid),
             "naam": "Eerste evaluatie",
-            "datum": timezone.now().isoformat(),
+            "datum": date.today().isoformat(),
         }
 
         response = self.client.post(url, data, format="json")
@@ -58,7 +58,7 @@ class EvaluatieAPITests(APITestCase):
         url = reverse("plannen:evaluatie-list")
         data = {
             "plan_uuid": str(self.plan.uuid),
-            "datum": timezone.now().isoformat(),
+            "datum": date.today().isoformat(),
         }
 
         response = self.client.post(url, data, format="json")
@@ -107,7 +107,7 @@ class EvaluatieAPITests(APITestCase):
             "evaluatietype_uuid": str(evaluatietype.uuid),
             "plan_uuid": str(new_plan.uuid),
             "naam": "Bijgewerkte evaluatie",
-            "datum": timezone.now().isoformat(),
+            "datum": date.today().isoformat(),
         }
         response = self.client.put(url, data, format="json")
 
@@ -124,7 +124,7 @@ class EvaluatieAPITests(APITestCase):
         url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
         data = {
             "plan_uuid": str(new_plan.uuid),
-            "datum": timezone.now().isoformat(),
+            "datum": date.today().isoformat(),
         }
         response = self.client.patch(url, data, format="json")
 
@@ -175,23 +175,23 @@ class EvaluatieAPITests(APITestCase):
         self.assertEqual(response.data["results"][0]["uuid"], str(evaluatie1.uuid))
 
     def test_filter_datum(self):
-        EvaluatieFactory.create(datum="2024-06-07T00:00:00Z")
-        EvaluatieFactory.create(datum="2025-06-07T00:00:00Z")
+        EvaluatieFactory.create(datum="2024-06-07")
+        EvaluatieFactory.create(datum="2025-06-07")
 
         url = reverse("plannen:evaluatie-list")
 
         with self.subTest("exact"):
-            response = self.client.get(url, {"datum": "2024-06-07T00:00:00Z"})
+            response = self.client.get(url, {"datum": "2024-06-07"})
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data["count"], 1)
 
         with self.subTest("lte"):
-            response = self.client.get(url, {"datum__lte": "2024-07-07T00:00:00Z"})
+            response = self.client.get(url, {"datum__lte": "2024-07-07"})
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data["count"], 1)
 
         with self.subTest("gte"):
-            response = self.client.get(url, {"datum__gte": "2025-04-07T00:00:00Z"})
+            response = self.client.get(url, {"datum__gte": "2025-04-07"})
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.data["count"], 1)
 
@@ -203,7 +203,7 @@ class EvaluatieAPITests(APITestCase):
             "plan_uuid": str(self.plan.uuid),
             "evaluatietype_uuid": str(evaluatietype.uuid),
             "naam": "Evaluatie metric",
-            "datum": timezone.now().isoformat(),
+            "datum": date.today().isoformat(),
         }
 
         response = self.client.post(url, data, format="json")
@@ -220,7 +220,7 @@ class EvaluatieAPITests(APITestCase):
             "plan_uuid": str(self.other_plan.uuid),
             "evaluatietype_uuid": str(evaluatietype.uuid),
             "naam": "Bijgewerkte evaluatie metric",
-            "datum": timezone.now().isoformat(),
+            "datum": date.today().isoformat(),
         }
 
         response = self.client.put(url, data, format="json")
@@ -251,7 +251,7 @@ class EvaluatieRelatiesAPITests(APITestCase):
             "plan_uuid": str(self.plan.uuid),
             "evaluatietype_uuid": str(self.evaluatietype.uuid),
             "naam": "Evaluatie met relaties",
-            "datum": timezone.now().isoformat(),
+            "datum": date.today().isoformat(),
         }
         data.update(extra)
         return data

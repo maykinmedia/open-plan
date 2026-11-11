@@ -988,19 +988,19 @@ paths:
         name: datum
         schema:
           type: string
-          format: date-time
+          format: date
         description: Datum van de evaluatie.
       - in: query
         name: datum__gte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Datum van de evaluatie.
       - in: query
         name: datum__lte
         schema:
           type: string
-          format: date-time
+          format: date
         description: Datum van de evaluatie.
       - in: query
         name: eigenaar
@@ -1851,18 +1851,6 @@ components:
       - positieUuid
       - startdatum
       - uuid
-    DoelStatus:
-      enum:
-      - gepland
-      - gestart
-      - behaald
-      - afgebroken
-      type: string
-      description: |-
-        * `gepland` - Gepland
-        * `gestart` - Gestart
-        * `behaald` - Behaald
-        * `afgebroken` - Afgebroken
     DoelType:
       type: object
       properties:
@@ -1881,7 +1869,7 @@ components:
           maxLength: 1000
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/TypeStatus'
           description: |-
             Status van het doeltype.
 
@@ -1982,7 +1970,7 @@ components:
           maxLength: 1000
         status:
           allOf:
-          - $ref: '#/components/schemas/DoelStatus'
+          - $ref: '#/components/schemas/EvaluatieStatusEnum'
           description: |-
             Status van de evaluatie.
 
@@ -1992,7 +1980,7 @@ components:
             * `afgebroken` - Afgebroken
         datum:
           type: string
-          format: date-time
+          format: date
           description: Datum van de evaluatie.
         contactmoment:
           type: string
@@ -2026,6 +2014,18 @@ components:
       - plan
       - planUuid
       - uuid
+    EvaluatieStatusEnum:
+      enum:
+      - gepland
+      - gestart
+      - behaald
+      - afgebroken
+      type: string
+      description: |-
+        * `gepland` - Gepland
+        * `gestart` - Gestart
+        * `behaald` - Behaald
+        * `afgebroken` - Afgebroken
     NestedDoel:
       type: object
       properties:
@@ -2498,7 +2498,7 @@ components:
           maxLength: 1000
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/TypeStatus'
           description: |-
             Status van het doeltype.
 
@@ -2593,7 +2593,7 @@ components:
           maxLength: 1000
         status:
           allOf:
-          - $ref: '#/components/schemas/DoelStatus'
+          - $ref: '#/components/schemas/EvaluatieStatusEnum'
           description: |-
             Status van de evaluatie.
 
@@ -2603,7 +2603,7 @@ components:
             * `afgebroken` - Afgebroken
         datum:
           type: string
-          format: date-time
+          format: date
           description: Datum van de evaluatie.
         contactmoment:
           type: string

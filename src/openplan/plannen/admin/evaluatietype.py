@@ -13,6 +13,7 @@ class EvaluatietypeAdmin(admin.ModelAdmin):
     list_filter = ("status",)
     search_fields = ("naam", "uuid")
     readonly_fields = ("uuid",)
+    filter_horizontal = ("configuraties",)
 
     fieldsets = (
         (
@@ -23,7 +24,13 @@ class EvaluatietypeAdmin(admin.ModelAdmin):
                     "naam",
                     "omschrijving",
                     "status",
+                    "toelichting_inwoner",
+                    "toelichting_medewerker",
+                    "configuraties",
                 ),
             },
         ),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("configuraties")

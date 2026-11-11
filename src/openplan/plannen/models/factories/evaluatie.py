@@ -1,5 +1,3 @@
-import uuid
-
 from django.utils import timezone
 
 import factory
@@ -11,7 +9,6 @@ from .plan import PlanFactory
 
 
 class EvaluatieTypeFactory(factory.django.DjangoModelFactory):
-    uuid = factory.LazyFunction(uuid.uuid4)
     naam = factory.Sequence(lambda n: f"EvaluatieType {n}")
     omschrijving = factory.Sequence(lambda n: f"Beschrijving voor EvaluatieType {n}")
 
@@ -20,7 +17,6 @@ class EvaluatieTypeFactory(factory.django.DjangoModelFactory):
 
 
 class EvaluatieFactory(factory.django.DjangoModelFactory):
-    uuid = factory.LazyFunction(uuid.uuid4)
     plan = factory.SubFactory(PlanFactory)
     evaluatietype = factory.SubFactory(EvaluatieTypeFactory)
     naam = factory.Sequence(lambda n: f"Evaluatie {n}")

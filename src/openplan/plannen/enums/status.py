@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+# TODO: Remove this status
 class Status(models.TextChoices):
     ACTIEF = "actief", _("Actief")
     NIET_ACTIEF = "niet_actief", _("Niet actief")

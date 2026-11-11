@@ -3,7 +3,6 @@ from django.db import transaction
 import structlog
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.api.filtersets.evaluatie import EvaluatieFilter
@@ -47,11 +46,17 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
 )
 class EvaluatieViewSet(viewsets.ModelViewSet):
-    queryset = Evaluatie.objects.all()
+    queryset = Evaluatie.objects.select_related(
+        "plan",
+        "evaluatietype",
+    ).prefetch_related(
+        "posities",
+        "doelen",
+        "subdoelen",
+    )
     serializer_class = EvaluatieSerializer
     filterset_class = EvaluatieFilter
     lookup_field = "uuid"
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     @transaction.atomic

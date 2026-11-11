@@ -13,8 +13,15 @@ class Evaluatietype(models.Model):
         default=uuid.uuid4,
         help_text=_("Unieke resource identifier (UUID4)."),
     )
+    configuraties = models.ManyToManyField(
+        "plannen.Configuratie",
+        blank=True,
+        related_name="evaluatietypen",
+        help_text=_("Configuraties gekoppeld aan deze evaluatietypen."),
+    )
     naam = models.CharField(
         max_length=255,
+        unique=True,
         help_text=_("Naam van het evaluatie type."),
     )
     omschrijving = models.TextField(
@@ -30,10 +37,12 @@ class Evaluatietype(models.Model):
     )
     toelichting_inwoner = models.TextField(
         blank=True,
+        max_length=1000,
         help_text=_("Toelichting inwoner van het evaluatietype."),
     )
     toelichting_medewerker = models.TextField(
         blank=True,
+        max_length=1000,
         help_text=_("Toelichting medewerker van het evaluatietype."),
     )
 

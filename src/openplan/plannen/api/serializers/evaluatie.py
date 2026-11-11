@@ -7,7 +7,7 @@ from openplan.plannen.models.evaluatie import Evaluatie
 from openplan.plannen.models.evaluatietype import Evaluatietype
 from openplan.plannen.models.plan import Plan
 from openplan.plannen.models.positie import Positie
-from openplan.plannen.models.subdoel import SubDoel
+from openplan.plannen.models.subdoel import Subdoel
 from openplan.utils.fields import UUIDRelatedField
 
 from .doel import NestedDoelSerializer
@@ -66,7 +66,7 @@ class EvaluatieSerializer(serializers.ModelSerializer):
     #         many=True,
     #     )
     subdoel_uuids = UUIDRelatedField(
-        queryset=SubDoel.objects.all(),
+        queryset=Subdoel.objects.all(),
         many=True,
         write_only=True,
         required=False,
