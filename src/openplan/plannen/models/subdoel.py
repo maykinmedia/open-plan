@@ -5,10 +5,10 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
-from .validators import validate_dates
+from .validators import validate_dates, validate_immutable_field
 
 
-class SubDoel(models.Model):
+class Subdoel(models.Model):
     uuid = models.UUIDField(
         primary_key=True,
         editable=False,
@@ -20,6 +20,12 @@ class SubDoel(models.Model):
         on_delete=models.CASCADE,
         related_name="subdoelen",
         help_text=_("Het doel waartoe dit subdoel behoort."),
+    )
+    subdoeltype = models.ForeignKey(
+        "plannen.Subdoeltype",
+        on_delete=models.PROTECT,
+        related_name="subdoelen",
+        help_text=_("Type van het subdoel"),
     )
     naam = models.CharField(
         max_length=255,
@@ -88,3 +94,9 @@ class SubDoel(models.Model):
         super().clean()
         validate_dates(self.startdatum, self.einddatum)
         validate_dates(self.beoogde_startdatum, self.beoogde_einddatum)
+
+        validate_immutable_field(
+            self,
+            "subdoeltype",
+            _("Het subdoeltype kan niet gewijzigd worden. Maak een nieuw subdoel aan."),
+        )

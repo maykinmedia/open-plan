@@ -6,7 +6,8 @@ from .domein import Domein
 from .plan import Plan
 from .positie import Positie
 from .positietype import PositieType
-from .subdoel import SubDoel
+from .subdoel import Subdoel
+from .subdoeltype import SubdoelType
 from .subject import Subject
 
 __all__ = [
@@ -18,6 +19,7 @@ __all__ = [
     "Plan",
     "Positie",
     "PositieType",
-    "SubDoel",
+    "Subdoel",
+    "SubdoelType",
     "Subject",
 ]

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import RedenWijziging, Resultaat, Status
 
-from .validators import validate_dates
+from .validators import validate_dates, validate_immutable_field
 
 
 class Doel(models.Model):
@@ -93,3 +93,9 @@ class Doel(models.Model):
         super().clean()
         validate_dates(self.startdatum, self.einddatum)
         validate_dates(self.beoogde_startdatum, self.beoogde_einddatum)
+
+        validate_immutable_field(
+            self,
+            "doeltype",
+            _("Het doeltype kan niet gewijzigd worden. Maak een nieuw doel aan."),
+        )
