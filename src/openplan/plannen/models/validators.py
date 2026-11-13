@@ -4,6 +4,16 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
+import structlog
+from jsonschema import (
+    Draft202012Validator,
+    draft202012_format_checker,
+)
+
+from openplan.utils.typing import JSONObject
+
+logger = structlog.stdlib.get_logger(__name__)
+
 
 def validate_hoofd_doel_not_self(doel):
     if doel.hoofd_doel and doel.hoofd_doel == doel:
@@ -87,6 +97,37 @@ def validate_immutable_field(instance, field_name, message):
     )
     if huidige_waarde is not None and huidige_waarde != getattr(instance, attname):
         raise ValidationError({field_name: message})
+
+
+def validate_jsonschema(
+    instance: JSONObject, schema: JSONObject, label: str = "instance"
+) -> None:
+    """
+    Validator for JSONField with appropriate JSON schema.
+
+    A subschema can define a custom ``errorMessage``; it replaces the default
+    jsonschema message. ``{value}`` in the message is replaced by the invalid value.
+
+    Raises:
+        ValidationError: All validation messages under the key ``label``.
+    """
+    validator = Draft202012Validator(schema, format_checker=draft202012_format_checker)
+    errors = list(validator.iter_errors(instance))
+    if not errors:
+        return
+
+    logger.info("validate_jsonschema failed for %s: %d error(s)", label, len(errors))
+
+    messages = []
+    for error in errors:
+        custom = (
+            error.schema.get("errorMessage") if isinstance(error.schema, dict) else None
+        )
+        message = custom.format(value=error.instance) if custom else error.message
+        path = ".".join([label, *(str(part) for part in error.absolute_path)])
+        messages.append(f"{path}: {message}")
+
+    raise ValidationError({label: messages})
 
 
 nummer_validatie = RegexValidator(

@@ -199,6 +199,7 @@ class Migration(migrations.Migration):
                 ('notitie_extern', models.TextField(blank=True, help_text='Notitie extern.', max_length=1000)),
                 ('reden_wijziging', models.CharField(choices=[('registreren', 'Registreren'), ('wijzigen', 'Wijzigen'), ('corrigeren', 'Corrigeren'), ('herzien', 'Herzien'), ('ongedaan_maken', 'Ongedaan maken'), ('vernietigen', 'Vernietigen'), ('overbrengen_depot', 'Overbrengen depot')], default='registreren', help_text='Reden waarom het gewijzigd is.', max_length=30)),
                 ('toelichting_reden', models.TextField(blank=True, help_text='Toelichting reden wijziging van het subdoel.', max_length=1000)),
+                ('producten', models.JSONField(blank=True, default=list, help_text="Lijst met URN's naar producten.", verbose_name='producten')),
                 ('doel', models.ForeignKey(help_text='Het doel waartoe dit subdoel behoort.', on_delete=django.db.models.deletion.CASCADE, related_name='subdoelen', to='plannen.doel')),
             ],
             options={

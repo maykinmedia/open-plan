@@ -24,8 +24,8 @@ class SubjectAPITests(APITestCase):
         data = {
             "plan": str(plan.uuid),
             "subjecttype": SubjectType.PERSOON,
-            "profiel": "urn:example:persoon:12345",
-            "klant": "urn:example:klant:67890",
+            "profiel": "urn:example:persoon:uuid:3f1e9c2a-7b4d-4e8a-9c1f-2a6b5d8e0f17",
+            "klant": "urn:example:klant:uuid:a8d2f4b6-1c3e-4f5a-8b7c-9d0e1f2a3b4c",
             "bsn": "963773215",
         }
         response = self.client.post(url, data, format="json")
@@ -67,8 +67,8 @@ class SubjectAPITests(APITestCase):
         new_data = {
             "plan": str(plan.uuid),
             "subjecttype": SubjectType.PERSOON,
-            "profiel": "urn:example:persoon:12345",
-            "klant": "urn:example:klant:67890",
+            "profiel": "urn:example:persoon:uuid:4f1e9c2a-7b4d-4e8a-9c1f-2a6b5d8e0f17",
+            "klant": "urn:example:klant:uuid:b8d2f4b6-1c3e-4f5a-8b7c-9d0e1f2a3b4c",
             "bsn": "111222333",
         }
         url = reverse("plannen:subject-detail", kwargs={"uuid": subject.uuid})
