@@ -7,8 +7,9 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from vng_api_common.validators import URNValidator
 
-from .validators import UUID_REGEX, URNValidator
+from .validators import UUID_REGEX
 
 
 class URNField(models.CharField):

@@ -1,6 +1,7 @@
 from jsonschema import Draft202012Validator
+from vng_api_common.validators import URNValidator
 
-from openplan.utils.validators import UUID_REGEX, URNValidator
+from openplan.utils.validators import UUID_REGEX
 
 PRODUCTEN_SCHEMA = {
     "$schema": Draft202012Validator.META_SCHEMA["$id"],
