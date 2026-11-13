@@ -6,6 +6,10 @@ from openplan.plannen.models import Positie
 from openplan.plannen.models.doel import Doel
 from openplan.plannen.models.doeltype import DoelType
 from openplan.utils.fields import UUIDRelatedField
+from openplan.utils.history.serializers import (
+    WIJZIGING_VELDEN,
+    WijzigingSerializerMixin,
+)
 
 from .doeltype import NestedDoelTypeSerializer
 from .validators import IsImmutableValidator, StartBeforeEndValidator
@@ -25,8 +29,6 @@ class NestedDoelSerializer(serializers.ModelSerializer):
             "beoogde_einddatum",
             "gewijzigd_op",
             "resultaat",
-            "reden_wijziging",
-            "toelichting_reden",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
@@ -34,7 +36,7 @@ class NestedDoelSerializer(serializers.ModelSerializer):
         }
 
 
-class DoelSerializer(serializers.ModelSerializer):
+class DoelSerializer(WijzigingSerializerMixin, serializers.ModelSerializer):
     doeltype = NestedDoelTypeSerializer(
         read_only=True,
     )
@@ -73,9 +75,7 @@ class DoelSerializer(serializers.ModelSerializer):
             "beoogde_einddatum",
             "gewijzigd_op",
             "resultaat",
-            "reden_wijziging",
-            "toelichting_reden",
-        ]
+        ] + list(WIJZIGING_VELDEN)
         extra_kwargs = {
             "uuid": {"read_only": True},
             "gewijzigd_op": {"read_only": True},

@@ -1,10 +1,12 @@
 from django.contrib import admin
 
+from openplan.utils.history.admin import WijzigingHistoryAdmin
+
 from ..models.doel import Doel
 
 
 @admin.register(Doel)
-class DoelAdmin(admin.ModelAdmin):
+class DoelAdmin(WijzigingHistoryAdmin):
     list_display = (
         "uuid",
         "naam",
@@ -43,12 +45,6 @@ class DoelAdmin(admin.ModelAdmin):
                     "beoogde_einddatum",
                     "gewijzigd_op",
                 ),
-            },
-        ),
-        (
-            "Voortgang",
-            {
-                "fields": ("resultaat", "reden_wijziging", "toelichting_reden"),
             },
         ),
     )

@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.doel import Doel
+from openplan.utils.history.viewset import HistorieViewSetMixin
 
 from ...metrics import (
     doelen_create_counter,
@@ -45,7 +46,7 @@ logger = structlog.stdlib.get_logger(__name__)
         description="Verwijder een specifiek doel.",
     ),
 )
-class DoelViewSet(viewsets.ModelViewSet):
+class DoelViewSet(HistorieViewSetMixin, viewsets.ModelViewSet):
     queryset = Doel.objects.all()
     serializer_class = DoelSerializer
     filterset_class = DoelFilter
