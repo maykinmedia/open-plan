@@ -160,6 +160,7 @@ django==5.2.18
     #   django-sessionprofile
     #   django-setup-configuration
     #   django-simple-certmanager
+    #   django-simple-history
     #   django-solo
     #   django-structlog
     #   django-two-factor-auth
@@ -298,6 +299,10 @@ django-simple-certmanager==2.5.0
     #   -c requirements/base.txt
     #   -r requirements/base.txt
     #   zgw-consumers
+django-simple-history==3.13.0
+    # via
+    #   -c requirements/base.txt
+    #   -r requirements/base.txt
 django-solo==2.4.0
     # via
     #   -c requirements/base.txt

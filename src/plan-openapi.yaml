@@ -527,6 +527,170 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
+  /doel/{uuid}/history:
+    get:
+      operationId: doel_history_list
+      description: Alle versies van een doel, de nieuwste eerst. Elke versie bevat
+        de gegevens zoals ze na die wijziging waren en de reden van de wijziging.
+      summary: Historie van een doel opvragen.
+      parameters:
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date
+        description: Einddatum van het doel.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date
+        description: Einddatum van het doel.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date
+        description: Einddatum van het doel.
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het doel.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van het doel.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: positie__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date
+        description: Startdatum van het doel.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date
+        description: Startdatum van het doel.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date
+        description: Startdatum van het doel.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - afgebroken
+          - behaald
+          - gepland
+          - gestart
+        description: |-
+          Status van het doel.
+
+          * `gepland` - Gepland
+          * `gestart` - Gestart
+          * `behaald` - Behaald
+          * `afgebroken` - Afgebroken
+      - in: query
+        name: status__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Meerdere waarden kunnen gescheiden worden door komma's.
+        explode: false
+        style: form
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelHistorieList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelHistorieList'
+          description: ''
+  /doel/{uuid}/history/{versie_uuid}:
+    get:
+      operationId: doel_history_retrieve
+      description: Eén versie uit de historie van een doel, via historyId.
+      summary: Een specifieke versie van een doel opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      - in: path
+        name: versie_uuid
+        schema:
+          type: string
+          format: uuid
+        description: UUID van de versie (versieUuid uit de historie-lijst).
+        required: true
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelHistorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelHistorie'
+          description: ''
   /doeltype:
     get:
       operationId: doeltype_list
@@ -1710,6 +1874,9 @@ paths:
           description: No response body
 components:
   schemas:
+    BlankEnum:
+      enum:
+      - ''
     Configuratie:
       type: object
       properties:
@@ -1750,6 +1917,10 @@ components:
       - uuid
     Doel:
       type: object
+      description: |-
+        Use as: class DoelSerializer(WijzigingSerializerMixin, serializers.ModelSerializer)
+
+        reden_wijziging is required on update (PUT and PATCH), not on create.
       properties:
         uuid:
           type: string
@@ -1826,8 +1997,9 @@ components:
         redenWijziging:
           allOf:
           - $ref: '#/components/schemas/RedenWijzigingEnum'
+          writeOnly: true
           description: |-
-            Reden waarom het gewijzigd is.
+            Reden van de wijziging. Verplicht bij wijzigen.
 
             * `registreren` - Registreren
             * `wijzigen` - Wijzigen
@@ -1838,7 +2010,8 @@ components:
             * `overbrengen_depot` - Overbrengen depot
         toelichtingReden:
           type: string
-          description: Toelichting reden wijziging van het doel.
+          writeOnly: true
+          description: Toelichting op de reden van de wijziging.
           maxLength: 1000
       required:
       - beoogdeStartdatum
@@ -1849,6 +2022,115 @@ components:
       - positieUuid
       - startdatum
       - uuid
+    DoelHistorie:
+      type: object
+      description: |-
+        Base for history serializers. Shows the history_id column as versie_uuid
+        (versieUuid in the API).
+
+            class DoelHistorieSerializer(HistorieSerializer):
+                class Meta:
+                    model = Doel.history.model
+                    fields = historie_velden(Doel)
+      properties:
+        versieUuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: UUID van deze versie.
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het doel.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: omschrijving van het doel.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Doelstatus'
+          description: |-
+            Status van het doel.
+
+            * `gepland` - Gepland
+            * `gestart` - Gestart
+            * `behaald` - Behaald
+            * `afgebroken` - Afgebroken
+        startdatum:
+          type: string
+          format: date
+          description: Startdatum van het doel.
+        einddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Einddatum van het doel.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          description: Beoogde startdatum van het doel.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het doel.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het doel voor het laatst is gewijzigd.
+        notitieIntern:
+          type: string
+          description: Notitie intern.
+          maxLength: 1000
+        notitieExtern:
+          type: string
+          description: Notitie extern.
+          maxLength: 1000
+        positie:
+          type: string
+          format: uuid
+          description: De positie waartoe dit doel behoort.
+          nullable: true
+        doeltype:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoelType'
+          readOnly: true
+        voortgang:
+          type: string
+          format: uuid
+          description: Voortgang van het doel.
+          nullable: true
+        redenWijziging:
+          description: |-
+            Reden waarom het gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+          oneOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        toelichtingReden:
+          type: string
+          description: Toelichting op de reden van de wijziging.
+          maxLength: 1000
+      required:
+      - beoogdeStartdatum
+      - doeltype
+      - gewijzigdOp
+      - naam
+      - startdatum
+      - uuid
+      - versieUuid
     DoelType:
       type: object
       properties:
@@ -2085,23 +2367,6 @@ components:
           format: uuid
           description: Voortgang van het doel.
           nullable: true
-        redenWijziging:
-          allOf:
-          - $ref: '#/components/schemas/RedenWijzigingEnum'
-          description: |-
-            Reden waarom het gewijzigd is.
-
-            * `registreren` - Registreren
-            * `wijzigen` - Wijzigen
-            * `corrigeren` - Corrigeren
-            * `herzien` - Herzien
-            * `ongedaan_maken` - Ongedaan maken
-            * `vernietigen` - Vernietigen
-            * `overbrengen_depot` - Overbrengen depot
-        toelichtingReden:
-          type: string
-          description: Toelichting reden wijziging van het doel.
-          maxLength: 1000
       required:
       - beoogdeStartdatum
       - gewijzigdOp
@@ -2120,6 +2385,18 @@ components:
           type: string
           description: Naam van het doeltype.
           maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het doeltype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het doeltype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
       required:
       - naam
       - uuid
@@ -2235,6 +2512,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Configuratie'
+    PaginatedDoelHistorieList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelHistorie'
     PaginatedDoelList:
       type: object
       required:
@@ -2408,6 +2708,10 @@ components:
             * `niet_actief` - Niet actief
     PatchedDoel:
       type: object
+      description: |-
+        Use as: class DoelSerializer(WijzigingSerializerMixin, serializers.ModelSerializer)
+
+        reden_wijziging is required on update (PUT and PATCH), not on create.
       properties:
         uuid:
           type: string
@@ -2484,8 +2788,9 @@ components:
         redenWijziging:
           allOf:
           - $ref: '#/components/schemas/RedenWijzigingEnum'
+          writeOnly: true
           description: |-
-            Reden waarom het gewijzigd is.
+            Reden van de wijziging. Verplicht bij wijzigen.
 
             * `registreren` - Registreren
             * `wijzigen` - Wijzigen
@@ -2496,7 +2801,8 @@ components:
             * `overbrengen_depot` - Overbrengen depot
         toelichtingReden:
           type: string
-          description: Toelichting reden wijziging van het doel.
+          writeOnly: true
+          description: Toelichting op de reden van de wijziging.
           maxLength: 1000
     PatchedDoelType:
       type: object

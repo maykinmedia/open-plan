@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
-from openplan.plannen.enums.status import Doelstatus
+from openplan.plannen.enums.status import Doelstatus, RedenWijziging
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 from openplan.plannen.models.factories.positie import PositieFactory
@@ -44,6 +44,7 @@ class DoelAPITests(APITestCase):
             "startdatum": str(date.today()),
             "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving test",
+            "redenWijziging": RedenWijziging.WIJZIGEN,
         }
 
     def test_create_doel(self):
@@ -85,6 +86,7 @@ class DoelAPITests(APITestCase):
             "startdatum": str(date.today()),
             "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving update test",
+            "redenWijziging": RedenWijziging.WIJZIGEN,
         }
         response = self.client.put(url, data, format="json")
 
@@ -96,7 +98,7 @@ class DoelAPITests(APITestCase):
         doel = DoelFactory.create()
 
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
-        data = {"naam": "New titel"}
+        data = {"naam": "New titel", "redenWijziging": RedenWijziging.WIJZIGEN}
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -217,7 +219,11 @@ class DoelAPITests(APITestCase):
         doel = DoelFactory.create(startdatum=date(2026, 1, 10), einddatum=None)
 
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
-        response = self.client.patch(url, {"einddatum": "2026-01-20"}, format="json")
+        response = self.client.patch(
+            url,
+            {"einddatum": "2026-01-20", "redenWijziging": RedenWijziging.WIJZIGEN},
+            format="json",
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         doel.refresh_from_db()
@@ -340,6 +346,7 @@ class DoelAPITests(APITestCase):
             "startdatum": str(date.today()),
             "beoogde_startdatum": date.today().isoformat(),
             "omschrijving": "Beschrijving update test",
+            "redenWijziging": RedenWijziging.WIJZIGEN,
         }
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)
