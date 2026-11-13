@@ -8,6 +8,7 @@ from vng_api_common.fields import BSNField
 from openplan.utils.fields import URNField
 
 from ..enums.status import SubjectType
+from .validators import nummer_validatie
 
 
 class Subject(models.Model):
@@ -39,10 +40,10 @@ class Subject(models.Model):
         blank=True,
         help_text=_("BSN voor BRP-koppeling "),
     )
-    # TODO: Check if correct
-    brk = models.PositiveIntegerField(
-        null=True,
+    brk = models.CharField(
+        max_length=20,
         blank=True,
+        validators=[nummer_validatie],
         help_text=_("BRK nummer."),
     )
 

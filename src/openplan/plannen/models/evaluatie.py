@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import DoelStatus
+from openplan.plannen.enums.status import Doelstatus
 from openplan.utils.fields import URNField
 
 
@@ -56,8 +56,8 @@ class Evaluatie(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=DoelStatus.choices,
-        default=DoelStatus.GEPLAND,
+        choices=Doelstatus.choices,
+        default=Doelstatus.GEPLAND,
         help_text=_("Status van de evaluatie."),
     )
     datum = models.DateField(

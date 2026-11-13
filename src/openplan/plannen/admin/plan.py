@@ -50,7 +50,7 @@ class PlanAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Voortgang",
+            "Wijziging",
             {
                 "fields": (
                     "reden_wijziging",

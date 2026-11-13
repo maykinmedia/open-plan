@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import TypeStatus
+from openplan.plannen.enums.status import Typestatus
 
 
 class Evaluatietype(models.Model):
@@ -31,8 +31,8 @@ class Evaluatietype(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=TypeStatus.choices,
-        default=TypeStatus.ACTIEF,
+        choices=Typestatus.choices,
+        default=Typestatus.ACTIEF,
         help_text=_("Status van het evaluatie type."),
     )
     toelichting_inwoner = models.TextField(

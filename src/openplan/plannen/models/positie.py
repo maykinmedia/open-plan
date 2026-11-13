@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ..enums.status import RedenWijziging
+from .validators import nummer_validatie
 
 
 class Positie(models.Model):
@@ -25,9 +26,10 @@ class Positie(models.Model):
         related_name="postities",
         help_text=_("Het type van de positie."),
     )
-    algoritme = models.PositiveIntegerField(
-        null=True,
+    algoritme = models.CharField(
+        max_length=20,
         blank=True,
+        validators=[nummer_validatie],
         help_text=_("Algoritme van de positie."),
     )
     naam = models.CharField(

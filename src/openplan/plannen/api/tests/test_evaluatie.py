@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
-from openplan.plannen.enums.status import DoelStatus
+from openplan.plannen.enums.status import Doelstatus
 from openplan.plannen.metrics import (
     evaluatie_create_counter,
     evaluatie_delete_counter,
@@ -52,7 +52,7 @@ class EvaluatieAPITests(APITestCase):
         self.assertEqual(evaluatie.plan, plan)
         self.assertEqual(evaluatie.evaluatietype, evaluatietype)
         self.assertEqual(evaluatie.naam, "Eerste evaluatie")
-        self.assertEqual(evaluatie.status, DoelStatus.GEPLAND)
+        self.assertEqual(evaluatie.status, Doelstatus.GEPLAND)
 
     def test_create_evaluatie_missing_required_fields(self):
         url = reverse("plannen:evaluatie-list")
@@ -94,7 +94,7 @@ class EvaluatieAPITests(APITestCase):
         self.assertEqual(response.data["uuid"], str(evaluatie.uuid))
         self.assertEqual(response.data["plan"]["uuid"], str(evaluatie.plan.uuid))
         self.assertEqual(response.data["naam"], evaluatie.naam)
-        self.assertEqual(response.data["status"], DoelStatus.GEPLAND)
+        self.assertEqual(response.data["status"], Doelstatus.GEPLAND)
         # TODO: check evaluatietype once the evaluatietype api is implemented
 
     def test_update_evaluatie(self):
@@ -163,12 +163,12 @@ class EvaluatieAPITests(APITestCase):
         self.assertEqual(response.data["results"][0]["uuid"], str(evaluatie1.uuid))
 
     def test_filter_by_status(self):
-        other_status = next(s for s in DoelStatus if s != DoelStatus.GEPLAND)
-        evaluatie1 = EvaluatieFactory.create(status=DoelStatus.GEPLAND)
+        other_status = next(s for s in Doelstatus if s != Doelstatus.GEPLAND)
+        evaluatie1 = EvaluatieFactory.create(status=Doelstatus.GEPLAND)
         EvaluatieFactory.create(status=other_status)
 
         url = reverse("plannen:evaluatie-list")
-        response = self.client.get(url, {"status": DoelStatus.GEPLAND.value})
+        response = self.client.get(url, {"status": Doelstatus.GEPLAND.value})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)

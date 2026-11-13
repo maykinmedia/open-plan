@@ -248,258 +248,6 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
-  /contactmoment:
-    get:
-      operationId: contactmoment_list
-      description: Deze lijst kan gefilterd wordt met query-string parameters.
-      summary: Alle contactmomenten opvragen.
-      parameters:
-      - in: query
-        name: datum
-        schema:
-          type: string
-          format: date-time
-        description: Startdatum van het contactmoment.
-      - in: query
-        name: datum__gte
-        schema:
-          type: string
-          format: date-time
-        description: Startdatum van het contactmoment.
-      - in: query
-        name: datum__lte
-        schema:
-          type: string
-          format: date-time
-        description: Startdatum van het contactmoment.
-      - name: page
-        required: false
-        in: query
-        description: Een pagina binnen de gepagineerde set resultaten.
-        schema:
-          type: integer
-      - name: pageSize
-        required: false
-        in: query
-        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
-          maximum: 500).'
-        schema:
-          type: integer
-      - in: query
-        name: persoonsprofiel
-        schema:
-          type: string
-        description: URL naar het persoonsprofiel (alleen voor primaire personen verplicht).
-      - in: query
-        name: persoonsprofiel__icontains
-        schema:
-          type: string
-        description: URL naar het persoonsprofiel (alleen voor primaire personen verplicht).
-      - in: query
-        name: plan__uuid
-        schema:
-          type: string
-          format: uuid
-        description: Unieke resource identifier (UUID4).
-      - in: query
-        name: status
-        schema:
-          type: string
-          enum:
-          - afgebroken
-          - behaald
-          - gepland
-          - gestart
-        description: |-
-          Status van het contactmoment.
-
-          * `gepland` - Gepland
-          * `gestart` - Gestart
-          * `behaald` - Behaald
-          * `afgebroken` - Afgebroken
-      tags:
-      - Contactmoment
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedContactmomentList'
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/PaginatedContactmomentList'
-          description: ''
-    post:
-      operationId: contactmoment_create
-      description: Voeg een nieuw contactmoment toe aan het systeem.
-      summary: Nieuw contactmoment aanmaken.
-      tags:
-      - Contactmoment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Contactmoment'
-        required: true
-      security:
-      - tokenAuth: []
-      responses:
-        '201':
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-          description: ''
-  /contactmoment/{uuid}:
-    get:
-      operationId: contactmoment_retrieve
-      description: Een specifiek contactmoment opvragen via UUID.
-      summary: Een specifiek contactmoment opvragen.
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-          description: Unieke resource identifier (UUID4).
-        required: true
-      tags:
-      - Contactmoment
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-          description: ''
-    put:
-      operationId: contactmoment_update
-      description: Werk alle gegevens van een contactmoment bij.
-      summary: Contactmoment volledig bijwerken.
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-          description: Unieke resource identifier (UUID4).
-        required: true
-      tags:
-      - Contactmoment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Contactmoment'
-        required: true
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-          description: ''
-    patch:
-      operationId: contactmoment_partial_update
-      description: Werk enkele gegevens van een contactmoment bij.
-      summary: Contactmoment gedeeltelijk bijwerken.
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-          description: Unieke resource identifier (UUID4).
-        required: true
-      tags:
-      - Contactmoment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedContactmoment'
-      security:
-      - tokenAuth: []
-      responses:
-        '200':
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-          description: ''
-    delete:
-      operationId: contactmoment_destroy
-      description: Verwijder een specifiek contactmoment.
-      summary: Contactmoment verwijderen.
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-          description: Unieke resource identifier (UUID4).
-        required: true
-      tags:
-      - Contactmoment
-      security:
-      - tokenAuth: []
-      responses:
-        '204':
-          headers:
-            API-version:
-              schema:
-                type: string
-              description: 'Geeft een specifieke API-versie aan in de context van
-                een specifieke aanroep. Voorbeeld: 1.2.1.'
-          description: No response body
   /doel:
     get:
       operationId: doel_list
@@ -2000,50 +1748,6 @@ components:
       - domeinUuid
       - naam
       - uuid
-    Contactmoment:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Unieke resource identifier (UUID4).
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Doelstatus'
-          description: |-
-            Status van het contactmoment.
-
-            * `gepland` - Gepland
-            * `gestart` - Gestart
-            * `behaald` - Behaald
-            * `afgebroken` - Afgebroken
-        datum:
-          type: string
-          format: date-time
-          description: Startdatum van het contactmoment.
-        toelichtingStatus:
-          type: string
-          description: Toelichting bij de status van het contactmoment.
-          maxLength: 1000
-        notitie:
-          type: string
-          description: Notitie bij het contactmoment.
-          maxLength: 1000
-        plan:
-          allOf:
-          - $ref: '#/components/schemas/NestedPlan'
-          readOnly: true
-        planUuid:
-          type: string
-          format: uuid
-          writeOnly: true
-          description: UUID van het plan waarbij dit contactmoment hoort.
-      required:
-      - datum
-      - plan
-      - planUuid
-      - uuid
     Doel:
       type: object
       properties:
@@ -2276,7 +1980,7 @@ components:
           maxLength: 1000
         status:
           allOf:
-          - $ref: '#/components/schemas/EvaluatieStatusEnum'
+          - $ref: '#/components/schemas/Doelstatus'
           description: |-
             Status van de evaluatie.
 
@@ -2320,18 +2024,6 @@ components:
       - plan
       - planUuid
       - uuid
-    EvaluatieStatusEnum:
-      enum:
-      - gepland
-      - gestart
-      - behaald
-      - afgebroken
-      type: string
-      description: |-
-        * `gepland` - Gepland
-        * `gestart` - Gestart
-        * `behaald` - Behaald
-        * `afgebroken` - Afgebroken
     NestedDoel:
       type: object
       properties:
@@ -2342,12 +2034,14 @@ components:
           description: Unieke resource identifier (UUID4).
         status:
           allOf:
-          - $ref: '#/components/schemas/TypeStatus'
+          - $ref: '#/components/schemas/Doelstatus'
           description: |-
             Status van het doel.
 
-            * `actief` - Actief
-            * `niet_actief` - Niet actief
+            * `gepland` - Gepland
+            * `gestart` - Gestart
+            * `behaald` - Behaald
+            * `afgebroken` - Afgebroken
         naam:
           type: string
           description: Naam van het doel.
@@ -2355,6 +2049,14 @@ components:
         omschrijving:
           type: string
           description: omschrijving van het doel.
+        notitieIntern:
+          type: string
+          description: Notitie intern.
+          maxLength: 1000
+        notitieExtern:
+          type: string
+          description: Notitie extern.
+          maxLength: 1000
         startdatum:
           type: string
           format: date
@@ -2378,16 +2080,11 @@ components:
           format: date-time
           readOnly: true
           description: Datum en tijd waarop het doel voor het laatst is gewijzigd.
-        resultaat:
-          description: |-
-            Resultaat van het doel.
-
-            * `behaald` - Behaald
-            * `actief` - Actief
-            * `niet_behaald` - Niet behaald
-          oneOf:
-          - $ref: '#/components/schemas/ResultaatEnum'
-          - $ref: '#/components/schemas/BlankEnum'
+        voortgang:
+          type: string
+          format: uuid
+          description: Voortgang van het doel.
+          nullable: true
         redenWijziging:
           allOf:
           - $ref: '#/components/schemas/RedenWijzigingEnum'
@@ -2709,45 +2406,6 @@ components:
 
             * `actief` - Actief
             * `niet_actief` - Niet actief
-    PatchedContactmoment:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Unieke resource identifier (UUID4).
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Doelstatus'
-          description: |-
-            Status van het contactmoment.
-
-            * `gepland` - Gepland
-            * `gestart` - Gestart
-            * `behaald` - Behaald
-            * `afgebroken` - Afgebroken
-        datum:
-          type: string
-          format: date-time
-          description: Startdatum van het contactmoment.
-        toelichtingStatus:
-          type: string
-          description: Toelichting bij de status van het contactmoment.
-          maxLength: 1000
-        notitie:
-          type: string
-          description: Notitie bij het contactmoment.
-          maxLength: 1000
-        plan:
-          allOf:
-          - $ref: '#/components/schemas/NestedPlan'
-          readOnly: true
-        planUuid:
-          type: string
-          format: uuid
-          writeOnly: true
-          description: UUID van het plan waarbij dit contactmoment hoort.
     PatchedDoel:
       type: object
       properties:
@@ -2953,7 +2611,7 @@ components:
           maxLength: 1000
         status:
           allOf:
-          - $ref: '#/components/schemas/EvaluatieStatusEnum'
+          - $ref: '#/components/schemas/Doelstatus'
           description: |-
             Status van de evaluatie.
 
@@ -3115,11 +2773,10 @@ components:
           maxLength: 9
           minLength: 9
         brk:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          nullable: true
+          type: string
           description: BRK nummer.
+          pattern: ^[0-9]+$
+          maxLength: 20
     Plan:
       type: object
       properties:
@@ -3285,11 +2942,10 @@ components:
           maxLength: 9
           minLength: 9
         brk:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          nullable: true
+          type: string
           description: BRK nummer.
+          pattern: ^[0-9]+$
+          maxLength: 20
       required:
       - plan
       - subjecttype

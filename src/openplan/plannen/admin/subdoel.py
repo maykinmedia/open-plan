@@ -49,7 +49,7 @@ class SubDoelAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Voortgang",
+            "Wijziging",
             {
                 "fields": (
                     "reden_wijziging",
