@@ -3,7 +3,8 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..enums.status import RedenWijziging, Status
+from ..enums.status import RedenWijziging
+from .validators import nummer_validatie
 
 
 class Positie(models.Model):
@@ -19,26 +20,27 @@ class Positie(models.Model):
         related_name="posities",
         help_text=_("Het subject waartoe de positie behoort."),
     )
-    positie_type = models.ForeignKey(
+    positietype = models.ForeignKey(
         "plannen.PositieType",
         on_delete=models.PROTECT,
         related_name="postities",
         help_text=_("Het type van de positie."),
     )
+    algoritme = models.CharField(
+        max_length=20,
+        blank=True,
+        validators=[nummer_validatie],
+        help_text=_("Algoritme van de positie."),
+    )
     naam = models.CharField(
         max_length=255,
+        unique=True,
         help_text=_("Naam van de positie."),
     )
     omschrijving = models.TextField(
         blank=True,
         max_length=1000,
         help_text=_("Omschrijving van de postitie."),
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIEF,
-        help_text=_("Status van de positie."),
     )
     gewijzigd_op = models.DateTimeField(
         auto_now=True,
@@ -61,4 +63,4 @@ class Positie(models.Model):
         verbose_name_plural = _("Posities")
 
     def __str__(self):
-        return str(self.uuid)
+        return self.naam

@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 from openplan.plannen.models.factories.configuratie import ConfiguratieFactory
 from openplan.plannen.models.factories.domein import DomeinFactory
 
-from ...enums.status import Status
+from ...enums.status import Typestatus
 from ...models.configuratie import Configuratie
 from .api_testcase import APITestCase
 
@@ -21,7 +21,7 @@ class ConfiguratieAPITests(APITestCase):
             "domein_uuid": str(self.domein.uuid),
             "naam": "Test Configuratie",
             "omschrijving": "Beschrijving test configuratie",
-            "status": Status.ACTIEF,
+            "status": Typestatus.ACTIEF,
         }
 
     def test_create_configuratie(self):
@@ -78,7 +78,7 @@ class ConfiguratieAPITests(APITestCase):
             "domein_uuid": str(nieuw_domein.uuid),
             "naam": "Test update Configuratie",
             "omschrijving": "Beschrijving update test",
-            "status": Status.NIET_ACTIEF,
+            "status": Typestatus.NIET_ACTIEF,
         }
 
         response = self.client.put(url, data, format="json")
@@ -88,7 +88,7 @@ class ConfiguratieAPITests(APITestCase):
         configuratie.refresh_from_db()
         self.assertEqual(configuratie.naam, "Test update Configuratie")
         self.assertEqual(configuratie.omschrijving, "Beschrijving update test")
-        self.assertEqual(configuratie.status, Status.NIET_ACTIEF)
+        self.assertEqual(configuratie.status, Typestatus.NIET_ACTIEF)
         self.assertEqual(configuratie.domein, nieuw_domein)
 
     def test_partial_update_configuratie(self):
@@ -226,11 +226,11 @@ class ConfiguratieAPITests(APITestCase):
 
     def test_filter_status(self):
         configuratie1 = ConfiguratieFactory.create(
-            status=Status.ACTIEF,
+            status=Typestatus.ACTIEF,
             domein=self.domein,
         )
         ConfiguratieFactory.create(
-            status=Status.NIET_ACTIEF,
+            status=Typestatus.NIET_ACTIEF,
             domein=self.domein,
         )
 

@@ -7,7 +7,8 @@ from vng_api_common.fields import BSNField
 
 from openplan.utils.fields import URNField
 
-from ..enums.status import Status, SubjectType
+from ..enums.status import SubjectType
+from .validators import nummer_validatie
 
 
 class Subject(models.Model):
@@ -22,17 +23,6 @@ class Subject(models.Model):
         on_delete=models.CASCADE,
         related_name="subjecten",
         help_text=_("Het plan waartoe dit subject behoort."),
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIEF,
-        help_text=_("Status van het subject."),
-    )
-    rolbeschrijving = models.TextField(
-        blank=True,
-        max_length=1000,
-        help_text=_("Rolbeschrijving van het subject."),
     )
     subjecttype = models.CharField(
         choices=SubjectType.choices,
@@ -49,6 +39,12 @@ class Subject(models.Model):
     bsn = BSNField(
         blank=True,
         help_text=_("BSN voor BRP-koppeling "),
+    )
+    brk = models.CharField(
+        max_length=20,
+        blank=True,
+        validators=[nummer_validatie],
+        help_text=_("BRK nummer."),
     )
 
     class Meta:

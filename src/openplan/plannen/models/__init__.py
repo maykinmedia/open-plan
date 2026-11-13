@@ -10,6 +10,7 @@ from .positietype import PositieType
 from .subdoel import Subdoel
 from .subdoeltype import SubdoelType
 from .subject import Subject
+from .voortgang import Voortgang
 
 __all__ = [
     "Configuratie",
@@ -24,4 +25,5 @@ __all__ = [
     "Subdoel",
     "SubdoelType",
     "Subject",
+    "Voortgang",
 ]

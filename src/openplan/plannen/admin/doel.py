@@ -25,11 +25,14 @@ class DoelAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "naam",
                     "positie",
                     "doeltype",
-                    "status",
+                    "naam",
                     "omschrijving",
+                    "status",
+                    "notitie_intern",
+                    "notitie_extern",
+                    "voortgang",
                 ),
             },
         ),
@@ -46,12 +49,12 @@ class DoelAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Voortgang",
+            "Wijziging",
             {
-                "fields": ("resultaat", "reden_wijziging", "toelichting_reden"),
+                "fields": ("reden_wijziging", "toelichting_reden"),
             },
         ),
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("positie")
+        return super().get_queryset(request).select_related("positie", "doeltype")

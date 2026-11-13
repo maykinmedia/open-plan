@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.utils.fields import URNField
 
-from ..enums.status import Status
+from ..enums.status import Planstatus
 from .validators import validate_dates
 
 
@@ -18,6 +18,7 @@ class Plan(models.Model):
     )
     naam = models.CharField(
         max_length=255,
+        unique=True,
         help_text=_("Naam van het plan."),
     )
     omschrijving = models.TextField(
@@ -27,8 +28,8 @@ class Plan(models.Model):
     )
     status = models.CharField(
         max_length=20,
-        choices=Status.choices,
-        default=Status.ACTIEF,
+        choices=Planstatus.choices,
+        default=Planstatus.CONCEPT,
         help_text=_("Status van het plan."),
     )
     startdatum = models.DateField(

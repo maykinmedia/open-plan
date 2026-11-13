@@ -30,6 +30,7 @@ class PlanAdmin(admin.ModelAdmin):
                     "naam",
                     "omschrijving",
                     "status",
+                    "tsaverwijzing",
                     "zaak",
                     "contactmoment",
                     "eigenaar",
@@ -49,7 +50,7 @@ class PlanAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Voortgang",
+            "Wijziging",
             {
                 "fields": (
                     "reden_wijziging",

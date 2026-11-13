@@ -13,7 +13,7 @@ class SubdoelFactory(factory.django.DjangoModelFactory):
     uuid = factory.LazyFunction(uuid.uuid4)
     subdoeltype = factory.SubFactory(SubdoelTypeFactory)
     doel = factory.SubFactory(DoelFactory)
-    naam = factory.Faker("sentence", nb_words=4)
+    naam = factory.Sequence(lambda n: f"Subdoel {n}")
     omschrijving = factory.Faker("paragraph", nb_sentences=3)
     startdatum = factory.LazyFunction(timezone.now)
     beoogde_startdatum = factory.LazyFunction(timezone.now)

@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 
 from openplan.plannen.models.factories.domein import DomeinFactory
 
-from ...enums.status import Status
+from ...enums.status import Typestatus
 from ...models.domein import Domein
 from .api_testcase import APITestCase
 
@@ -17,7 +17,7 @@ class DomeinAPITests(APITestCase):
         self.data = {
             "naam": "Test Domein",
             "omschrijving": "Beschrijving test domein",
-            "status": Status.ACTIEF,
+            "status": Typestatus.ACTIEF,
         }
 
     def test_create_domein(self):
@@ -29,7 +29,7 @@ class DomeinAPITests(APITestCase):
         domein = Domein.objects.get(uuid=response.data["uuid"])
         self.assertEqual(domein.naam, "Test Domein")
         self.assertEqual(domein.omschrijving, "Beschrijving test domein")
-        self.assertEqual(domein.status, Status.ACTIEF)
+        self.assertEqual(domein.status, Typestatus.ACTIEF)
 
     def test_list_domeinen(self):
         DomeinFactory.create_batch(3)
@@ -61,7 +61,7 @@ class DomeinAPITests(APITestCase):
         data = {
             "naam": "Test update Domein",
             "omschrijving": "Beschrijving update test",
-            "status": Status.NIET_ACTIEF,
+            "status": Typestatus.NIET_ACTIEF,
         }
 
         response = self.client.put(url, data, format="json")
@@ -70,7 +70,7 @@ class DomeinAPITests(APITestCase):
         domein.refresh_from_db()
         self.assertEqual(domein.naam, "Test update Domein")
         self.assertEqual(domein.omschrijving, "Beschrijving update test")
-        self.assertEqual(domein.status, Status.NIET_ACTIEF)
+        self.assertEqual(domein.status, Typestatus.NIET_ACTIEF)
 
     def test_partial_update_domein(self):
         domein = DomeinFactory.create()
@@ -136,8 +136,8 @@ class DomeinAPITests(APITestCase):
         self.assertEqual(response.data["results"][0]["uuid"], str(domein1.uuid))
 
     def test_filter_status(self):
-        domein1 = DomeinFactory.create(status=Status.ACTIEF)
-        DomeinFactory.create(status=Status.NIET_ACTIEF)
+        domein1 = DomeinFactory.create(status=Typestatus.ACTIEF)
+        DomeinFactory.create(status=Typestatus.NIET_ACTIEF)
 
         url = reverse("plannen:domein-list")
         response = self.client.get(url, {"status": "actief"})

@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
 
@@ -86,3 +87,9 @@ def validate_immutable_field(instance, field_name, message):
     )
     if huidige_waarde is not None and huidige_waarde != getattr(instance, attname):
         raise ValidationError({field_name: message})
+
+
+nummer_validatie = RegexValidator(
+    regex=r"^[0-9]+\Z",
+    message=_("Dit veld mag alleen nummers bevatten."),
+)

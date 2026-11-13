@@ -25,11 +25,14 @@ class SubDoelAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "naam",
                     "doel",
                     "subdoeltype",
+                    "naam",
                     "status",
                     "omschrijving",
+                    "notitie_intern",
+                    "notitie_extern",
+                    "voortgang",
                 ),
             },
         ),
@@ -46,10 +49,9 @@ class SubDoelAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Voortgang",
+            "Wijziging",
             {
                 "fields": (
-                    "resultaat",
                     "reden_wijziging",
                     "toelichting_reden",
                 ),
@@ -58,4 +60,4 @@ class SubDoelAdmin(admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("doel")
+        return super().get_queryset(request).select_related("doel", "subdoeltype")
