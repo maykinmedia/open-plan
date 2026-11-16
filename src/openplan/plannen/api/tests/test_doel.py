@@ -133,6 +133,79 @@ class DoelAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Doel.objects.filter(uuid=doel.uuid).exists())
 
+    def test_create_doel_returns_nested_positie(self):
+        url = reverse("plannen:doel-list")
+        response = self.client.post(url, self.data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+        data = response.json()
+        self.assertEqual(data["positie"]["uuid"], str(self.positie.uuid))
+        self.assertEqual(data["positie"]["naam"], self.positie.naam)
+        self.assertNotIn("positieUuid", data)
+
+        doel = Doel.objects.get(uuid=data["uuid"])
+        self.assertEqual(doel.positie, self.positie)
+
+    def test_create_doel_without_positie(self):
+        url = reverse("plannen:doel-list")
+        data = {**self.data}
+        del data["positieUuid"]
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "positieUuid")
+        self.assertEqual(error["code"], "required")
+        self.assertFalse(Doel.objects.exists())
+
+    def test_create_doel_unknown_positie(self):
+        url = reverse("plannen:doel-list")
+        data = {**self.data, "positieUuid": "00000000-0000-4000-8000-000000000000"}
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "positieUuid")
+        self.assertEqual(error["code"], "does_not_exist")
+        self.assertFalse(Doel.objects.exists())
+
+    def test_retrieve_doel_includes_positie(self):
+        doel = DoelFactory.create(positie=self.positie)
+
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["positie"]["uuid"], str(self.positie.uuid))
+
+    def test_update_doel_without_positie(self):
+        doel = DoelFactory.create(positie=self.positie)
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        data = {
+            "naam": "Test update Doel",
+            "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
+        }
+        response = self.client.put(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "positieUuid")
+        self.assertEqual(error["code"], "required")
+        doel.refresh_from_db()
+        self.assertEqual(doel.positie, self.positie)
+
+    def test_partial_update_positie(self):
+        doel = DoelFactory.create(positie=self.positie)
+        nieuwe_positie = PositieFactory.create()
+
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        response = self.client.patch(
+            url, {"positieUuid": str(nieuwe_positie.uuid)}, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        self.assertEqual(response.json()["positie"]["uuid"], str(nieuwe_positie.uuid))
+        doel.refresh_from_db()
+        self.assertEqual(doel.positie, nieuwe_positie)
+
     def test_create_doel_with_valid_einddatums(self):
         url = reverse("plannen:doel-list")
         data = {

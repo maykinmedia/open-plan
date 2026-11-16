@@ -22,7 +22,7 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
     retrieve=extend_schema(
         summary="Een specifieke positietype opvragen.",
-        description="Een specifieke positie opvragen via UUID.",
+        description="Een specifieke positietype opvragen via UUID.",
     ),
     create=extend_schema(
         summary="Nieuwe positietype aanmaken.",

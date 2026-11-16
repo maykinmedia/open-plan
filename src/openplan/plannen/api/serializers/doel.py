@@ -62,7 +62,7 @@ class DoelSerializer(serializers.ModelSerializer):
         model = Doel
         fields = [
             "uuid",
-            # "positie",
+            "positie",
             "positie_uuid",
             "doeltype",
             "doeltype_uuid",
