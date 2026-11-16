@@ -1834,7 +1834,7 @@ paths:
   /positietype/{uuid}:
     get:
       operationId: positietype_retrieve
-      description: Een specifieke positie opvragen via UUID.
+      description: Een specifieke positietype opvragen via UUID.
       summary: Een specifieke positietype opvragen.
       parameters:
       - in: path
@@ -2214,6 +2214,10 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
+        positie:
+          allOf:
+          - $ref: '#/components/schemas/NestedPositie'
+          readOnly: true
         positieUuid:
           type: string
           format: uuid
@@ -2304,6 +2308,7 @@ components:
       - doeltypeUuid
       - gewijzigdOp
       - naam
+      - positie
       - positieUuid
       - startdatum
       - uuid
@@ -2399,6 +2404,11 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van het type evaluatie.
+        posities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedPositie'
+          readOnly: true
         positieUuids:
           type: array
           items:
@@ -2481,6 +2491,7 @@ components:
       - naam
       - plan
       - planUuid
+      - posities
       - uuid
     NestedConfiguratie:
       type: object
@@ -2696,6 +2707,53 @@ components:
       - gewijzigdOp
       - naam
       - startdatum
+      - uuid
+    NestedPositie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        algoritme:
+          type: string
+          description: Algoritme van de positie.
+          pattern: ^[0-9]+$
+          maxLength: 20
+        naam:
+          type: string
+          description: Naam van de positie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de postitie.
+          maxLength: 1000
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop de positie voor het laatst is gewijzigd.
+        redenWijziging:
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom de positie gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van de positie.
+          maxLength: 1000
+      required:
+      - gewijzigdOp
+      - naam
       - uuid
     NestedPositietype:
       type: object
@@ -3018,6 +3076,10 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
+        positie:
+          allOf:
+          - $ref: '#/components/schemas/NestedPositie'
+          readOnly: true
         positieUuid:
           type: string
           format: uuid
@@ -3176,6 +3238,11 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van het type evaluatie.
+        posities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedPositie'
+          readOnly: true
         positieUuids:
           type: array
           items:
@@ -3378,6 +3445,11 @@ components:
           type: string
           description: Omschrijving van de postitie.
           maxLength: 1000
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop de positie voor het laatst is gewijzigd.
         redenWijziging:
           allOf:
           - $ref: '#/components/schemas/RedenWijzigingEnum'
@@ -3640,6 +3712,11 @@ components:
           type: string
           description: Omschrijving van de postitie.
           maxLength: 1000
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop de positie voor het laatst is gewijzigd.
         redenWijziging:
           allOf:
           - $ref: '#/components/schemas/RedenWijzigingEnum'
@@ -3658,6 +3735,7 @@ components:
           description: Toelichting reden wijziging van de positie.
           maxLength: 1000
       required:
+      - gewijzigdOp
       - naam
       - positietype
       - positietypeUuid

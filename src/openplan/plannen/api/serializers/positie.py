@@ -17,11 +17,13 @@ class NestedPositieSerializer(serializers.ModelSerializer):
             "algoritme",
             "naam",
             "omschrijving",
+            "gewijzigd_op",
             "reden_wijziging",
             "toelichting_reden",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
+            "gewijzigd_op": {"read_only": True},
         }
 
 
@@ -56,9 +58,11 @@ class PositieSerializer(serializers.ModelSerializer):
             "algoritme",
             "naam",
             "omschrijving",
+            "gewijzigd_op",
             "reden_wijziging",
             "toelichting_reden",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
+            "gewijzigd_op": {"read_only": True},
         }

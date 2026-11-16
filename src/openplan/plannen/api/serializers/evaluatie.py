@@ -14,6 +14,7 @@ from .doel import NestedDoelSerializer
 
 # from .evaluatietype import NestedEvaluatieSerializer
 from .plan import NestedPlanSerializer
+from .positie import NestedPositieSerializer
 
 
 # TODO: Remove comments when other api's are implemented
@@ -37,10 +38,10 @@ class EvaluatieSerializer(serializers.ModelSerializer):
         source="evaluatietype",
         help_text=_("UUID van het type evaluatie."),
     )
-    # posities = NestedPositieSerializer(
-    #     read_only=True,
-    #     many=True,
-    # )
+    posities = NestedPositieSerializer(
+        read_only=True,
+        many=True,
+    )
     positie_uuids = UUIDRelatedField(
         queryset=Positie.objects.all(),
         many=True,
@@ -82,7 +83,7 @@ class EvaluatieSerializer(serializers.ModelSerializer):
             "plan_uuid",
             # "evaluatietype",
             "evaluatietype_uuid",
-            # "posities",
+            "posities",
             "positie_uuids",
             "doelen",
             "doel_uuids",
