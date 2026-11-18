@@ -1,10 +1,11 @@
 import uuid
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ..enums.status import RedenWijziging
-from .validators import nummer_validatie
+from .validators import nummer_validatie, validate_immutable_field
 
 
 class Positie(models.Model):
@@ -23,8 +24,14 @@ class Positie(models.Model):
     positietype = models.ForeignKey(
         "plannen.PositieType",
         on_delete=models.PROTECT,
-        related_name="postities",
+        related_name="posities",
         help_text=_("Het type van de positie."),
+    )
+    domein = models.ForeignKey(
+        "plannen.Domein",
+        on_delete=models.PROTECT,
+        related_name="+",
+        help_text=_("Het domein van de positie."),
     )
     algoritme = models.CharField(
         max_length=20,
@@ -62,5 +69,51 @@ class Positie(models.Model):
         verbose_name = _("Positie")
         verbose_name_plural = _("Posities")
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=["subject", "domein"],
+                name="max_een_positie_per_subject_per_domein",
+            )
+        ]
+
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+        if not self.positietype_id:
+            return
+
+        validate_immutable_field(
+            self, "domein", _("Het domein van een positie kan niet veranderen.")
+        )
+        self._controleer_domein()
+        self._controleer_een_positie_per_domein()
+
+    def _controleer_domein(self):
+        domein_id = self.positietype.configuraties.values_list(
+            "domein_id", flat=True
+        ).first()
+
+        if domein_id is None:
+            return
+
+        if domein_id != self.domein_id:
+            raise ValidationError(
+                {
+                    "domein": _(
+                        "Het domein van de positie moet gelijk zijn aan het domein "
+                        "van de configuratie van het positietype."
+                    )
+                }
+            )
+
+    def _controleer_een_positie_per_domein(self):
+        if (
+            Positie.objects.filter(subject_id=self.subject_id, domein_id=self.domein_id)
+            .exclude(pk=self.pk)
+            .exists()
+        ):
+            raise ValidationError(
+                {"subject": _("Dit subject heeft al een positie in dit domein.")}
+            )

@@ -21,6 +21,7 @@ class PositieAdmin(admin.ModelAdmin):
                     "uuid",
                     "subject",
                     "positietype",
+                    "domein",
                     "naam",
                     "omschrijving",
                     "algoritme",
