@@ -91,7 +91,7 @@ def validate_immutable_field(instance, field_name, message):
 
 def validate_configuraties_zelfde_domein(positietype, domein_ids):
     """
-    domein_ids: the domein_ids of the configuraties the positietype WILL have.
+    domein_ids: the domein_ids of the configuraties the positietype will have.
     """
     domein_ids = set(domein_ids)
 
