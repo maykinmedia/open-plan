@@ -7,6 +7,8 @@ from simple_history.models import HistoricalRecords
 
 from openplan.plannen.enums.status import RedenWijziging
 
+WIJZIGING_VELDEN = ("reden_wijziging", "toelichting_reden")
+
 
 class WijzigingHistoryModel(models.Model):
     """
@@ -43,3 +45,13 @@ class HistorieRecords(HistoricalRecords):
             models.UUIDField(default=uuid.uuid4, editable=False),
         )
         super().__init__(*args, bases=bases, **kwargs)
+
+    def copy_fields(self, model):
+        """
+        Make every field copied from the model nullable in the history table.
+        The model itself is unchanged: its fields stay required there.
+        """
+        fields = super().copy_fields(model)
+        for field in fields.values():
+            field.null = True
+        return fields
