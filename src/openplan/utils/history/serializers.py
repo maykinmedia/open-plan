@@ -4,9 +4,10 @@ from rest_framework import serializers
 
 from openplan.plannen.enums.status import RedenWijziging
 
+from .models import WIJZIGING_VELDEN
 from .signals import zet_wijziging
 
-WIJZIGING_VELDEN = ("reden_wijziging", "toelichting_reden")
+ZICHTBAAR_NA_VERWIJDEREN = ("versie_uuid", "uuid", *WIJZIGING_VELDEN)
 
 
 class WijzigingSerializerMixin(serializers.Serializer):
@@ -57,6 +58,22 @@ class WijzigingSerializerMixin(serializers.Serializer):
         )
 
 
+class HistorieLijstSerializer(serializers.Serializer):
+    """Short overview of one version: which one, of which object, and why."""
+
+    versie_uuid = serializers.UUIDField(
+        source="history_id",
+        read_only=True,
+        help_text=_("UUID van deze versie."),
+    )
+    uuid = serializers.UUIDField(
+        read_only=True,
+        help_text=_("UUID van het object."),
+    )
+    reden_wijziging = serializers.CharField(read_only=True)
+    toelichting_reden = serializers.CharField(read_only=True)
+
+
 class HistorieSerializer(serializers.ModelSerializer):
     """
     Base for history serializers. Shows the history_id column as versie_uuid
@@ -73,6 +90,15 @@ class HistorieSerializer(serializers.ModelSerializer):
         read_only=True,
         help_text=_("UUID van deze versie."),
     )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Deleted object: hide its data, keep only the version id and reason.
+        if self.context.get("gemaskeerd"):
+            for veld in data:
+                if veld not in ZICHTBAAR_NA_VERWIJDEREN:
+                    data[veld] = None
+        return data
 
 
 def historie_velden(model):

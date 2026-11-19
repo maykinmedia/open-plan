@@ -530,8 +530,9 @@ paths:
   /doel/{uuid}/history:
     get:
       operationId: doel_history_list
-      description: Alle versies van een doel, de nieuwste eerst. Elke versie bevat
-        de gegevens zoals ze na die wijziging waren en de reden van de wijziging.
+      description: Alle versies van een doel, de nieuwste eerst, met per versie de
+        reden van de wijziging. De gegevens van een versie staan in het detail-endpoint,
+        via versieUuid.
       summary: Historie van een doel opvragen.
       parameters:
       - in: query
@@ -646,15 +647,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedDoelHistorieList'
+                $ref: '#/components/schemas/PaginatedHistorieLijstList'
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/PaginatedDoelHistorieList'
+                $ref: '#/components/schemas/PaginatedHistorieLijstList'
           description: ''
   /doel/{uuid}/history/{versie_uuid}:
     get:
       operationId: doel_history_retrieve
-      description: Eén versie uit de historie van een doel, via historyId.
+      description: Eén versie uit de historie van een doel, via versieUuid. Is het
+        doel verwijderd, dan zijn de gegevens gemaskeerd.
       summary: Een specifieke versie van een doel opvragen.
       parameters:
       - in: path
@@ -2042,17 +2044,19 @@ components:
           type: string
           format: uuid
           readOnly: true
+          nullable: true
           description: Unieke resource identifier (UUID4).
         naam:
           type: string
+          nullable: true
           description: Naam van het doel.
           maxLength: 255
         omschrijving:
           type: string
+          nullable: true
           description: omschrijving van het doel.
         status:
-          allOf:
-          - $ref: '#/components/schemas/Doelstatus'
+          nullable: true
           description: |-
             Status van het doel.
 
@@ -2060,9 +2064,13 @@ components:
             * `gestart` - Gestart
             * `behaald` - Behaald
             * `afgebroken` - Afgebroken
+          oneOf:
+          - $ref: '#/components/schemas/Doelstatus'
+          - $ref: '#/components/schemas/NullEnum'
         startdatum:
           type: string
           format: date
+          nullable: true
           description: Startdatum van het doel.
         einddatum:
           type: string
@@ -2072,6 +2080,7 @@ components:
         beoogdeStartdatum:
           type: string
           format: date
+          nullable: true
           description: Beoogde startdatum van het doel.
         beoogdeEinddatum:
           type: string
@@ -2082,13 +2091,16 @@ components:
           type: string
           format: date-time
           readOnly: true
+          nullable: true
           description: Datum en tijd waarop het doel voor het laatst is gewijzigd.
         notitieIntern:
           type: string
+          nullable: true
           description: Notitie intern.
           maxLength: 1000
         notitieExtern:
           type: string
+          nullable: true
           description: Notitie extern.
           maxLength: 1000
         positie:
@@ -2124,11 +2136,8 @@ components:
           description: Toelichting op de reden van de wijziging.
           maxLength: 1000
       required:
-      - beoogdeStartdatum
       - doeltype
       - gewijzigdOp
-      - naam
-      - startdatum
       - uuid
       - versieUuid
     DoelType:
@@ -2306,6 +2315,32 @@ components:
       - plan
       - planUuid
       - uuid
+    HistorieLijst:
+      type: object
+      description: 'Short overview of one version: which one, of which object, and
+        why.'
+      properties:
+        versieUuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: UUID van deze versie.
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: UUID van het object.
+        redenWijziging:
+          type: string
+          readOnly: true
+        toelichtingReden:
+          type: string
+          readOnly: true
+      required:
+      - redenWijziging
+      - toelichtingReden
+      - uuid
+      - versieUuid
     NestedDoel:
       type: object
       properties:
@@ -2489,6 +2524,9 @@ components:
       - naam
       - startdatum
       - uuid
+    NullEnum:
+      enum:
+      - null
     PaginatedConfiguratieList:
       type: object
       required:
@@ -2512,29 +2550,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Configuratie'
-    PaginatedDoelHistorieList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DoelHistorie'
     PaginatedDoelList:
       type: object
       required:
@@ -2627,6 +2642,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Evaluatie'
+    PaginatedHistorieLijstList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistorieLijst'
     PaginatedPlanList:
       type: object
       required:
