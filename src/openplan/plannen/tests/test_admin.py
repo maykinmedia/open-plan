@@ -9,6 +9,7 @@ from maykin_2fa.test import disable_admin_mfa
 from openplan.accounts.tests.factories import UserFactory
 
 from ..models.factories.doel import DoelFactory
+from ..models.factories.subdoel import SubdoelFactory
 from ..models.factories.subdoeltype import SubdoelTypeFactory
 from ..models.subdoel import Subdoel
 
@@ -37,16 +38,6 @@ class SubDoelAdminTests(WebTest):
         form["subdoeltype"] = self.subdoeltype.pk
         form["startdatum"] = timezone.now().date()
         form["beoogde_startdatum"] = timezone.now().date()
-
-    def _create_subdoel(self, producten):
-        return Subdoel.objects.create(
-            doel=self.doel,
-            subdoeltype=self.subdoeltype,
-            naam="Bestaand subdoel",
-            startdatum=timezone.now().date(),
-            beoogde_startdatum=timezone.now().date(),
-            producten=producten,
-        )
 
     def _producten_errors(self, response):
         return response.html.find_all(
@@ -178,7 +169,7 @@ class SubDoelAdminTests(WebTest):
         self.assertEqual(len(self._producten_errors(response)), 1)
 
     def test_change_subdoel_remove_product(self):
-        subdoel = self._create_subdoel([{"urn": URN_1}, {"urn": URN_2}])
+        subdoel = SubdoelFactory.create(producten=[{"urn": URN_1}, {"urn": URN_2}])
         url = reverse("admin:plannen_subdoel_change", args=[subdoel.pk])
 
         response = self.app.get(url)

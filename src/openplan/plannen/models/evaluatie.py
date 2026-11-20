@@ -3,8 +3,9 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from vng_api_common.fields import URNField
+
 from openplan.plannen.enums.status import Doelstatus
-from openplan.utils.fields import URNField
 
 from .validators import validate_immutable_field
 
