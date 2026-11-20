@@ -12,9 +12,9 @@ from jsonschema import (
 
 from openplan.utils.typing import JSONObject
 
-logger = structlog.stdlib.get_logger(__name__)
-
 from ..enums.status import SubjectType
+
+logger = structlog.stdlib.get_logger(__name__)
 
 
 def validate_hoofd_doel_not_self(doel):
