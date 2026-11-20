@@ -36,14 +36,6 @@
             "models": [
                 [
                     "plannen",
-                    "configuratie"
-                ],
-                [
-                    "plannen",
-                    "domein"
-                ],
-                [
-                    "plannen",
                     "plan"
                 ],
                 [
@@ -52,15 +44,7 @@
                 ],
                 [
                     "plannen",
-                    "positietype"
-                ],
-                [
-                    "plannen",
                     "evaluatie"
-                ],
-                [
-                    "plannen",
-                    "evaluatietype"
                 ],
                 [
                     "plannen",
@@ -68,15 +52,7 @@
                 ],
                 [
                     "plannen",
-                    "doeltype"
-                ],
-                [
-                    "plannen",
                     "subdoel"
-                ],
-                [
-                    "plannen",
-                    "subdoeltype"
                 ],
                 [
                     "plannen",
@@ -85,6 +61,43 @@
                 [
                     "plannen",
                     "voortgang"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "admin_index.appgroup",
+        "fields": {
+            "order": 3,
+            "translations": {
+                "en": "Plan configurations"
+            },
+            "name": "Planconfiguraties",
+            "slug": "plan-configuraties",
+            "models": [
+                [
+                    "plannen",
+                    "configuratie"
+                ],
+                [
+                    "plannen",
+                    "domein"
+                ],
+                [
+                    "plannen",
+                    "positietype"
+                ],
+                [
+                    "plannen",
+                    "evaluatietype"
+                ],
+                [
+                    "plannen",
+                    "doeltype"
+                ],
+                [
+                    "plannen",
+                    "subdoeltype"
                 ]
             ]
         }
