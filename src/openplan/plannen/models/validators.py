@@ -89,6 +89,35 @@ def validate_immutable_field(instance, field_name, message):
         raise ValidationError({field_name: message})
 
 
+def validate_configuraties_zelfde_domein(positietype, domein_ids):
+    """
+    domein_ids: the domein_ids of the configuraties the positietype will have.
+    """
+    domein_ids = set(domein_ids)
+
+    if len(domein_ids) > 1:
+        raise ValidationError(
+            {
+                "configuraties": _(
+                    "Alle configuraties van een positietype moeten bij hetzelfde domein horen."
+                )
+            }
+        )
+
+    if not domein_ids or positietype._state.adding:
+        return
+
+    (domein_id,) = domein_ids
+    if positietype.posities.exclude(domein_id=domein_id).exists():
+        raise ValidationError(
+            {
+                "configuraties": _(
+                    "Dit positietype heeft al posities in een ander domein."
+                )
+            }
+        )
+
+
 nummer_validatie = RegexValidator(
     regex=r"^[0-9]+\Z",
     message=_("Dit veld mag alleen nummers bevatten."),

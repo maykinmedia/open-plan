@@ -12,6 +12,9 @@ class PositieFactory(factory.django.DjangoModelFactory):
     subject = factory.SubFactory(SubjectFactory)
     positietype = factory.SubFactory(PositieTypeFactory)
     naam = factory.Sequence(lambda n: f"Positie {n}")
+    domein = factory.LazyAttribute(
+        lambda o: getattr(o.positietype.configuraties.first(), "domein", None)
+    )
 
     class Meta:
         model = Positie
