@@ -25,6 +25,7 @@ sphinx
 # django-extra-fields
 # django-filter
 # drf-spectacular
+django-simple-history
 
 # WSGI servers & monitoring - production oriented
 uwsgi

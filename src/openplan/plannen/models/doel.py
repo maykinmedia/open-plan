@@ -3,7 +3,8 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.plannen.enums.status import Doelstatus, RedenWijziging
+from openplan.plannen.enums.status import Doelstatus
+from openplan.utils.history.models import HistorieRecords
 
 from .validators import validate_dates, validate_immutable_field
 
@@ -82,17 +83,10 @@ class Doel(models.Model):
         related_name="doelen",
         help_text=_("Voortgang van het doel."),
     )
-    reden_wijziging = models.CharField(
-        max_length=30,
-        choices=RedenWijziging.choices,
-        default=RedenWijziging.REGISTREREN,
-        help_text=_("Reden waarom het gewijzigd is."),
-    )
-    toelichting_reden = models.TextField(
-        blank=True,
-        max_length=1000,
-        help_text=_("Toelichting reden wijziging van het doel."),
-    )
+
+    # Creates HistoricalDoel: a copy of every field per change,
+    # plus reden_wijziging and toelichting_reden.
+    history = HistorieRecords()
 
     class Meta:
         verbose_name = _("Doel")
