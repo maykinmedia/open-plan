@@ -116,7 +116,7 @@ def validate_jsonschema(
     if not errors:
         return
 
-    logger.info("validate_jsonschema failed for %s: %d error(s)", label, len(errors))
+    logger.info("jsonschema_validation_failed", label=label, error_count=len(errors))
 
     messages = []
     for error in errors:

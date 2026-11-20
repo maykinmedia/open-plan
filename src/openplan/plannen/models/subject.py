@@ -3,9 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from vng_api_common.fields import BSNField
-
-from openplan.utils.fields import URNField
+from vng_api_common.fields import BSNField, URNField
 
 from ..enums.status import SubjectType
 from .validators import nummer_validatie

@@ -1,39 +1,31 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
-from django.db import models
 from django.utils.encoding import smart_str
 from django.utils.translation import gettext_lazy as _
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from vng_api_common.validators import URNValidator
+from vng_api_common.fields import URNField
 
 from .validators import UUID_REGEX
 
 
-class URNField(models.CharField):
+class UuidURNField(URNField):
     """
-    A custom Django model field to store a valid URN (RFC 8141: Uniform Resource Names)
-    https://datatracker.ietf.org/doc/html/rfc8141
+    URN field (RFC 8141) that must end with `:uuid:<uuid>`.
 
-    This field extends CharField and automatically validates the value
-    against a basic URN pattern: `urn:<namespace>:<resource>`.
+    Extends the vng-api-common ``URNField`` with a check on the UUID suffix.
     """
 
     default_validators = [
-        URNValidator(),
+        *URNField.default_validators,
         RegexValidator(
             f":uuid:{UUID_REGEX}$",
             _("Urn moet eindigen met `:uuid:<uuid>`."),
+            code="urn_without_uuid",
         ),
     ]
-    description = _("URN")
-
-    def __init__(self, *args, **kwargs):
-        # Default max length 255 characters
-        kwargs.setdefault("max_length", 255)
-        super().__init__(*args, **kwargs)
 
 
 @extend_schema_field(OpenApiTypes.UUID)
