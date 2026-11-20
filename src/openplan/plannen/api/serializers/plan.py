@@ -1,9 +1,7 @@
-from django.utils.translation import gettext_lazy as _
-
 from rest_framework import serializers
+from vng_api_common.serializers import URNModelSerializer
 
 from openplan.plannen.models.plan import Plan
-from openplan.utils.serializers import URNModelSerializer
 
 from .validators import StartBeforeEndValidator
 
@@ -38,7 +36,6 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
     class Meta:
         model = Plan
         fields = [
-            "urn",
             "uuid",
             "status",
             "naam",
@@ -57,10 +54,6 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
-            "urn": {
-                "lookup_field": "uuid",
-                "help_text": _("De Uniform Resource Name van de plan."),
-            },
             "gewijzigd_op": {"read_only": True},
         }
 

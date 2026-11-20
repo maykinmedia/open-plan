@@ -5,7 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from openplan.plannen.enums.status import Doelstatus, RedenWijziging
 
-from .validators import validate_dates, validate_immutable_field
+from ..schemas import PRODUCTEN_SCHEMA
+from .validators import validate_dates, validate_immutable_field, validate_jsonschema
 
 
 class Subdoel(models.Model):
@@ -94,6 +95,12 @@ class Subdoel(models.Model):
         max_length=1000,
         help_text=_("Toelichting reden wijziging van het subdoel."),
     )
+    producten = models.JSONField(
+        _("producten"),
+        default=list,
+        blank=True,
+        help_text=_("Lijst met URN's naar producten."),
+    )
 
     class Meta:
         verbose_name = _("Subdoel")
@@ -112,4 +119,9 @@ class Subdoel(models.Model):
             self,
             "subdoeltype",
             _("Het subdoeltype kan niet gewijzigd worden. Maak een nieuw subdoel aan."),
+        )
+        validate_jsonschema(
+            instance=self.producten,
+            label="producten",
+            schema=PRODUCTEN_SCHEMA,
         )

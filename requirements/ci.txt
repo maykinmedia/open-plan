@@ -74,10 +74,11 @@ celery==5.6.0
     #   -c requirements/base.txt
     #   -r requirements/base.txt
     #   notifications-api-common
-certifi==2025.11.12
+certifi==2026.10.23
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
+    #   commonground-api-common
     #   elastic-apm
     #   requests
     #   sentry-sdk
@@ -114,7 +115,7 @@ click-repl==0.3.0
     #   -c requirements/base.txt
     #   -r requirements/base.txt
     #   celery
-commonground-api-common==3.0.1
+commonground-api-common==3.2.0
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
