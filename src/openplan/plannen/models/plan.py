@@ -33,6 +33,8 @@ class Plan(models.Model):
         help_text=_("Status van het plan."),
     )
     startdatum = models.DateField(
+        null=True,
+        blank=True,
         help_text=_("Startdatum van het plan."),
         db_index=True,
     )
@@ -42,6 +44,8 @@ class Plan(models.Model):
         help_text=_("Einddatum van het plan."),
     )
     beoogde_startdatum = models.DateField(
+        null=True,
+        blank=True,
         help_text=_("Beoogde startdatum van het plan."),
         db_index=True,
     )
