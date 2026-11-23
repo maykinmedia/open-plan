@@ -22,6 +22,7 @@ INSTALLED_APPS += [
     "hijack.contrib.admin",
     "maykin_common",
     "capture_tag",
+    "simple_history",
     # Project applications.
     "openplan.accounts",
     "openplan.utils",
@@ -30,6 +31,7 @@ INSTALLED_APPS += [
 
 MIDDLEWARE += [
     "hijack.middleware.HijackUserMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 # URN settings

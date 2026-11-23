@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.doel import Doel
+from openplan.utils.history.viewset import HistorieViewSetMixin, historie_schema
 
 from ...metrics import (
     doelen_create_counter,
@@ -13,7 +14,7 @@ from ...metrics import (
     doelen_update_counter,
 )
 from ..filtersets.doel import DoelFilter
-from ..serializers.doel import DoelSerializer
+from ..serializers.doel import DoelHistorieSerializer, DoelSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
 
@@ -44,10 +45,13 @@ logger = structlog.stdlib.get_logger(__name__)
         summary="Doel verwijderen.",
         description="Verwijder een specifiek doel.",
     ),
+    **historie_schema(DoelHistorieSerializer, "doel"),
 )
-class DoelViewSet(viewsets.ModelViewSet):
+class DoelViewSet(HistorieViewSetMixin, viewsets.ModelViewSet):
     queryset = Doel.objects.all()
     serializer_class = DoelSerializer
+    history_serializer_class = DoelHistorieSerializer
+    history_select_related = ("doeltype",)
     filterset_class = DoelFilter
     lookup_field = "uuid"
     permission_classes = (IsAuthenticated,)
