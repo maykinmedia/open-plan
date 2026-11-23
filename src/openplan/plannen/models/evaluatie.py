@@ -66,11 +66,11 @@ class Evaluatie(models.Model):
     )
     contactmoment = URNField(
         blank=True,
-        help_text=_("URL naar het contactmoment."),
+        help_text=_("URN naar het contactmoment."),
     )
     eigenaar = URNField(
         blank=True,
-        help_text=_("URL naar de eigenaar."),
+        help_text=_("URN naar de eigenaar."),
     )
     zaak = URNField(
         help_text=_("URN naar de bijbehorende zaak in het zaaksysteem."),
