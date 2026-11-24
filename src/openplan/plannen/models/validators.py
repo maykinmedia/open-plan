@@ -92,11 +92,14 @@ def validate_immutable_field(instance, field_name, message):
 
 
 def validate_subject_velden(
-    subjecttype: str, klant: str, bsn: str, ruimtelijk_object: str
+    subjecttype: str,
+    klant: str | None,
+    bsn: str | None,
+    ruimtelijk_object: str | None,
 ) -> None:
     """
     Validate the fields per subjecttype:
-    - persoon: klant or bsn is required, ruimtelijk_object is not allowed
+    - persoon: klant and/or bsn is required, ruimtelijk_object is not allowed
     - fysiek_object: ruimtelijk_object is required, klant and bsn are not allowed
     """
     errors = {}

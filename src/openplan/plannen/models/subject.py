@@ -27,7 +27,7 @@ class Subject(models.Model):
     subjecttype = models.CharField(
         choices=SubjectType.choices,
         help_text=_(
-            "Het type subject. Bij `persoon` is `klant` of `bsn` verplicht en mag "
+            "Het type subject. Bij `persoon` is `klant` en/of `bsn` verplicht en mag "
             "`ruimtelijk_object` niet worden opgegeven. Bij `fysiek_object` is "
             "`ruimtelijk_object` verplicht en mogen `klant` en `bsn` niet worden "
             "opgegeven."
