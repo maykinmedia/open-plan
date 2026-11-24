@@ -23,6 +23,13 @@ worden afgerond om deze doelen te behalen.
 Andere systemen kunnen via een REST API communiceren met Open Plan om bijvoorbeeld
 plangegevens op te halen of doelen te beheren.
 
+Informatiemodel
+===============
+
+.. image:: docs/introduction/assets/open-plan-sim.png
+   :alt: Open Plan informatiemodel
+
+
 API specificatie
 ================
 
