@@ -257,11 +257,11 @@ class Migration(migrations.Migration):
             name='Subject',
             fields=[
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unieke resource identifier (UUID4).', primary_key=True, serialize=False)),
-                ('subjecttype', models.CharField(choices=[('persoon', 'Persoon'), ('fysiek_object', 'Fysiek object')], help_text='Het type subject')),
+                ('subjecttype', models.CharField(choices=[('persoon', 'Persoon'), ('fysiek_object', 'Fysiek object')], help_text='Het type subject. Bij `persoon` is `klant` of `bsn` verplicht en mag `ruimtelijk_object` niet worden opgegeven. Bij `fysiek_object` is `ruimtelijk_object` verplicht en mogen `klant` en `bsn` niet worden opgegeven.')),
                 ('profiel', openplan.utils.fields.URNField(blank=True, help_text='URN naar het profiel.', max_length=255)),
-                ('klant', openplan.utils.fields.URNField(blank=True, help_text='URN naar de Klant ', max_length=255)),
-                ('bsn', vng_api_common.fields.BSNField(blank=True, help_text='BSN voor BRP-koppeling ', max_length=9)),
-                ('brk', models.CharField(blank=True, help_text='BRK nummer.', max_length=20, validators=[django.core.validators.RegexValidator(message='Dit veld mag alleen nummers bevatten.', regex='^[0-9]+\\Z')])),
+                ('klant', openplan.utils.fields.URNField(blank=True, help_text='URN naar de Klant. Verplicht bij subjecttype `persoon` als er geen `bsn` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.', max_length=255)),
+                ('bsn', vng_api_common.fields.BSNField(blank=True, help_text='BSN voor BRP-koppeling. Verplicht bij subjecttype `persoon` als er geen `klant` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.', max_length=9)),
+                ('ruimtelijk_object', openplan.utils.fields.URNField(blank=True, help_text='URN naar een ruimtelijk object. Verplicht bij subjecttype `fysiek_object`. Niet toegestaan bij subjecttype `persoon`.', max_length=255)),
                 ('plan', models.ForeignKey(help_text='Het plan waartoe dit subject behoort.', on_delete=django.db.models.deletion.CASCADE, related_name='subjecten', to='plannen.plan')),
             ],
             options={

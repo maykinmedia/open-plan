@@ -8,7 +8,7 @@ from vng_api_common.fields import BSNField
 from openplan.utils.fields import URNField
 
 from ..enums.status import SubjectType
-from .validators import nummer_validatie
+from .validators import validate_subject_velden
 
 
 class Subject(models.Model):
@@ -26,7 +26,12 @@ class Subject(models.Model):
     )
     subjecttype = models.CharField(
         choices=SubjectType.choices,
-        help_text=_("Het type subject"),
+        help_text=_(
+            "Het type subject. Bij `persoon` is `klant` of `bsn` verplicht en mag "
+            "`ruimtelijk_object` niet worden opgegeven. Bij `fysiek_object` is "
+            "`ruimtelijk_object` verplicht en mogen `klant` en `bsn` niet worden "
+            "opgegeven."
+        ),
     )
     profiel = URNField(
         blank=True,
@@ -34,17 +39,25 @@ class Subject(models.Model):
     )
     klant = URNField(
         blank=True,
-        help_text=_("URN naar de Klant "),
+        help_text=_(
+            "URN naar de Klant. Verplicht bij subjecttype `persoon` als er geen "
+            "`bsn` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`."
+        ),
     )
     bsn = BSNField(
         blank=True,
-        help_text=_("BSN voor BRP-koppeling "),
+        help_text=_(
+            "BSN voor BRP-koppeling. Verplicht bij subjecttype `persoon` als er "
+            "geen `klant` is opgegeven. Niet toegestaan bij subjecttype "
+            "`fysiek_object`."
+        ),
     )
-    brk = models.CharField(
-        max_length=20,
+    ruimtelijk_object = URNField(
         blank=True,
-        validators=[nummer_validatie],
-        help_text=_("BRK nummer."),
+        help_text=_(
+            "URN naar een ruimtelijk object. Verplicht bij subjecttype "
+            "`fysiek_object`. Niet toegestaan bij subjecttype `persoon`."
+        ),
     )
 
     class Meta:
@@ -53,3 +66,12 @@ class Subject(models.Model):
 
     def __str__(self):
         return f"Subject {self.uuid}"
+
+    def clean(self):
+        super().clean()
+        validate_subject_velden(
+            subjecttype=self.subjecttype,
+            klant=self.klant,
+            bsn=self.bsn,
+            ruimtelijk_object=self.ruimtelijk_object,
+        )

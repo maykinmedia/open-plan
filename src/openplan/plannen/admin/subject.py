@@ -27,7 +27,7 @@ class SubjectAdmin(admin.ModelAdmin):
                     "profiel",
                     "klant",
                     "bsn",
-                    "brk",
+                    "ruimtelijk_object",
                 ),
             },
         ),
