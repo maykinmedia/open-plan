@@ -43,6 +43,8 @@ class Doel(models.Model):
         help_text=_("Status van het doel."),
     )
     startdatum = models.DateField(
+        null=True,
+        blank=True,
         help_text=_("Startdatum van het doel."),
         db_index=True,
     )
@@ -52,6 +54,8 @@ class Doel(models.Model):
         help_text=_("Einddatum van het doel."),
     )
     beoogde_startdatum = models.DateField(
+        null=True,
+        blank=True,
         help_text=_("Beoogde startdatum van het doel."),
         db_index=True,
     )

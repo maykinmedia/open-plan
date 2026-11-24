@@ -44,6 +44,8 @@ class Subdoel(models.Model):
         help_text=_("Status van het subdoel."),
     )
     startdatum = models.DateField(
+        null=True,
+        blank=True,
         help_text=_("Startdatum van het subdoel."),
         db_index=True,
     )
@@ -53,6 +55,8 @@ class Subdoel(models.Model):
         help_text=_("Einddatum van het subdoel."),
     )
     beoogde_startdatum = models.DateField(
+        null=True,
+        blank=True,
         help_text=_("Beoogde startdatum van het subdoel."),
         db_index=True,
     )
