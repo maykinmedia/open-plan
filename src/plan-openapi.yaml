@@ -1803,8 +1803,8 @@ paths:
           description: ''
     post:
       operationId: positietype_create
-      description: Voeg een nieuwe positietype toe aan het systeem.
-      summary: Nieuwe positietype aanmaken.
+      description: Voeg een nieuw positietype toe aan het systeem.
+      summary: Nieuw positietype aanmaken.
       tags:
       - Positietype
       requestBody:
@@ -1834,8 +1834,8 @@ paths:
   /positietype/{uuid}:
     get:
       operationId: positietype_retrieve
-      description: Een specifieke positietype opvragen via UUID.
-      summary: Een specifieke positietype opvragen.
+      description: Een specifiek positietype opvragen via UUID.
+      summary: Een specifiek positietype opvragen.
       parameters:
       - in: path
         name: uuid
@@ -2818,14 +2818,23 @@ components:
         klant:
           type: string
           example: urn:namespace:component:resource:uuid
-          description: 'URN naar de Klant '
+          description: URN naar de Klant. Verplicht bij subjecttype `persoon` als
+            er geen `bsn` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
         bsn:
           type: string
-          description: 'BSN voor BRP-koppeling '
+          description: BSN voor BRP-koppeling. Verplicht bij subjecttype `persoon`
+            als er geen `klant` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
           maxLength: 9
           minLength: 9
+        ruimtelijkObject:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar een ruimtelijk object. Verplicht bij subjecttype `fysiek_object`.
+            Niet toegestaan bij subjecttype `persoon`.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
       required:
       - uuid
     PaginatedConfiguratieList:
@@ -3525,7 +3534,8 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: UUID van het bovenliggende doeltype (optioneel).
+          description: UUID van het positietype dat met de uitvoering van het plan
+            bereikt moet worden (optioneel).
     PatchedSubject:
       type: object
       properties:
@@ -3804,7 +3814,8 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: UUID van het bovenliggende doeltype (optioneel).
+          description: UUID van het positietype dat met de uitvoering van het plan
+            bereikt moet worden (optioneel).
       required:
       - configuratieUuids
       - configuraties

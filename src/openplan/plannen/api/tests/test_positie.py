@@ -149,6 +149,20 @@ class PositieAPITests(APITestCase):
         positie.refresh_from_db()
         self.assertEqual(positie.positietype, nieuw_positietype)
 
+    def test_subject_cannot_change(self) -> None:
+        positie = PositieFactory.create()
+        subject = positie.subject
+
+        response = self.client.patch(
+            reverse("plannen:positie-detail", kwargs={"uuid": positie.uuid}),
+            {"subjectUuid": str(SubjectFactory.create().uuid)},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        positie.refresh_from_db()
+        self.assertEqual(positie.subject, subject)
+
     def test_delete_positie(self):
         positie = PositieFactory.create()
 

@@ -2,6 +2,7 @@ from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
+from vng_api_common.tests import get_validation_errors
 
 from openplan.plannen.models.factories.configuratie import ConfiguratieFactory
 from openplan.plannen.models.factories.positietype import PositieTypeFactory
@@ -67,8 +68,8 @@ class PositietypeAPITests(APITestCase):
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        invalid_params = response.json()["invalidParams"]
-        self.assertEqual(invalid_params[0]["name"], "configuratieUuids")
+        error = get_validation_errors(response, "configuratieUuids")
+        self.assertEqual(error["code"], "required")
         self.assertFalse(PositieType.objects.exists())
 
     def test_create_positietype_unknown_configuratie(self):
@@ -77,8 +78,7 @@ class PositietypeAPITests(APITestCase):
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        invalid_params = response.json()["invalidParams"]
-        self.assertTrue(invalid_params[0]["name"].startswith("configuratieUuids"))
+        self.assertIsNotNone(get_validation_errors(response, "configuratieUuids"))
         self.assertFalse(PositieType.objects.exists())
 
     def test_create_positietype_with_doelpositie(self):
@@ -216,3 +216,41 @@ class PositietypeAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(positietype1.uuid))
+
+    def test_update_doelpositie_closing_a_loop(self):
+        b = PositieTypeFactory.create()
+        a = PositieTypeFactory.create(doelpositie=b)
+
+        url = reverse("plannen:positietype-detail", kwargs={"uuid": b.uuid})
+        response = self.client.patch(url, {"doelpositie": str(a.uuid)}, format="json")
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+        error = get_validation_errors(response, "doelpositie")
+        self.assertEqual(error["code"], "cycle")
+        b.refresh_from_db()
+        self.assertIsNone(b.doelpositie)
+
+    def test_update_doelpositie_extending_a_chain(self):
+        b = PositieTypeFactory.create()
+        PositieTypeFactory.create(doelpositie=b)
+        c = PositieTypeFactory.create()
+
+        url = reverse("plannen:positietype-detail", kwargs={"uuid": b.uuid})
+        response = self.client.patch(url, {"doelpositie": str(c.uuid)}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        b.refresh_from_db()
+        self.assertEqual(b.doelpositie, c)
+
+    def test_create_doelpositie_pointing_into_a_chain(self):
+        b = PositieTypeFactory.create()
+        a = PositieTypeFactory.create(doelpositie=b)
+
+        url = reverse("plannen:positietype-list")
+        response = self.client.post(
+            url, {**self.data, "doelpositie": str(a.uuid)}, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())

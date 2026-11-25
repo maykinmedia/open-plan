@@ -311,7 +311,7 @@ class EvaluatieRelatiesAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["doelen"], [])
-        self.assertEqual(response.data["doelen"], [])
+        self.assertEqual(response.data["posities"], [])
         evaluatie = Evaluatie.objects.get(uuid=response.data["uuid"])
         self.assertFalse(evaluatie.posities.exists())
         self.assertFalse(evaluatie.doelen.exists())

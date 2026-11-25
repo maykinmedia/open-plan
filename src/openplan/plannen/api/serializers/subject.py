@@ -13,6 +13,7 @@ class NestedSubjectSerializer(serializers.ModelSerializer):
             "profiel",
             "klant",
             "bsn",
+            "ruimtelijk_object",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
