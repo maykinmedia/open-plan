@@ -41,7 +41,9 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
 )
 class PositieViewSet(viewsets.ModelViewSet):
-    queryset = Positie.objects.all()
+    queryset = Positie.objects.select_related("subject", "positietype").order_by(
+        "naam", "uuid"
+    )
     serializer_class = PositieSerializer
     filterset_class = PositieFilter
     lookup_field = "uuid"

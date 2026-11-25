@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 from datetime import date
+from typing import TYPE_CHECKING
+from uuid import UUID
 
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
@@ -6,44 +10,31 @@ from django.utils.translation import gettext_lazy as _
 
 from ..enums.status import SubjectType
 
-
-def validate_hoofd_doel_not_self(doel):
-    if doel.hoofd_doel and doel.hoofd_doel == doel:
-        raise ValidationError(
-            {"hoofd_doel": _("Een doel kan niet naar zichzelf verwijzen.")}
-        )
-
-    parent = doel.hoofd_doel
-    while parent:
-        if parent == doel:
-            raise ValidationError(
-                {
-                    "hoofd_doel": _(
-                        "Een hoofd doel kan geen kind als bovenliggende doel hebben."
-                    )
-                }
-            )
-        parent = parent.hoofd_doel
+if TYPE_CHECKING:
+    from .positietype import PositieType
 
 
-def validate_positie_type_not_self(positie_type):
-    parent = positie_type.doelpositie
-
-    if parent and parent == positie_type:
-        raise ValidationError(
-            {"doelpositie": _("Een positie type kan niet naar zichzelf verwijzen.")}
-        )
-
-    while parent:
-        if parent == positie_type:
+def validate_doelpositie_chain(
+    positie_type: PositieType, doelpositie: PositieType | None
+) -> None:
+    seen: set[UUID] = set()
+    current = doelpositie
+    while current is not None and current.uuid not in seen:
+        if current == positie_type:
             raise ValidationError(
                 {
                     "doelpositie": _(
-                        "Een doelpositie kan geen kind als bovenliggende positie hebben."
+                        "Een positietype kan niet (via andere positietypen) naar "
+                        "zichzelf verwijzen."
                     )
                 }
             )
-        parent = parent.doelpositie
+        seen.add(current.uuid)
+        current = current.doelpositie
+
+
+def validate_positie_type_not_self(positie_type: PositieType) -> None:
+    validate_doelpositie_chain(positie_type, positie_type.doelpositie)
 
 
 def validate_dates(start_datum: date | None, eind_datum: date | None) -> None:

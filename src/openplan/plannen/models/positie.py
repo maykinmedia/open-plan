@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ..enums.status import RedenWijziging
-from .validators import nummer_validatie
+from .validators import nummer_validatie, validate_immutable_field
 
 
 class Positie(models.Model):
@@ -64,3 +64,12 @@ class Positie(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+
+        validate_immutable_field(
+            self,
+            "subject",
+            _("Het subject kan niet worden gewijzigd. Maak een nieuwe positie aan."),
+        )

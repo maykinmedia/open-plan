@@ -7,6 +7,7 @@ from openplan.utils.fields import UUIDRelatedField
 
 from .positietype import NestedPositietypeSerializer
 from .subject import NestedSubjectSerializer
+from .validators import IsImmutableValidator
 
 
 class NestedPositieSerializer(serializers.ModelSerializer):
@@ -36,6 +37,7 @@ class PositieSerializer(serializers.ModelSerializer):
         write_only=True,
         source="subject",
         help_text=_("UUID van het subject."),
+        validators=[IsImmutableValidator()],
     )
     positietype = NestedPositietypeSerializer(
         read_only=True,

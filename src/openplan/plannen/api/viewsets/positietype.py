@@ -21,12 +21,12 @@ logger = structlog.stdlib.get_logger(__name__)
         description="Deze lijst kan gefilterd wordt met query-string parameters.",
     ),
     retrieve=extend_schema(
-        summary="Een specifieke positietype opvragen.",
-        description="Een specifieke positietype opvragen via UUID.",
+        summary="Een specifiek positietype opvragen.",
+        description="Een specifiek positietype opvragen via UUID.",
     ),
     create=extend_schema(
-        summary="Nieuwe positietype aanmaken.",
-        description="Voeg een nieuwe positietype toe aan het systeem.",
+        summary="Nieuw positietype aanmaken.",
+        description="Voeg een nieuw positietype toe aan het systeem.",
     ),
     update=extend_schema(
         summary="Positietype volledig bijwerken.",
@@ -42,7 +42,11 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
 )
 class PositietypeViewSet(ProtectedDestroyMixin, viewsets.ModelViewSet):
-    queryset = PositieType.objects.all()
+    queryset = (
+        PositieType.objects.select_related("doelpositie")
+        .prefetch_related("configuraties")
+        .order_by("naam")
+    )
     serializer_class = PositietypeSerializer
     filterset_class = PositietypeFilter
     lookup_field = "uuid"
