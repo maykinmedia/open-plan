@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from openplan.plannen.models.subject import Subject
 
+from .validators import SubjectVeldenValidator
+
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,8 +15,9 @@ class SubjectSerializer(serializers.ModelSerializer):
             "profiel",
             "klant",
             "bsn",
-            "brk",
+            "ruimtelijk_object",
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
         }
+        validators = [SubjectVeldenValidator()]

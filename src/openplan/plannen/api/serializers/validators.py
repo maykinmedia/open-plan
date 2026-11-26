@@ -7,7 +7,7 @@ from rest_framework import fields as drf_fields, serializers
 from rest_framework.fields import get_attribute
 from rest_framework.serializers import Serializer
 
-from openplan.plannen.models.validators import validate_dates
+from openplan.plannen.models.validators import validate_dates, validate_subject_velden
 
 
 def get_from_serializer_data_or_instance(
@@ -56,6 +56,27 @@ class StartBeforeEndValidator:
                 },
                 code=self.code,
             )
+
+
+class SubjectVeldenValidator:
+    """
+    Validate the required fields per subjecttype:
+    - persoon: klant or bsn is required
+    - fysiek_object: ruimtelijk_object is required
+    """
+
+    code = "required-for-subjecttype"
+    requires_context = True
+
+    def __call__(self, attrs, serializer):
+        values = {
+            field: get_from_serializer_data_or_instance(field, attrs, serializer)
+            for field in ("subjecttype", "klant", "bsn", "ruimtelijk_object")
+        }
+        try:
+            validate_subject_velden(**values)
+        except ValidationError as exc:
+            raise serializers.ValidationError(exc.message_dict, code=self.code)
 
 
 class IsImmutableValidator:

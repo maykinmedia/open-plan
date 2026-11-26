@@ -14,7 +14,7 @@ class SubjectFactory(factory.django.DjangoModelFactory):
     subjecttype = SubjectType.PERSOON
     profiel = "urn:persoon:profiel:123"
     klant = "urn:klant:123"
-    bsn = "123456789"
+    bsn = "963773215"
 
     class Meta:
         model = Subject

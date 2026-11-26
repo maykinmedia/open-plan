@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
+from ..enums.status import SubjectType
+
 
 def validate_hoofd_doel_not_self(doel):
     if doel.hoofd_doel and doel.hoofd_doel == doel:
@@ -87,6 +89,46 @@ def validate_immutable_field(instance, field_name, message):
     )
     if huidige_waarde is not None and huidige_waarde != getattr(instance, attname):
         raise ValidationError({field_name: message})
+
+
+def validate_subject_velden(
+    subjecttype: str,
+    klant: str | None,
+    bsn: str | None,
+    ruimtelijk_object: str | None,
+) -> None:
+    """
+    Validate the fields per subjecttype:
+    - persoon: klant and/or bsn is required, ruimtelijk_object is not allowed
+    - fysiek_object: ruimtelijk_object is required, klant and bsn are not allowed
+    """
+    errors = {}
+
+    if subjecttype == SubjectType.PERSOON:
+        if not (klant or bsn):
+            msg = _("Bij subjecttype 'persoon' is een klant of BSN verplicht.")
+            errors["klant"] = msg
+            errors["bsn"] = msg
+        if ruimtelijk_object:
+            errors["ruimtelijk_object"] = _(
+                "Bij subjecttype 'persoon' mag geen ruimtelijk object worden opgegeven."
+            )
+
+    elif subjecttype == SubjectType.FYSIEK_OBJECT:
+        if not ruimtelijk_object:
+            errors["ruimtelijk_object"] = _(
+                "Bij subjecttype 'fysiek_object' is een ruimtelijk object verplicht."
+            )
+        msg = _(
+            "Bij subjecttype 'fysiek_object' mag geen klant of BSN worden opgegeven."
+        )
+        if klant:
+            errors["klant"] = msg
+        if bsn:
+            errors["bsn"] = msg
+
+    if errors:
+        raise ValidationError(errors)
 
 
 nummer_validatie = RegexValidator(

@@ -2755,7 +2755,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/SubjecttypeEnum'
           description: |-
-            Het type subject
+            Het type subject. Bij `persoon` is `klant` en/of `bsn` verplicht en mag `ruimtelijk_object` niet worden opgegeven. Bij `fysiek_object` is `ruimtelijk_object` verplicht en mogen `klant` en `bsn` niet worden opgegeven.
 
             * `persoon` - Persoon
             * `fysiek_object` - Fysiek object
@@ -2768,19 +2768,23 @@ components:
         klant:
           type: string
           example: urn:namespace:component:resource:uuid
-          description: 'URN naar de Klant '
+          description: URN naar de Klant. Verplicht bij subjecttype `persoon` als
+            er geen `bsn` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
         bsn:
           type: string
-          description: 'BSN voor BRP-koppeling '
+          description: BSN voor BRP-koppeling. Verplicht bij subjecttype `persoon`
+            als er geen `klant` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
           maxLength: 9
           minLength: 9
-        brk:
+        ruimtelijkObject:
           type: string
-          description: BRK nummer.
-          pattern: ^[0-9]+$
-          maxLength: 20
+          example: urn:namespace:component:resource:uuid
+          description: URN naar een ruimtelijk object. Verplicht bij subjecttype `fysiek_object`.
+            Niet toegestaan bij subjecttype `persoon`.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
     Plan:
       type: object
       properties:
@@ -2924,7 +2928,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/SubjecttypeEnum'
           description: |-
-            Het type subject
+            Het type subject. Bij `persoon` is `klant` en/of `bsn` verplicht en mag `ruimtelijk_object` niet worden opgegeven. Bij `fysiek_object` is `ruimtelijk_object` verplicht en mogen `klant` en `bsn` niet worden opgegeven.
 
             * `persoon` - Persoon
             * `fysiek_object` - Fysiek object
@@ -2937,19 +2941,23 @@ components:
         klant:
           type: string
           example: urn:namespace:component:resource:uuid
-          description: 'URN naar de Klant '
+          description: URN naar de Klant. Verplicht bij subjecttype `persoon` als
+            er geen `bsn` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
         bsn:
           type: string
-          description: 'BSN voor BRP-koppeling '
+          description: BSN voor BRP-koppeling. Verplicht bij subjecttype `persoon`
+            als er geen `klant` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
           maxLength: 9
           minLength: 9
-        brk:
+        ruimtelijkObject:
           type: string
-          description: BRK nummer.
-          pattern: ^[0-9]+$
-          maxLength: 20
+          example: urn:namespace:component:resource:uuid
+          description: URN naar een ruimtelijk object. Verplicht bij subjecttype `fysiek_object`.
+            Niet toegestaan bij subjecttype `persoon`.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
       required:
       - plan
       - subjecttype
