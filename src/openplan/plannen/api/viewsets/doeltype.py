@@ -46,7 +46,7 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
 )
 class DoelTypeViewSet(ProtectedDestroyMixin, viewsets.ModelViewSet):
-    queryset = DoelType.objects.all()
+    queryset = DoelType.objects.prefetch_related("configuraties").order_by("naam")
     serializer_class = DoelTypeSerializer
     filterset_fields = {
         "naam",

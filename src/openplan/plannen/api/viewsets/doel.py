@@ -46,7 +46,9 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
 )
 class DoelViewSet(viewsets.ModelViewSet):
-    queryset = Doel.objects.all()
+    queryset = Doel.objects.select_related("positie", "doeltype").order_by(
+        "naam", "uuid"
+    )
     serializer_class = DoelSerializer
     filterset_class = DoelFilter
     lookup_field = "uuid"

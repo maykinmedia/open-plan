@@ -311,6 +311,7 @@ class EvaluatieRelatiesAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["doelen"], [])
+        self.assertEqual(response.data["posities"], [])
         evaluatie = Evaluatie.objects.get(uuid=response.data["uuid"])
         self.assertFalse(evaluatie.posities.exists())
         self.assertFalse(evaluatie.doelen.exists())
@@ -334,23 +335,32 @@ class EvaluatieRelatiesAPITests(APITestCase):
         self.assertEqual(set(evaluatie.doelen.all()), set(doelen))
         self.assertEqual(set(evaluatie.subdoelen.all()), set(subdoelen))
 
-        # doelen is returned nested
+        self.assertEqual(
+            {str(p["uuid"]) for p in response.data["posities"]},
+            {str(p.uuid) for p in posities},
+        )
         self.assertEqual(
             {str(d["uuid"]) for d in response.data["doelen"]},
             {str(d.uuid) for d in doelen},
         )
 
-    def test_retrieve_shows_nested_doelen(self):
+    def test_retrieve_shows_nested_posities_and_doelen(self):
         evaluatie = EvaluatieFactory.create()
+        positie = PositieFactory.create()
         doel = DoelFactory.create()
+        evaluatie.posities.add(positie)
         evaluatie.doelen.add(doel)
 
         response = self.client.get(self._detail_url(evaluatie))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["posities"]), 1)
+        self.assertEqual(str(response.data["posities"][0]["uuid"]), str(positie.uuid))
+        self.assertEqual(response.data["posities"][0]["naam"], positie.naam)
+
         self.assertEqual(len(response.data["doelen"]), 1)
         self.assertEqual(str(response.data["doelen"][0]["uuid"]), str(doel.uuid))
-        # TODO: check posities and subdoelen once their nested serializers exist
+        # TODO: check subdoelen once the nested serializer exists
 
     def test_update_replaces_relations(self):
         evaluatie = EvaluatieFactory.create()
