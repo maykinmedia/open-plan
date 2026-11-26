@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from openplan.plannen.enums.status import Doelstatus
 from openplan.utils.fields import URNField
 
+from .validators import validate_immutable_field
+
 
 class Evaluatie(models.Model):
     uuid = models.UUIDField(
@@ -88,3 +90,12 @@ class Evaluatie(models.Model):
 
     def __str__(self):
         return self.naam
+
+    def clean(self):
+        super().clean()
+
+        validate_immutable_field(
+            self,
+            "plan",
+            _("Het plan kan niet gewijzigd worden. Maak een nieuwe evaluatie aan."),
+        )
