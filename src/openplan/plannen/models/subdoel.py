@@ -6,7 +6,12 @@ from django.utils.translation import gettext_lazy as _
 from openplan.plannen.enums.status import Doelstatus, RedenWijziging
 
 from ..schemas import PRODUCTEN_SCHEMA
-from .validators import validate_dates, validate_immutable_field, validate_jsonschema
+from .validators import (
+    validate_dates,
+    validate_immutable_field,
+    validate_jsonschema,
+    validate_type_actief_bij_aanmaken,
+)
 
 
 class Subdoel(models.Model):
@@ -129,3 +134,4 @@ class Subdoel(models.Model):
             label="producten",
             schema=PRODUCTEN_SCHEMA,
         )
+        validate_type_actief_bij_aanmaken(self, "subdoeltype")

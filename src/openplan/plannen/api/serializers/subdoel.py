@@ -7,7 +7,7 @@ from openplan.utils.fields import UUIDRelatedField
 
 from .doel import NestedDoelSerializer
 from .subdoeltype import NestedSubdoeltypeSerializer
-from .validators import IsImmutableValidator, StartBeforeEndValidator
+from .validators import IsActiveValidator, IsImmutableValidator, StartBeforeEndValidator
 
 
 class NestedSubdoelSerializer(serializers.ModelSerializer):
@@ -44,7 +44,10 @@ class SubdoelSerializer(serializers.ModelSerializer):
         write_only=True,
         source="subdoeltype",
         help_text=_("UUID van het gekoppelde subdoeltype."),
-        validators=[IsImmutableValidator()],
+        validators=[
+            IsImmutableValidator(),
+            IsActiveValidator(),
+        ],
     )
     doel = NestedDoelSerializer(
         read_only=True,

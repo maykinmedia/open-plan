@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
-from openplan.plannen.enums.status import Doelstatus
+from openplan.plannen.enums.status import Doelstatus, Typestatus
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.subdoel import SubdoelFactory
 from openplan.plannen.models.factories.subdoeltype import SubdoelTypeFactory
@@ -24,6 +24,7 @@ class SubdoelAPITests(APITestCase):
         "De beoogde_einddatum mag niet op een eerdere of dezelfde dag vallen "
         "als de beoogde_startdatum."
     )
+    TYPE_NIET_ACTIEF_ERROR = _("Het gekozen type is niet actief. Kies een actief type.")
 
     def setUp(self):
         super().setUp()
@@ -322,6 +323,62 @@ class SubdoelAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         subdoel.refresh_from_db()
         self.assertEqual(subdoel.einddatum, date(2026, 1, 20))
+
+    def test_create_subdoel_with_niet_actief_subdoeltype(self):
+        subdoeltype = SubdoelTypeFactory.create(status=Typestatus.NIET_ACTIEF)
+
+        url = reverse("plannen:subdoel-list")
+        data = {**self.data, "subdoeltypeUuid": str(subdoeltype.uuid)}
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "subdoeltypeUuid")
+        self.assertEqual(error["code"], "niet-actief")
+        self.assertEqual(error["reason"], self.TYPE_NIET_ACTIEF_ERROR)
+        self.assertFalse(Subdoel.objects.exists())
+
+    def test_create_subdoel_with_actief_subdoeltype(self):
+        subdoeltype = SubdoelTypeFactory.create(status=Typestatus.ACTIEF)
+
+        url = reverse("plannen:subdoel-list")
+        data = {**self.data, "subdoeltypeUuid": str(subdoeltype.uuid)}
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+        self.assertTrue(Subdoel.objects.filter(subdoeltype=subdoeltype).exists())
+
+    def test_partial_update_subdoel_with_niet_actief_subdoeltype(self):
+        subdoel = SubdoelFactory.create()
+        subdoel.subdoeltype.status = Typestatus.NIET_ACTIEF
+        subdoel.subdoeltype.save()
+
+        url = reverse("plannen:subdoel-detail", kwargs={"uuid": subdoel.uuid})
+        response = self.client.patch(
+            url, {"naam": "Nog steeds bewerkbaar"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        subdoel.refresh_from_db()
+        self.assertEqual(subdoel.naam, "Nog steeds bewerkbaar")
+
+    def test_update_subdoel_with_niet_actief_subdoeltype(self):
+        subdoel = SubdoelFactory.create()
+        subdoel.subdoeltype.status = Typestatus.NIET_ACTIEF
+        subdoel.subdoeltype.save()
+
+        url = reverse("plannen:subdoel-detail", kwargs={"uuid": subdoel.uuid})
+        data = {
+            "doelUuid": str(subdoel.doel.uuid),
+            "subdoeltypeUuid": str(subdoel.subdoeltype.uuid),
+            "naam": "Volledige update",
+            "startdatum": str(date.today()),
+            "beoogde_startdatum": date.today().isoformat(),
+        }
+        response = self.client.put(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        subdoel.refresh_from_db()
+        self.assertEqual(subdoel.naam, "Volledige update")
 
     def test_authentication_required(self):
         client = APIClient()

@@ -2,6 +2,7 @@ from datetime import date
 
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 import structlog
@@ -12,7 +13,7 @@ from jsonschema import (
 
 from openplan.utils.typing import JSONObject
 
-from ..enums.status import SubjectType
+from ..enums.status import SubjectType, Typestatus
 
 logger = structlog.stdlib.get_logger(__name__)
 
@@ -170,6 +171,23 @@ def validate_jsonschema(
         messages.append(f"{path}: {message}")
 
     raise ValidationError({label: messages})
+
+
+def validate_type_actief(type_obj: models.Model | None, field_name: str) -> None:
+    if type_obj is not None and type_obj.status == Typestatus.NIET_ACTIEF:
+        raise ValidationError(
+            {
+                field_name: ValidationError(
+                    _("Het gekozen type is niet actief. Kies een actief type."),
+                    code="niet-actief",
+                )
+            }
+        )
+
+
+def validate_type_actief_bij_aanmaken(instance: models.Model, field_name: str) -> None:
+    if instance._state.adding:
+        validate_type_actief(getattr(instance, field_name, None), field_name)
 
 
 nummer_validatie = RegexValidator(
