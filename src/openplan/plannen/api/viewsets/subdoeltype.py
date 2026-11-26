@@ -9,12 +9,6 @@ from openplan.plannen.models.subdoeltype import SubdoelType
 from openplan.utils.mixins import ProtectedDestroyMixin
 
 from ..filtersets.subdoeltype import SubdoeltypeFilter
-
-# from ...metrics import (
-#     doeltypen_create_counter,
-#     doeltypen_delete_counter,
-#     doeltypen_update_counter,
-# )
 from ..serializers.subdoeltype import SubdoeltypeSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -62,7 +56,6 @@ class SubdoelTypeViewSet(ProtectedDestroyMixin, viewsets.ModelViewSet):
             "subdoeltype_created",
             uuid=str(subdoeltype.uuid),
         )
-        # doeltypen_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -72,7 +65,6 @@ class SubdoelTypeViewSet(ProtectedDestroyMixin, viewsets.ModelViewSet):
             "subdoeltype_updated",
             uuid=str(subdoeltype.uuid),
         )
-        # doeltypen_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -81,4 +73,3 @@ class SubdoelTypeViewSet(ProtectedDestroyMixin, viewsets.ModelViewSet):
             "subdoeltype_deleted",
             uuid=str(instance.uuid),
         )
-        # doeltypen_delete_counter.add(1)

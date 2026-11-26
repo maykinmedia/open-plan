@@ -2,8 +2,7 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 
-from openplan.plannen.models.doel import Doel
-from openplan.plannen.models.subdoeltype import SubdoelType
+from openplan.plannen.models import Doel, Subdoel, SubdoelType
 from openplan.utils.fields import UUIDRelatedField
 
 from .doel import NestedDoelSerializer
@@ -13,7 +12,7 @@ from .validators import IsImmutableValidator, StartBeforeEndValidator
 
 class NestedSubdoelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Doel
+        model = Subdoel
         fields = [
             "uuid",
             "status",
@@ -58,7 +57,7 @@ class SubdoelSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = Doel
+        model = Subdoel
         fields = [
             "uuid",
             "doel",

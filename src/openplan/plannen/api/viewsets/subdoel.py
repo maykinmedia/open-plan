@@ -7,11 +7,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.subdoel import Subdoel
 
-# from ...metrics import (
-#     doelen_create_counter,
-#     doelen_delete_counter,
-#     doelen_update_counter,
-# )
 from ..filtersets.subdoel import SubdoelFilter
 from ..serializers.subdoel import SubdoelSerializer
 
@@ -62,7 +57,6 @@ class SubdoelViewSet(viewsets.ModelViewSet):
             "subdoel_created",
             uuid=str(subdoel.uuid),
         )
-        # doelen_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -72,7 +66,6 @@ class SubdoelViewSet(viewsets.ModelViewSet):
             "subdoel_updated",
             uuid=str(subdoel.uuid),
         )
-        # doelen_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -81,4 +74,3 @@ class SubdoelViewSet(viewsets.ModelViewSet):
             "subdoel_deleted",
             uuid=str(instance.uuid),
         )
-        # doelen_delete_counter.add(1)
