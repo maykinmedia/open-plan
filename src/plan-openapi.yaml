@@ -2690,6 +2690,33 @@ components:
       - naam
       - plan
       - uuid
+    NestedConfiguratie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van de configuratie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de configuratie.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van de configuratie.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+      required:
+      - naam
+      - uuid
     NestedDoel:
       type: object
       properties:
@@ -2786,6 +2813,45 @@ components:
           type: string
           description: Naam van het doeltype.
           maxLength: 255
+      required:
+      - naam
+      - uuid
+    NestedSubdoeltype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het subdoeltype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoeltype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het subdoeltype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het subdoeltype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het subdoeltype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het subdoeltype.
+          maxLength: 1000
       required:
       - naam
       - uuid
@@ -3356,6 +3422,153 @@ components:
         toelichtingReden:
           type: string
           description: Toelichting reden wijziging van het plan.
+          maxLength: 1000
+    PatchedSubdoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel.
+        subdoeltype:
+          allOf:
+          - $ref: '#/components/schemas/NestedSubdoeltype'
+          readOnly: true
+        subdoeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het gekoppelde subdoeltype.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Doelstatus'
+          description: |-
+            Status van het subdoel.
+
+            * `gepland` - Gepland
+            * `gestart` - Gestart
+            * `behaald` - Behaald
+            * `afgebroken` - Afgebroken
+        naam:
+          type: string
+          description: Naam van het subdoel.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoel.
+          maxLength: 1000
+        notitieIntern:
+          type: string
+          description: Notitie intern.
+          maxLength: 1000
+        notitieExtern:
+          type: string
+          description: Notitie extern.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date
+          nullable: true
+          description: Startdatum van het subdoel.
+        einddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Einddatum van het subdoel.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde startdatum van het subdoel.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het subdoel.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het subdoel voor het laatst is gewijzigd.
+        voortgang:
+          type: string
+          format: uuid
+          description: Voortgang van het subdoel.
+          nullable: true
+        redenWijziging:
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom het gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van het subdoel.
+          maxLength: 1000
+    PatchedSubdoeltype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        configuraties:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedConfiguratie'
+          readOnly: true
+        configuratieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        naam:
+          type: string
+          description: Naam van het subdoeltype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoeltype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het subdoeltype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het subdoeltype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het subdoeltype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het subdoeltype.
           maxLength: 1000
     PatchedSubjectUpdate:
       type: object
