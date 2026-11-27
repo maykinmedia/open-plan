@@ -13,12 +13,13 @@ from openplan.utils.fields import UUIDRelatedField
 from .doel import NestedDoelSerializer
 
 # from .evaluatietype import NestedEvaluatieSerializer
-from .plan import NestedPlanSerializer
+from .plan import PlanSerializer
+from .validators import IsImmutableValidator
 
 
 # TODO: Remove comments when other api's are implemented
 class EvaluatieSerializer(serializers.ModelSerializer):
-    plan = NestedPlanSerializer(
+    plan = PlanSerializer(
         read_only=True,
     )
     plan_uuid = UUIDRelatedField(
@@ -26,6 +27,7 @@ class EvaluatieSerializer(serializers.ModelSerializer):
         write_only=True,
         source="plan",
         help_text=_("UUID van het plan waarbij deze evaluatie hoort."),
+        validators=[IsImmutableValidator()],
     )
 
     # evaluatietype = NestedEvaluatieSerializer(
@@ -100,3 +102,10 @@ class EvaluatieSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True},
         }
+
+
+class EvaluatieUpdateSerializer(EvaluatieSerializer):
+    def get_fields(self):
+        fields = super().get_fields()
+        fields["plan_uuid"].required = False
+        return fields

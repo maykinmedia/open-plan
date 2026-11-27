@@ -100,12 +100,10 @@ class EvaluatieAPITests(APITestCase):
     def test_update_evaluatie(self):
         evaluatietype = EvaluatieTypeFactory.create()
         evaluatie = EvaluatieFactory.create()
-        new_plan = PlanFactory.create()
 
         url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
         data = {
             "evaluatietype_uuid": str(evaluatietype.uuid),
-            "plan_uuid": str(new_plan.uuid),
             "naam": "Bijgewerkte evaluatie",
             "datum": date.today().isoformat(),
         }
@@ -113,24 +111,41 @@ class EvaluatieAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         evaluatie.refresh_from_db()
-        self.assertEqual(evaluatie.plan, new_plan)
         self.assertEqual(evaluatie.evaluatietype, evaluatietype)
         self.assertEqual(evaluatie.naam, "Bijgewerkte evaluatie")
 
     def test_partial_update_evaluatie(self):
         evaluatie = EvaluatieFactory.create()
-        new_plan = PlanFactory.create()
 
         url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
         data = {
-            "plan_uuid": str(new_plan.uuid),
-            "datum": date.today().isoformat(),
+            "naam": "Update",
         }
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         evaluatie.refresh_from_db()
-        self.assertEqual(evaluatie.plan, new_plan)
+        self.assertEqual(evaluatie.naam, "Update")
+
+    def test_patch_plan_returns_400_and_does_not_write(self):
+        evaluatie = EvaluatieFactory.create()
+        original_plan = evaluatie.plan
+
+        url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
+        data = {
+            "planUuid": str(PlanFactory.create().uuid),
+        }
+
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+        invalid_params = response.json()["invalidParams"]
+        self.assertEqual(len(invalid_params), 1)
+
+        evaluatie.refresh_from_db()
+        self.assertEqual(evaluatie.plan, original_plan)
 
     def test_delete_evaluatie(self):
         evaluatie = EvaluatieFactory.create()
@@ -217,7 +232,6 @@ class EvaluatieAPITests(APITestCase):
         evaluatietype = EvaluatieTypeFactory.create()
         url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
         data = {
-            "plan_uuid": str(self.other_plan.uuid),
             "evaluatietype_uuid": str(evaluatietype.uuid),
             "naam": "Bijgewerkte evaluatie metric",
             "datum": date.today().isoformat(),
@@ -248,7 +262,6 @@ class EvaluatieRelatiesAPITests(APITestCase):
 
     def _base_data(self, **extra):
         data = {
-            "plan_uuid": str(self.plan.uuid),
             "evaluatietype_uuid": str(self.evaluatietype.uuid),
             "naam": "Evaluatie met relaties",
             "datum": date.today().isoformat(),
@@ -307,7 +320,13 @@ class EvaluatieRelatiesAPITests(APITestCase):
         self.assertEqual(evaluatie.evaluatietype, new_type)
 
     def test_create_without_relations(self):
-        response = self.client.post(self.list_url, self._base_data(), format="json")
+        response = self.client.post(
+            self.list_url,
+            self._base_data(
+                plan_uuid=str(self.plan.uuid),
+            ),
+            format="json",
+        )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["doelen"], [])
@@ -321,6 +340,7 @@ class EvaluatieRelatiesAPITests(APITestCase):
         doelen = DoelFactory.create_batch(2)
         subdoelen = SubdoelFactory.create_batch(2)
         data = self._base_data(
+            plan_uuid=str(self.plan.uuid),
             positie_uuids=[str(p.uuid) for p in posities],
             doel_uuids=[str(d.uuid) for d in doelen],
             subdoel_uuids=[str(s.uuid) for s in subdoelen],

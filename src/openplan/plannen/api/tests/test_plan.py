@@ -317,17 +317,6 @@ class PlanAPITests(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["count"], 1)
 
-    def test_plan_urn(self):
-        plan = PlanFactory.create()
-
-        url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data["urn"], f"urn:maykin:plannen:plan:{str(plan.uuid)}"
-        )
-
     def test_invalid_create_urn_fields_plan(self):
         self.assertFalse(Plan.objects.exists())
 

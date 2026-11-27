@@ -8,7 +8,7 @@ from vng_api_common.fields import BSNField
 from openplan.utils.fields import URNField
 
 from ..enums.status import SubjectType
-from .validators import validate_subject_velden
+from .validators import validate_immutable_field, validate_subject_velden
 
 
 class Subject(models.Model):
@@ -74,4 +74,9 @@ class Subject(models.Model):
             klant=self.klant,
             bsn=self.bsn,
             ruimtelijk_object=self.ruimtelijk_object,
+        )
+        validate_immutable_field(
+            self,
+            "plan",
+            _("Het plan kan niet gewijzigd worden. Maak een nieuw subject aan."),
         )
