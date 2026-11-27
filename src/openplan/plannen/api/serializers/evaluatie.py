@@ -11,8 +11,7 @@ from openplan.plannen.models.subdoel import Subdoel
 from openplan.utils.fields import UUIDRelatedField
 
 from .doel import NestedDoelSerializer
-
-# from .evaluatietype import NestedEvaluatieSerializer
+from .evaluatietype import NestedEvaluatietypeSerializer
 from .plan import PlanSerializer
 from .validators import IsImmutableValidator
 
@@ -30,9 +29,9 @@ class EvaluatieSerializer(serializers.ModelSerializer):
         validators=[IsImmutableValidator()],
     )
 
-    # evaluatietype = NestedEvaluatieSerializer(
-    #     read_only=True,
-    # )
+    evaluatietype = NestedEvaluatietypeSerializer(
+        read_only=True,
+    )
     evaluatietype_uuid = UUIDRelatedField(
         queryset=Evaluatietype.objects.all(),
         write_only=True,
@@ -82,7 +81,7 @@ class EvaluatieSerializer(serializers.ModelSerializer):
             "uuid",
             "plan",
             "plan_uuid",
-            # "evaluatietype",
+            "evaluatietype",
             "evaluatietype_uuid",
             # "posities",
             "positie_uuids",

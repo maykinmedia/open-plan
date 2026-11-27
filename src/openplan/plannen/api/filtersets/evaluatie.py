@@ -8,6 +8,8 @@ class EvaluatieFilter(FilterSet):
         model = Evaluatie
         fields = {
             "plan__uuid": ["exact"],
+            "naam": ["exact", "icontains"],
+            "omschrijving": ["icontains"],
             "status": ["exact"],
             "datum": ["exact", "gte", "lte"],
             "eigenaar": ["exact"],
