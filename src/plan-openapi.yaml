@@ -1506,6 +1506,568 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
+  /subdoel:
+    get:
+      operationId: subdoel_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle subdoelen opvragen.
+      parameters:
+      - in: query
+        name: beoogdeEinddatum
+        schema:
+          type: string
+          format: date
+        description: Beoogde einddatum van het subdoel.
+      - in: query
+        name: beoogdeEinddatum__gte
+        schema:
+          type: string
+          format: date
+        description: Beoogde einddatum van het subdoel.
+      - in: query
+        name: beoogdeEinddatum__lte
+        schema:
+          type: string
+          format: date
+        description: Beoogde einddatum van het subdoel.
+      - in: query
+        name: beoogdeStartdatum
+        schema:
+          type: string
+          format: date
+        description: Beoogde startdatum van het subdoel.
+      - in: query
+        name: beoogdeStartdatum__gte
+        schema:
+          type: string
+          format: date
+        description: Beoogde startdatum van het subdoel.
+      - in: query
+        name: beoogdeStartdatum__lte
+        schema:
+          type: string
+          format: date
+        description: Beoogde startdatum van het subdoel.
+      - in: query
+        name: doel__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date
+        description: Einddatum van het subdoel.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date
+        description: Einddatum van het subdoel.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date
+        description: Einddatum van het subdoel.
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het subdoel.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van het subdoel.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Omschrijving van het subdoel.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date
+        description: Startdatum van het subdoel.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date
+        description: Startdatum van het subdoel.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date
+        description: Startdatum van het subdoel.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - afgebroken
+          - behaald
+          - gepland
+          - gestart
+        description: |-
+          Status van het subdoel.
+
+          * `gepland` - Gepland
+          * `gestart` - Gestart
+          * `behaald` - Behaald
+          * `afgebroken` - Afgebroken
+      - in: query
+        name: voortgang
+        schema:
+          type: string
+          format: uri
+        description: Voortgang van het subdoel.
+      tags:
+      - Subdoel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubdoelList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubdoelList'
+          description: ''
+    post:
+      operationId: subdoel_create
+      description: Voeg een nieuw subdoel toe aan het systeem.
+      summary: Nieuw subdoel aanmaken.
+      tags:
+      - Subdoel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subdoel'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+          description: ''
+  /subdoel/{uuid}:
+    get:
+      operationId: subdoel_retrieve
+      description: Een specifiek subdoel opvragen via UUID.
+      summary: Een specifiek subdoel opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+          description: ''
+    put:
+      operationId: subdoel_update
+      description: Werk alle gegevens van een subdoel bij.
+      summary: Subdoel volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subdoel'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+          description: ''
+    patch:
+      operationId: subdoel_partial_update
+      description: Werk enkele gegevens van een subdoel bij.
+      summary: Subdoel gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubdoel'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoel'
+          description: ''
+    delete:
+      operationId: subdoel_destroy
+      description: Verwijder een specifiek subdoel.
+      summary: Subdoel verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoel
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /subdoeltype:
+    get:
+      operationId: subdoeltype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle subdoeltypen opvragen.
+      parameters:
+      - in: query
+        name: configuraties__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: configuraties__uuids
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Lijst van configuratie uuids waarop kan worden gezocht.
+        explode: false
+        style: form
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het subdoeltype.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van het subdoeltype.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Omschrijving van het subdoeltype.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - niet_actief
+        description: |-
+          Status van het subdoeltype.
+
+          * `actief` - Actief
+          * `niet_actief` - Niet actief
+      tags:
+      - Subdoeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubdoeltypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubdoeltypeList'
+          description: ''
+    post:
+      operationId: subdoeltype_create
+      description: Voeg een nieuw subdoeltype toe aan het systeem.
+      summary: Nieuw subdoeltype aanmaken.
+      tags:
+      - Subdoeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subdoeltype'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+          description: ''
+  /subdoeltype/{uuid}:
+    get:
+      operationId: subdoeltype_retrieve
+      description: Een specifiek subdoeltype opvragen via UUID.
+      summary: Een specifiek subdoeltype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+          description: ''
+    put:
+      operationId: subdoeltype_update
+      description: Werk alle gegevens van een subdoeltype bij.
+      summary: Subdoeltype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subdoeltype'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+          description: ''
+    patch:
+      operationId: subdoeltype_partial_update
+      description: Werk enkele gegevens van een subdoeltype bij.
+      summary: Subdoeltype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubdoeltype'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Subdoeltype'
+          description: ''
+    delete:
+      operationId: subdoeltype_destroy
+      description: Verwijder een specifiek subdoeltype.
+      summary: Subdoeltype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Subdoeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /subject:
     get:
       operationId: subject_list
@@ -2128,6 +2690,33 @@ components:
       - naam
       - plan
       - uuid
+    NestedConfiguratie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van de configuratie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de configuratie.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van de configuratie.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+      required:
+      - naam
+      - uuid
     NestedDoel:
       type: object
       properties:
@@ -2224,6 +2813,45 @@ components:
           type: string
           description: Naam van het doeltype.
           maxLength: 255
+      required:
+      - naam
+      - uuid
+    NestedSubdoeltype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het subdoeltype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoeltype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het subdoeltype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het subdoeltype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het subdoeltype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het subdoeltype.
+          maxLength: 1000
       required:
       - naam
       - uuid
@@ -2365,6 +2993,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Plan'
+    PaginatedSubdoelList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subdoel'
+    PaginatedSubdoeltypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subdoeltype'
     PaginatedSubjectList:
       type: object
       required:
@@ -2749,6 +3423,153 @@ components:
           type: string
           description: Toelichting reden wijziging van het plan.
           maxLength: 1000
+    PatchedSubdoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel.
+        subdoeltype:
+          allOf:
+          - $ref: '#/components/schemas/NestedSubdoeltype'
+          readOnly: true
+        subdoeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het gekoppelde subdoeltype.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Doelstatus'
+          description: |-
+            Status van het subdoel.
+
+            * `gepland` - Gepland
+            * `gestart` - Gestart
+            * `behaald` - Behaald
+            * `afgebroken` - Afgebroken
+        naam:
+          type: string
+          description: Naam van het subdoel.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoel.
+          maxLength: 1000
+        notitieIntern:
+          type: string
+          description: Notitie intern.
+          maxLength: 1000
+        notitieExtern:
+          type: string
+          description: Notitie extern.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date
+          nullable: true
+          description: Startdatum van het subdoel.
+        einddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Einddatum van het subdoel.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde startdatum van het subdoel.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het subdoel.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het subdoel voor het laatst is gewijzigd.
+        voortgang:
+          type: string
+          format: uuid
+          description: Voortgang van het subdoel.
+          nullable: true
+        redenWijziging:
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom het gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van het subdoel.
+          maxLength: 1000
+    PatchedSubdoeltype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        configuraties:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedConfiguratie'
+          readOnly: true
+        configuratieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        naam:
+          type: string
+          description: Naam van het subdoeltype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoeltype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het subdoeltype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het subdoeltype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het subdoeltype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het subdoeltype.
+          maxLength: 1000
     PatchedSubjectUpdate:
       type: object
       properties:
@@ -2921,6 +3742,166 @@ components:
         * `ongedaan_maken` - Ongedaan maken
         * `vernietigen` - Vernietigen
         * `overbrengen_depot` - Overbrengen depot
+    Subdoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel.
+        subdoeltype:
+          allOf:
+          - $ref: '#/components/schemas/NestedSubdoeltype'
+          readOnly: true
+        subdoeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het gekoppelde subdoeltype.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Doelstatus'
+          description: |-
+            Status van het subdoel.
+
+            * `gepland` - Gepland
+            * `gestart` - Gestart
+            * `behaald` - Behaald
+            * `afgebroken` - Afgebroken
+        naam:
+          type: string
+          description: Naam van het subdoel.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoel.
+          maxLength: 1000
+        notitieIntern:
+          type: string
+          description: Notitie intern.
+          maxLength: 1000
+        notitieExtern:
+          type: string
+          description: Notitie extern.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date
+          nullable: true
+          description: Startdatum van het subdoel.
+        einddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Einddatum van het subdoel.
+        beoogdeStartdatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde startdatum van het subdoel.
+        beoogdeEinddatum:
+          type: string
+          format: date
+          nullable: true
+          description: Beoogde einddatum van het subdoel.
+        gewijzigdOp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Datum en tijd waarop het subdoel voor het laatst is gewijzigd.
+        voortgang:
+          type: string
+          format: uuid
+          description: Voortgang van het subdoel.
+          nullable: true
+        redenWijziging:
+          allOf:
+          - $ref: '#/components/schemas/RedenWijzigingEnum'
+          description: |-
+            Reden waarom het gewijzigd is.
+
+            * `registreren` - Registreren
+            * `wijzigen` - Wijzigen
+            * `corrigeren` - Corrigeren
+            * `herzien` - Herzien
+            * `ongedaan_maken` - Ongedaan maken
+            * `vernietigen` - Vernietigen
+            * `overbrengen_depot` - Overbrengen depot
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van het subdoel.
+          maxLength: 1000
+      required:
+      - doel
+      - doelUuid
+      - gewijzigdOp
+      - naam
+      - subdoeltype
+      - subdoeltypeUuid
+      - uuid
+    Subdoeltype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        configuraties:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedConfiguratie'
+          readOnly: true
+        configuratieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        naam:
+          type: string
+          description: Naam van het subdoeltype.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het subdoeltype.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het subdoeltype.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        gewenstResultaat:
+          type: string
+          description: Gewenst resultaat van het subdoeltype.
+          maxLength: 1000
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het subdoeltype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het subdoeltype.
+          maxLength: 1000
+      required:
+      - configuratieUuids
+      - configuraties
+      - naam
+      - uuid
     Subject:
       type: object
       properties:
