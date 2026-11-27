@@ -38,8 +38,9 @@ cbor2==6.1.5
     # via webauthn
 celery==5.6.0
     # via notifications-api-common
-certifi==2025.11.12
+certifi==2026.10.23
     # via
+    #   commonground-api-common
     #   elastic-apm
     #   requests
     #   sentry-sdk
@@ -59,7 +60,7 @@ click-plugins==1.1.1.2
     # via celery
 click-repl==0.3.0
     # via celery
-commonground-api-common==3.0.1
+commonground-api-common==3.2.0
     # via open-api-framework
 cryptography==50.0.2
     # via
