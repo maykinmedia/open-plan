@@ -42,7 +42,7 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
 )
 class EvaluatietypeViewSet(ProtectedDestroyMixin, viewsets.ModelViewSet):
-    queryset = Evaluatietype.objects.all()
+    queryset = Evaluatietype.objects.prefetch_related("configuraties").order_by("naam")
     serializer_class = EvaluatietypeSerializer
     filterset_class = EvaluatietypeFilter
     lookup_field = "uuid"

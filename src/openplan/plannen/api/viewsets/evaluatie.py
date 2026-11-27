@@ -46,13 +46,17 @@ logger = structlog.stdlib.get_logger(__name__)
     ),
 )
 class EvaluatieViewSet(viewsets.ModelViewSet):
-    queryset = Evaluatie.objects.select_related(
-        "plan",
-        "evaluatietype",
-    ).prefetch_related(
-        "posities",
-        "doelen",
-        "subdoelen",
+    queryset = (
+        Evaluatie.objects.select_related(
+            "plan",
+            "evaluatietype",
+        )
+        .prefetch_related(
+            "posities",
+            "doelen",
+            "subdoelen",
+        )
+        .order_by("naam", "uuid")
     )
     serializer_class = EvaluatieSerializer
     filterset_class = EvaluatieFilter
