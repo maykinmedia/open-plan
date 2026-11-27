@@ -1929,7 +1929,7 @@ components:
           description: Unieke resource identifier (UUID4).
         plan:
           allOf:
-          - $ref: '#/components/schemas/NestedPlan'
+          - $ref: '#/components/schemas/Plan'
           readOnly: true
         planUuid:
           type: string
@@ -2121,95 +2121,6 @@ components:
           description: Naam van het doeltype.
           maxLength: 255
       required:
-      - naam
-      - uuid
-    NestedPlan:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Unieke resource identifier (UUID4).
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Planstatus'
-          description: |-
-            Status van het plan.
-
-            * `concept` - Concept
-            * `vastgesteld` - Vastgesteld
-            * `pauze` - Pauze
-            * `afgerond` - Afgerond
-            * `afgebroken` - Afgebroken
-        naam:
-          type: string
-          description: Naam van het plan.
-          maxLength: 255
-        omschrijving:
-          type: string
-          description: Omschrijving van het plan.
-          maxLength: 1000
-        redenWijziging:
-          type: string
-          description: Reden waarom het plan is gewijzigd.
-          maxLength: 1000
-        toelichtingReden:
-          type: string
-          description: Toelichting reden wijziging van het plan.
-          maxLength: 1000
-        startdatum:
-          type: string
-          format: date
-          nullable: true
-          description: Startdatum van het plan.
-        einddatum:
-          type: string
-          format: date
-          nullable: true
-          description: Einddatum van het plan.
-        beoogdeStartdatum:
-          type: string
-          format: date
-          nullable: true
-          description: Beoogde startdatum van het plan.
-        beoogdeEinddatum:
-          type: string
-          format: date
-          nullable: true
-          description: Beoogde einddatum van het plan.
-        gewijzigdOp:
-          type: string
-          format: date-time
-          readOnly: true
-          description: Datum en tijd waarop het plan voor het laatst is gewijzigd.
-        tsaverwijzing:
-          type: string
-          example: urn:namespace:component:resource:uuid
-          description: URN-verwijzing naar het dossier van de ZAAK in een taak specifieke
-            applicatie (TSA).
-          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
-          maxLength: 255
-        zaak:
-          type: string
-          example: urn:namespace:component:resource:uuid
-          description: URN naar de bijbehorende zaak in het zaaksysteem.
-          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
-          maxLength: 255
-        contactmoment:
-          type: string
-          example: urn:namespace:component:resource:uuid
-          description: URN naar het contactmoment in Open Klant.
-          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
-          maxLength: 255
-        eigenaar:
-          type: string
-          example: urn:namespace:component:resource:uuid
-          description: URN naar de eigenaar in het HR-systeem.
-          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
-          maxLength: 255
-      required:
-      - gewijzigdOp
       - naam
       - uuid
     PaginatedConfiguratieList:
@@ -2562,7 +2473,7 @@ components:
           description: Unieke resource identifier (UUID4).
         plan:
           allOf:
-          - $ref: '#/components/schemas/NestedPlan'
+          - $ref: '#/components/schemas/Plan'
           readOnly: true
         planUuid:
           type: string
@@ -2652,16 +2563,19 @@ components:
     PatchedPlan:
       type: object
       properties:
-        urn:
-          type: string
-          example: urn:namespace:component:resource:uuid
-          readOnly: true
-          description: De Uniform Resource Name van de plan.
         uuid:
           type: string
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het plan.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het plan.
+          maxLength: 1000
         status:
           allOf:
           - $ref: '#/components/schemas/Planstatus'
@@ -2673,22 +2587,6 @@ components:
             * `pauze` - Pauze
             * `afgerond` - Afgerond
             * `afgebroken` - Afgebroken
-        naam:
-          type: string
-          description: Naam van het plan.
-          maxLength: 255
-        omschrijving:
-          type: string
-          description: Omschrijving van het plan.
-          maxLength: 1000
-        redenWijziging:
-          type: string
-          description: Reden waarom het plan is gewijzigd.
-          maxLength: 1000
-        toelichtingReden:
-          type: string
-          description: Toelichting reden wijziging van het plan.
-          maxLength: 1000
         startdatum:
           type: string
           format: date
@@ -2739,6 +2637,14 @@ components:
           description: URN naar de eigenaar in het HR-systeem.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
+        redenWijziging:
+          type: string
+          description: Reden waarom het plan is gewijzigd.
+          maxLength: 1000
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van het plan.
+          maxLength: 1000
     PatchedSubject:
       type: object
       properties:
@@ -2748,9 +2654,14 @@ components:
           readOnly: true
           description: Unieke resource identifier (UUID4).
         plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+        planUuid:
           type: string
           format: uuid
-          description: Het plan waartoe dit subject behoort.
+          writeOnly: true
+          description: UUID van het gekoppelde plan.
         subjecttype:
           allOf:
           - $ref: '#/components/schemas/SubjecttypeEnum'
@@ -2788,16 +2699,19 @@ components:
     Plan:
       type: object
       properties:
-        urn:
-          type: string
-          example: urn:namespace:component:resource:uuid
-          readOnly: true
-          description: De Uniform Resource Name van de plan.
         uuid:
           type: string
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het plan.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het plan.
+          maxLength: 1000
         status:
           allOf:
           - $ref: '#/components/schemas/Planstatus'
@@ -2809,22 +2723,6 @@ components:
             * `pauze` - Pauze
             * `afgerond` - Afgerond
             * `afgebroken` - Afgebroken
-        naam:
-          type: string
-          description: Naam van het plan.
-          maxLength: 255
-        omschrijving:
-          type: string
-          description: Omschrijving van het plan.
-          maxLength: 1000
-        redenWijziging:
-          type: string
-          description: Reden waarom het plan is gewijzigd.
-          maxLength: 1000
-        toelichtingReden:
-          type: string
-          description: Toelichting reden wijziging van het plan.
-          maxLength: 1000
         startdatum:
           type: string
           format: date
@@ -2875,10 +2773,17 @@ components:
           description: URN naar de eigenaar in het HR-systeem.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
+        redenWijziging:
+          type: string
+          description: Reden waarom het plan is gewijzigd.
+          maxLength: 1000
+        toelichtingReden:
+          type: string
+          description: Toelichting reden wijziging van het plan.
+          maxLength: 1000
       required:
       - gewijzigdOp
       - naam
-      - urn
       - uuid
     Planstatus:
       enum:
@@ -2921,9 +2826,14 @@ components:
           readOnly: true
           description: Unieke resource identifier (UUID4).
         plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+        planUuid:
           type: string
           format: uuid
-          description: Het plan waartoe dit subject behoort.
+          writeOnly: true
+          description: UUID van het gekoppelde plan.
         subjecttype:
           allOf:
           - $ref: '#/components/schemas/SubjecttypeEnum'
@@ -2960,6 +2870,7 @@ components:
           maxLength: 255
       required:
       - plan
+      - planUuid
       - subjecttype
       - uuid
     SubjecttypeEnum:

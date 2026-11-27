@@ -102,3 +102,9 @@ class EvaluatieSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True},
         }
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.instance is not None:
+            fields["plan_uuid"].required = False
+        return fields

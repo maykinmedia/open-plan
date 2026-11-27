@@ -35,13 +35,13 @@ class SubjectAPITests(APITestCase):
     def setUp(self):
         super().setUp()
         self.plan = PlanFactory.create()
-        self.data = {"plan": str(self.plan.uuid)}
+        self.data = {"planUuid": str(self.plan.uuid)}
 
     def test_create_subject(self):
         plan = PlanFactory.create()
         url = reverse("plannen:subject-list")
         data = {
-            "plan": str(plan.uuid),
+            "planUuid": str(plan.uuid),
             "subjecttype": SubjectType.PERSOON,
             "profiel": "urn:example:persoon:12345",
             "klant": "urn:example:klant:67890",
@@ -82,9 +82,7 @@ class SubjectAPITests(APITestCase):
 
     def test_update_subject(self):
         subject = SubjectFactory.create()
-        plan = PlanFactory.create()
         new_data = {
-            "plan": str(plan.uuid),
             "subjecttype": SubjectType.PERSOON,
             "profiel": "urn:example:persoon:12345",
             "klant": "urn:example:klant:67890",
@@ -108,6 +106,26 @@ class SubjectAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         subject.refresh_from_db()
         self.assertEqual(subject.bsn, new_data["bsn"])
+
+    def test_patch_plan_returns_400_and_does_not_write(self):
+        subject = SubjectFactory.create()
+        original_plan = subject.plan
+
+        url = reverse("plannen:subject-detail", kwargs={"uuid": subject.uuid})
+        data = {
+            "planUuid": str(PlanFactory.create().uuid),
+        }
+
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(
+            response.status_code, status.HTTP_400_BAD_REQUEST, response.json()
+        )
+        invalid_params = response.json()["invalidParams"]
+        self.assertEqual(len(invalid_params), 1)
+
+        subject.refresh_from_db()
+        self.assertEqual(subject.plan, original_plan)
 
     def test_delete_subject(self):
         subject = SubjectFactory.create()
@@ -321,7 +339,7 @@ class SubjectAPITests(APITestCase):
         plan = PlanFactory.create()
         url = reverse("plannen:subject-list")
         data = {
-            "plan": str(plan.uuid),
+            "planUuid": str(plan.uuid),
             "subjecttype": SubjectType.PERSOON,
             "persoonsprofiel": "urn:example:persoon:12345",
             "klant": "urn:example:klant:67890",

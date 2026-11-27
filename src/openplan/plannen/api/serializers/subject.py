@@ -38,3 +38,9 @@ class SubjectSerializer(serializers.ModelSerializer):
             "uuid": {"read_only": True},
         }
         validators = [SubjectVeldenValidator()]
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.instance is not None:
+            fields["plan_uuid"].required = False
+        return fields
