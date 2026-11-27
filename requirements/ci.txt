@@ -644,7 +644,7 @@ phonenumberslite==8.13.55
     #   -c requirements/base.txt
     #   -r requirements/base.txt
     #   django-two-factor-auth
-pillow==12.3.0
+pillow==13.0.0
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
@@ -658,7 +658,7 @@ prompt-toolkit==3.0.52
     #   -c requirements/base.txt
     #   -r requirements/base.txt
     #   click-repl
-protobuf==6.33.1
+protobuf==6.33.6
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
