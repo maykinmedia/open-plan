@@ -13,7 +13,7 @@ from ...metrics import (
     evaluatie_delete_counter,
     evaluatie_update_counter,
 )
-from ..serializers.evaluatie import EvaluatieSerializer
+from ..serializers.evaluatie import EvaluatieSerializer, EvaluatieUpdateSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
 
@@ -58,6 +58,11 @@ class EvaluatieViewSet(viewsets.ModelViewSet):
     filterset_class = EvaluatieFilter
     lookup_field = "uuid"
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.action in ("update", "partial_update"):
+            return EvaluatieUpdateSerializer
+        return super().get_serializer_class()
 
     @transaction.atomic
     def perform_create(self, serializer):

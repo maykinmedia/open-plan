@@ -1143,7 +1143,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Evaluatie'
+              $ref: '#/components/schemas/EvaluatieUpdate'
         required: true
       security:
       - tokenAuth: []
@@ -1158,10 +1158,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Evaluatie'
+                $ref: '#/components/schemas/EvaluatieUpdate'
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Evaluatie'
+                $ref: '#/components/schemas/EvaluatieUpdate'
           description: ''
     patch:
       operationId: evaluatie_partial_update
@@ -1181,7 +1181,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedEvaluatie'
+              $ref: '#/components/schemas/PatchedEvaluatieUpdate'
       security:
       - tokenAuth: []
       responses:
@@ -1195,10 +1195,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Evaluatie'
+                $ref: '#/components/schemas/EvaluatieUpdate'
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Evaluatie'
+                $ref: '#/components/schemas/EvaluatieUpdate'
           description: ''
     delete:
       operationId: evaluatie_destroy
@@ -1626,7 +1626,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Subject'
+              $ref: '#/components/schemas/SubjectUpdate'
         required: true
       security:
       - tokenAuth: []
@@ -1641,10 +1641,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Subject'
+                $ref: '#/components/schemas/SubjectUpdate'
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Subject'
+                $ref: '#/components/schemas/SubjectUpdate'
           description: ''
     patch:
       operationId: subject_partial_update
@@ -1664,7 +1664,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedSubject'
+              $ref: '#/components/schemas/PatchedSubjectUpdate'
       security:
       - tokenAuth: []
       responses:
@@ -1678,10 +1678,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Subject'
+                $ref: '#/components/schemas/SubjectUpdate'
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Subject'
+                $ref: '#/components/schemas/SubjectUpdate'
           description: ''
     delete:
       operationId: subject_destroy
@@ -2023,6 +2023,110 @@ components:
       - naam
       - plan
       - planUuid
+      - uuid
+    EvaluatieUpdate:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij deze evaluatie hoort.
+        evaluatietypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het type evaluatie.
+        positieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de posities die bij deze evaluatie horen.
+        doelen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de doelen die bij deze evaluatie horen.
+        subdoelUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de subdoelen die bij deze evaluatie horen.
+        naam:
+          type: string
+          description: Naam van de evaluatie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de evaluatie.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Doelstatus'
+          description: |-
+            Status van de evaluatie.
+
+            * `gepland` - Gepland
+            * `gestart` - Gestart
+            * `behaald` - Behaald
+            * `afgebroken` - Afgebroken
+        datum:
+          type: string
+          format: date
+          description: Datum van de evaluatie.
+        contactmoment:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar het contactmoment.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        eigenaar:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de eigenaar.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        zaak:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de bijbehorende zaak in het zaaksysteem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        verslag:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar een bijbehorende document in een DRC.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+      required:
+      - datum
+      - doelen
+      - evaluatietypeUuid
+      - naam
+      - plan
       - uuid
     NestedDoel:
       type: object
@@ -2463,7 +2567,7 @@ components:
 
             * `actief` - Actief
             * `niet_actief` - Niet actief
-    PatchedEvaluatie:
+    PatchedEvaluatieUpdate:
       type: object
       properties:
         uuid:
@@ -2645,7 +2749,7 @@ components:
           type: string
           description: Toelichting reden wijziging van het plan.
           maxLength: 1000
-    PatchedSubject:
+    PatchedSubjectUpdate:
       type: object
       properties:
         uuid:
@@ -2871,6 +2975,61 @@ components:
       required:
       - plan
       - planUuid
+      - subjecttype
+      - uuid
+    SubjectUpdate:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het gekoppelde plan.
+        subjecttype:
+          allOf:
+          - $ref: '#/components/schemas/SubjecttypeEnum'
+          description: |-
+            Het type subject. Bij `persoon` is `klant` en/of `bsn` verplicht en mag `ruimtelijk_object` niet worden opgegeven. Bij `fysiek_object` is `ruimtelijk_object` verplicht en mogen `klant` en `bsn` niet worden opgegeven.
+
+            * `persoon` - Persoon
+            * `fysiek_object` - Fysiek object
+        profiel:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar het profiel.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        klant:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de Klant. Verplicht bij subjecttype `persoon` als
+            er geen `bsn` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        bsn:
+          type: string
+          description: BSN voor BRP-koppeling. Verplicht bij subjecttype `persoon`
+            als er geen `klant` is opgegeven. Niet toegestaan bij subjecttype `fysiek_object`.
+          maxLength: 9
+          minLength: 9
+        ruimtelijkObject:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar een ruimtelijk object. Verplicht bij subjecttype `fysiek_object`.
+            Niet toegestaan bij subjecttype `persoon`.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+      required:
+      - plan
       - subjecttype
       - uuid
     SubjecttypeEnum:

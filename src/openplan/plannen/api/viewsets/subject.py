@@ -12,7 +12,7 @@ from ...metrics import (
     subjecten_delete_counter,
     subjecten_update_counter,
 )
-from ..serializers.subject import SubjectSerializer
+from ..serializers.subject import SubjectSerializer, SubjectUpdateSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
 
@@ -49,6 +49,11 @@ class SubjectViewSet(viewsets.ModelViewSet):
     serializer_class = SubjectSerializer
     lookup_field = "uuid"
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.action in ("update", "partial_update"):
+            return SubjectUpdateSerializer
+        return super().get_serializer_class()
 
     @transaction.atomic
     def perform_create(self, serializer):

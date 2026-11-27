@@ -39,8 +39,9 @@ class SubjectSerializer(serializers.ModelSerializer):
         }
         validators = [SubjectVeldenValidator()]
 
+
+class SubjectUpdateSerializer(SubjectSerializer):
     def get_fields(self):
         fields = super().get_fields()
-        if self.instance is not None:
-            fields["plan_uuid"].required = False
+        fields["plan_uuid"].required = False
         return fields
