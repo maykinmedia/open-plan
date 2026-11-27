@@ -4,12 +4,13 @@ from unittest.mock import MagicMock, patch
 
 from django.db.models import ProtectedError
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
-from openplan.plannen.enums.status import Doelstatus
+from openplan.plannen.enums.status import Doelstatus, Typestatus
 from openplan.plannen.metrics import (
     evaluatie_create_counter,
     evaluatie_delete_counter,
@@ -29,6 +30,8 @@ from .api_testcase import APITestCase
 
 
 class EvaluatieAPITests(APITestCase):
+    TYPE_NIET_ACTIEF_ERROR = _("Het gekozen type is niet actief. Kies een actief type.")
+
     def setUp(self):
         super().setUp()
         self.plan = PlanFactory.create()
@@ -159,6 +162,70 @@ class EvaluatieAPITests(APITestCase):
         evaluatie = EvaluatieFactory.create()
         with self.assertRaises(ProtectedError):
             evaluatie.evaluatietype.delete()
+
+    def test_create_evaluatie_with_niet_actief_evaluatietype(self):
+        evaluatietype = EvaluatieTypeFactory.create(status=Typestatus.NIET_ACTIEF)
+
+        url = reverse("plannen:evaluatie-list")
+        data = {
+            "plan_uuid": str(self.plan.uuid),
+            "evaluatietype_uuid": str(evaluatietype.uuid),
+            "naam": "Evaluatie met niet-actief type",
+            "datum": date.today().isoformat(),
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        error = get_validation_errors(response, "evaluatietypeUuid")
+        self.assertEqual(error["code"], "niet-actief")
+        self.assertEqual(error["reason"], self.TYPE_NIET_ACTIEF_ERROR)
+        self.assertFalse(Evaluatie.objects.exists())
+
+    def test_create_evaluatie_with_actief_evaluatietype(self):
+        evaluatietype = EvaluatieTypeFactory.create(status=Typestatus.ACTIEF)
+
+        url = reverse("plannen:evaluatie-list")
+        data = {
+            "plan_uuid": str(self.plan.uuid),
+            "evaluatietype_uuid": str(evaluatietype.uuid),
+            "naam": "Evaluatie met actief type",
+            "datum": date.today().isoformat(),
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.json())
+        self.assertTrue(Evaluatie.objects.filter(evaluatietype=evaluatietype).exists())
+
+    def test_partial_update_evaluatie_with_niet_actief_evaluatietype(self):
+        evaluatie = EvaluatieFactory.create()
+        evaluatie.evaluatietype.status = Typestatus.NIET_ACTIEF
+        evaluatie.evaluatietype.save()
+
+        url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
+        response = self.client.patch(
+            url, {"naam": "Nog steeds bewerkbaar"}, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        evaluatie.refresh_from_db()
+        self.assertEqual(evaluatie.naam, "Nog steeds bewerkbaar")
+
+    def test_update_evaluatie_with_niet_actief_evaluatietype(self):
+        evaluatie = EvaluatieFactory.create()
+        evaluatie.evaluatietype.status = Typestatus.NIET_ACTIEF
+        evaluatie.evaluatietype.save()
+
+        url = reverse("plannen:evaluatie-detail", kwargs={"uuid": evaluatie.uuid})
+        data = {
+            "evaluatietype_uuid": str(evaluatie.evaluatietype.uuid),
+            "naam": "Volledige update",
+            "datum": date.today().isoformat(),
+        }
+        response = self.client.put(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.json())
+        evaluatie.refresh_from_db()
+        self.assertEqual(evaluatie.naam, "Volledige update")
 
     def test_authentication_required(self):
         client = APIClient()

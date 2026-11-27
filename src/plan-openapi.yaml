@@ -997,6 +997,21 @@ paths:
         schema:
           type: string
         description: URN naar de eigenaar.
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van de evaluatie.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van de evaluatie.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Omschrijving van de evaluatie.
       - name: page
         required: false
         in: query
@@ -1214,6 +1229,251 @@ paths:
         required: true
       tags:
       - Evaluatie
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /evaluatietype:
+    get:
+      operationId: evaluatietype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle evaluatietypes opvragen.
+      parameters:
+      - in: query
+        name: configuraties__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: configuraties__uuids
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Lijst van configuratie uuids waarop kan worden gezocht.
+        explode: false
+        style: form
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het evaluatie type.
+      - in: query
+        name: naam__icontains
+        schema:
+          type: string
+        description: Naam van het evaluatie type.
+      - in: query
+        name: omschrijving__icontains
+        schema:
+          type: string
+        description: Omschrijving van het evaluatie type.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100,
+          maximum: 500).'
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - niet_actief
+        description: |-
+          Status van het evaluatie type.
+
+          * `actief` - Actief
+          * `niet_actief` - Niet actief
+      tags:
+      - Evaluatietype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEvaluatietypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEvaluatietypeList'
+          description: ''
+    post:
+      operationId: evaluatietype_create
+      description: Voeg een nieuw evaluatietype toe aan het systeem.
+      summary: Nieuw evaluatietype aanmaken.
+      tags:
+      - Evaluatietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evaluatietype'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+          description: ''
+  /evaluatietype/{uuid}:
+    get:
+      operationId: evaluatietype_retrieve
+      description: Een specifiek evaluatietype opvragen via UUID.
+      summary: Een specifiek evaluatietype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Evaluatietype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+          description: ''
+    put:
+      operationId: evaluatietype_update
+      description: Werk alle gegevens van een evaluatietype bij.
+      summary: Evaluatietype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Evaluatietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evaluatietype'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+          description: ''
+    patch:
+      operationId: evaluatietype_partial_update
+      description: Werk enkele gegevens van een evaluatietype bij.
+      summary: Evaluatietype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Evaluatietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEvaluatietype'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Evaluatietype'
+          description: ''
+    delete:
+      operationId: evaluatietype_destroy
+      description: Verwijder een specifiek evaluatietype.
+      summary: Evaluatietype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4).
+        required: true
+      tags:
+      - Evaluatietype
       security:
       - tokenAuth: []
       responses:
@@ -1936,6 +2196,10 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van het plan waarbij deze evaluatie hoort.
+        evaluatietype:
+          allOf:
+          - $ref: '#/components/schemas/NestedEvaluatietype'
+          readOnly: true
         evaluatietypeUuid:
           type: string
           format: uuid
@@ -2019,6 +2283,7 @@ components:
       required:
       - datum
       - doelen
+      - evaluatietype
       - evaluatietypeUuid
       - naam
       - plan
@@ -2041,6 +2306,10 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van het plan waarbij deze evaluatie hoort.
+        evaluatietype:
+          allOf:
+          - $ref: '#/components/schemas/NestedEvaluatietype'
+          readOnly: true
         evaluatietypeUuid:
           type: string
           format: uuid
@@ -2124,9 +2393,86 @@ components:
       required:
       - datum
       - doelen
+      - evaluatietype
       - evaluatietypeUuid
       - naam
       - plan
+      - uuid
+    Evaluatietype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        configuraties:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedConfiguratie'
+          readOnly: true
+        configuratieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        naam:
+          type: string
+          description: Naam van het evaluatie type.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het evaluatie type.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het evaluatie type.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het evaluatietype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het evaluatietype.
+          maxLength: 1000
+      required:
+      - configuratieUuids
+      - configuraties
+      - naam
+      - uuid
+    NestedConfiguratie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van de configuratie.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van de configuratie.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van de configuratie.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+      required:
+      - naam
       - uuid
     NestedDoel:
       type: object
@@ -2224,6 +2570,41 @@ components:
           type: string
           description: Naam van het doeltype.
           maxLength: 255
+      required:
+      - naam
+      - uuid
+    NestedEvaluatietype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        naam:
+          type: string
+          description: Naam van het evaluatie type.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het evaluatie type.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het evaluatie type.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het evaluatietype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het evaluatietype.
+          maxLength: 1000
       required:
       - naam
       - uuid
@@ -2342,6 +2723,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Evaluatie'
+    PaginatedEvaluatietypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Evaluatietype'
     PaginatedPlanList:
       type: object
       required:
@@ -2584,6 +2988,10 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van het plan waarbij deze evaluatie hoort.
+        evaluatietype:
+          allOf:
+          - $ref: '#/components/schemas/NestedEvaluatietype'
+          readOnly: true
         evaluatietypeUuid:
           type: string
           format: uuid
@@ -2664,6 +3072,50 @@ components:
           description: URN naar een bijbehorende document in een DRC.
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
+    PatchedEvaluatietype:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4).
+        configuraties:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedConfiguratie'
+          readOnly: true
+        configuratieUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        naam:
+          type: string
+          description: Naam van het evaluatie type.
+          maxLength: 255
+        omschrijving:
+          type: string
+          description: Omschrijving van het evaluatie type.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Typestatus'
+          description: |-
+            Status van het evaluatie type.
+
+            * `actief` - Actief
+            * `niet_actief` - Niet actief
+        toelichtingInwoner:
+          type: string
+          description: Toelichting inwoner van het evaluatietype.
+          maxLength: 1000
+        toelichtingMedewerker:
+          type: string
+          description: Toelichting medewerker van het evaluatietype.
+          maxLength: 1000
     PatchedPlan:
       type: object
       properties:

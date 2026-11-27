@@ -7,7 +7,7 @@ from vng_api_common.fields import URNField
 
 from openplan.plannen.enums.status import Doelstatus
 
-from .validators import validate_immutable_field
+from .validators import validate_immutable_field, validate_type_actief_bij_aanmaken
 
 
 class Evaluatie(models.Model):
@@ -100,3 +100,4 @@ class Evaluatie(models.Model):
             "plan",
             _("Het plan kan niet gewijzigd worden. Maak een nieuwe evaluatie aan."),
         )
+        validate_type_actief_bij_aanmaken(self, "evaluatietype")

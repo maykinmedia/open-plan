@@ -7,7 +7,11 @@ from rest_framework import fields as drf_fields, serializers
 from rest_framework.fields import get_attribute
 from rest_framework.serializers import Serializer
 
-from openplan.plannen.models.validators import validate_dates, validate_subject_velden
+from openplan.plannen.models.validators import (
+    validate_dates,
+    validate_subject_velden,
+    validate_type_actief,
+)
 
 
 def get_from_serializer_data_or_instance(
@@ -98,3 +102,25 @@ class IsImmutableValidator:
 
         if new_value != current_value:
             raise serializers.ValidationError(self.message, code=self.code)
+
+
+class IsActiveValidator:
+    """
+    Validate that a new object is not linked to an inactive type
+    """
+
+    code = "niet-actief"
+    requires_context = True
+
+    def __call__(self, value, serializer_field):
+        serializer = serializer_field.parent
+        if serializer.instance:
+            return
+
+        field_name = serializer_field.source
+        try:
+            validate_type_actief(value, field_name)
+        except ValidationError as error:
+            raise serializers.ValidationError(
+                error.message_dict[field_name], code=self.code
+            ) from error
